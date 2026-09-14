@@ -442,7 +442,7 @@ p {
 
 .hero-canvas-content {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   max-width: 440px;
   text-align: left;
 }
@@ -462,11 +462,36 @@ p {
   margin-bottom: 32px;
 }
 
+/* ==========================================================================
+   Interactive 3D Particle Sphere (from Ionyx Hero Section)
+   ========================================================================== */
+.hero-sphere-container {
+  position: absolute;
+  right: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 520px;
+  height: 520px;
+  z-index: 2;
+  overflow: visible;
+  pointer-events: auto;
+  cursor: grab;
+  user-select: none;
+}
+
+.hero-sphere-container:active {
+  cursor: grabbing;
+}
+
+.hero-sphere-container canvas {
+  pointer-events: auto;
+}
+
 .hero-scroll-btn {
   position: absolute;
   bottom: 24px;
   left: 30px;
-  z-index: 1;
+  z-index: 10;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -1276,6 +1301,11 @@ p {
   .hero-canvas-card {
     padding: 80px 40px;
   }
+  .hero-sphere-container {
+    right: 20px;
+    width: 420px;
+    height: 420px;
+  }
   .pricing-grid {
     grid-template-columns: 1fr;
     max-width: 500px;
@@ -1290,6 +1320,15 @@ p {
   .hero-canvas-card {
     padding: 60px 24px;
     min-height: 520px;
+  }
+  .hero-sphere-container {
+    right: 50%;
+    transform: translate(50%, -50%);
+    top: 55%;
+    width: 320px;
+    height: 320px;
+    opacity: 0.55;
+    pointer-events: none;
   }
   .nav-links {
     display: none;
