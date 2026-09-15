@@ -7,9 +7,9 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         about: resolve(__dirname, 'about-us.html'),
-        pricing: resolve(__dirname, 'pricing.html'),
+        services: resolve(__dirname, 'services.html'),
+        projects: resolve(__dirname, 'projects.html'),
         blog: resolve(__dirname, 'blog.html'),
-        careers: resolve(__dirname, 'careers.html'),
         contact: resolve(__dirname, 'contact-us.html'),
         privacy: resolve(__dirname, 'privacy-policy.html'),
         terms: resolve(__dirname, 'terms-of-use.html'),
@@ -19,5 +19,8 @@ export default defineConfig({
   server: {
     port: 5173,
     open: false,
+    watch: {
+      ignored: ['**/*.rar', '**/*.zip', '**/.git/**'],
+    },
   },
 });

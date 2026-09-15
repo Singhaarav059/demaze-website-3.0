@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 /**
- * Kontra AI - Interactive Logic & Animations
+ * Demaze Technologies - Interactive Logic & Animations
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFaqAccordion();
   initBackToTop();
   highlightActiveNavLink();
+  initFilterTabs();
 });
 
 /* ==========================================================================
@@ -213,38 +214,41 @@ function initBackToTop() {
 }
 
 /* ==========================================================================
-   7. Authentic Ionyx Hero 3D Particle Sphere
-   Replicates the exact Framer Particle Sphere (Fibonacci distribution,
-   Additive blending, instanced spheres, interactive inertia drag,
-   cursor magnetic repulsion, and click shockwave explosion).
+   7. Authentic Living Brain Hero 3D Particle Sphere & Neural Nervous System
+   - Interactive Three.js WebGL "Central Brain" with Fibonacci particle shell,
+     internal glowing synaptic neural plexus, core ambient luminescence,
+     organic breathing cycle, and mouse inertia/drag physics.
+   - Dynamic Nervous System SVG overlay with curved neural threads connecting
+     from the brain sphere to each of the 5 service cards.
+   - Traveling electrical signal sparks that journey through the threads and
+     trigger synchronized micro-pulse reactions on the service cards.
    ========================================================================== */
 function initHeroParticleSphere() {
   const container = document.getElementById('hero-sphere-container');
   if (!container) return;
 
-  // Exact configuration parameters extracted from Ionyx hero section
-  const particlesCount = 4000;
-  const speed = 0.5;
+  // Configuration parameters
+  const particlesCount = 3200;
+  const speed = 0.45;
   const smoothing = 1.0;
-  const scale = 1.0;
+  const scale = 0.95;
   const rotationDirection = 'clockwise';
   const dragSpeed = 0.5;
   const drag = true;
   const stopOnHover = false;
-  const particleScale = 0.3;
+  const particleScale = 0.28;
   const cursorConfig = {
     enabled: true,
-    radius: 85,
+    radius: 90,
     strength: 1.0,
     clickForce: 5.0
   };
 
-  // Linear range mapping helper
   const mapRange = (val, inMin, inMax, outMin, outMax) => {
     return inMax === inMin ? outMin : outMin + ((val - inMin) / (inMax - inMin)) * (outMax - outMin);
   };
 
-  const autoSpeed = mapRange(speed, 0.1, 1, 0.01, 0.05) * (rotationDirection === 'anticlockwise' ? -1 : 1);
+  const autoSpeed = mapRange(speed, 0.1, 1, 0.01, 0.045) * (rotationDirection === 'anticlockwise' ? -1 : 1);
   const scaleFactor = mapRange(Math.max(0, Math.min(1, scale)), 0, 1, 0.25, 1.25);
   const particleSize = mapRange(Math.max(0.1, Math.min(1, particleScale)), 0.1, 1, 0.01, 0.1);
   const cursorRadius = Math.max(0, Math.min(600, cursorConfig.radius));
@@ -303,7 +307,7 @@ function initHeroParticleSphere() {
   const colorsArray = new Float32Array(particlesCount * 3);
   for (let i = 0; i < particlesCount; i++) {
     const idx = i * 3;
-    const brightness = 0.92 + Math.random() * 0.16;
+    const brightness = 0.90 + Math.random() * 0.18;
     colorsArray[idx] = Math.min(1, particleColor.r * brightness);
     colorsArray[idx + 1] = Math.min(1, particleColor.g * brightness);
     colorsArray[idx + 2] = Math.min(1, particleColor.b * brightness * 0.95);
@@ -312,28 +316,93 @@ function initHeroParticleSphere() {
   instancedMesh.instanceColor.needsUpdate = true;
   group.add(instancedMesh);
 
-  // Glowing Golden Orbital Rings (tightened for compact, elegant fit)
+  // =========================================================================
+  // Internal Synaptic Brain Plexus (Glowing neural network filaments inside)
+  // =========================================================================
+  const synapseCount = 46;
+  const synapsePositions = [];
+  for (let s = 0; s < synapseCount; s++) {
+    const u = Math.random();
+    const v = Math.random();
+    const theta = u * 2.0 * Math.PI;
+    const phi = Math.acos(2.0 * v - 1.0);
+    const r = Math.cbrt(Math.random()) * (sphereRadius * 0.76);
+    const sinPhi = Math.sin(phi);
+    synapsePositions.push(new THREE.Vector3(
+      r * sinPhi * Math.cos(theta),
+      r * sinPhi * Math.sin(theta),
+      r * Math.cos(phi)
+    ));
+  }
+
+  const synapseLinePositions = [];
+  for (let i = 0; i < synapseCount; i++) {
+    for (let j = i + 1; j < synapseCount; j++) {
+      const d = synapsePositions[i].distanceTo(synapsePositions[j]);
+      if (d < sphereRadius * 0.50) {
+        synapseLinePositions.push(
+          synapsePositions[i].x, synapsePositions[i].y, synapsePositions[i].z,
+          synapsePositions[j].x, synapsePositions[j].y, synapsePositions[j].z
+        );
+      }
+    }
+  }
+
+  const synapseGeo = new THREE.BufferGeometry();
+  synapseGeo.setAttribute('position', new THREE.Float32BufferAttribute(synapseLinePositions, 3));
+  const synapseMat = new THREE.LineBasicMaterial({
+    color: 0xffaa44,
+    transparent: true,
+    opacity: 0.58,
+    blending: THREE.AdditiveBlending
+  });
+  const synapseMesh = new THREE.LineSegments(synapseGeo, synapseMat);
+  group.add(synapseMesh);
+
+  // Core Luminous Brain Glow & Glass Shell Boundary
+  const coreGlowGeo = new THREE.SphereGeometry(sphereRadius * 0.35, 16, 16);
+  const coreGlowMat = new THREE.MeshBasicMaterial({
+    color: 0xff7722,
+    transparent: true,
+    opacity: 0.28,
+    blending: THREE.AdditiveBlending
+  });
+  const coreGlow = new THREE.Mesh(coreGlowGeo, coreGlowMat);
+  group.add(coreGlow);
+
+  // Ethereal Glass Shell Rim
+  const glassRimGeo = new THREE.SphereGeometry(sphereRadius * 1.025, 32, 32);
+  const glassRimMat = new THREE.MeshBasicMaterial({
+    color: 0xffeedd,
+    transparent: true,
+    opacity: 0.12,
+    blending: THREE.AdditiveBlending
+  });
+  const glassRim = new THREE.Mesh(glassRimGeo, glassRimMat);
+  group.add(glassRim);
+
+  // Glowing Golden Orbital Rings
   const orbitGroup = new THREE.Group();
   scene.add(orbitGroup);
 
-  const ringGeo1 = new THREE.TorusGeometry(sphereRadius * 1.08, 0.0030, 16, 120);
+  const ringGeo1 = new THREE.TorusGeometry(sphereRadius * 1.08, 0.0028, 16, 120);
   const ringMat1 = new THREE.MeshBasicMaterial({
     color: 0xffaa44,
     blending: THREE.AdditiveBlending,
     transparent: true,
-    opacity: 0.85
+    opacity: 0.8
   });
   const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
   ring1.rotation.x = Math.PI * 0.38;
   ring1.rotation.y = Math.PI * 0.12;
   orbitGroup.add(ring1);
 
-  const ringGeo2 = new THREE.TorusGeometry(sphereRadius * 1.14, 0.0025, 16, 120);
+  const ringGeo2 = new THREE.TorusGeometry(sphereRadius * 1.14, 0.0024, 16, 120);
   const ringMat2 = new THREE.MeshBasicMaterial({
     color: 0xff7722,
     blending: THREE.AdditiveBlending,
     transparent: true,
-    opacity: 0.72
+    opacity: 0.65
   });
   const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
   ring2.rotation.x = -Math.PI * 0.32;
@@ -344,7 +413,7 @@ function initHeroParticleSphere() {
   const satelliteOrbs = [
     {
       mesh: new THREE.Mesh(
-        new THREE.SphereGeometry(0.028, 24, 24),
+        new THREE.SphereGeometry(0.026, 24, 24),
         new THREE.MeshBasicMaterial({ color: 0xffdd88 })
       ),
       radius: sphereRadius * 1.08,
@@ -355,7 +424,7 @@ function initHeroParticleSphere() {
     },
     {
       mesh: new THREE.Mesh(
-        new THREE.SphereGeometry(0.022, 24, 24),
+        new THREE.SphereGeometry(0.020, 24, 24),
         new THREE.MeshBasicMaterial({ color: 0xe0e6ed })
       ),
       radius: sphereRadius * 1.08,
@@ -366,7 +435,7 @@ function initHeroParticleSphere() {
     },
     {
       mesh: new THREE.Mesh(
-        new THREE.SphereGeometry(0.024, 24, 24),
+        new THREE.SphereGeometry(0.022, 24, 24),
         new THREE.MeshBasicMaterial({ color: 0xffaa44 })
       ),
       radius: sphereRadius * 1.14,
@@ -377,7 +446,7 @@ function initHeroParticleSphere() {
     },
     {
       mesh: new THREE.Mesh(
-        new THREE.SphereGeometry(0.018, 24, 24),
+        new THREE.SphereGeometry(0.016, 24, 24),
         new THREE.MeshBasicMaterial({ color: 0xffffff })
       ),
       radius: sphereRadius * 1.14,
@@ -390,10 +459,10 @@ function initHeroParticleSphere() {
 
   satelliteOrbs.forEach(orb => orbitGroup.add(orb.mesh));
 
-  // Renderer & Camera setup with extended canvas multiplier to avoid particle clipping
+  // Renderer & Camera setup
   const canvasMultiplier = 2.5;
-  let clientW = container.clientWidth || 500;
-  let clientH = container.clientHeight || 500;
+  let clientW = container.clientWidth || 380;
+  let clientH = container.clientHeight || 380;
   let renderW = clientW * canvasMultiplier;
   let renderH = clientH * canvasMultiplier;
 
@@ -442,6 +511,12 @@ function initHeroParticleSphere() {
     const n = Math.min(Math.max(elapsed / targetDelta, 0.1), 3);
     const threshold = 0.01;
 
+    // Organic Brain Breathing & Neural Undulation
+    const breathe = 1.0 + Math.sin(now * 0.0018) * 0.02;
+    group.scale.set(breathe, breathe, breathe);
+    synapseMat.opacity = 0.38 + Math.sin(now * 0.003) * 0.22;
+    coreGlowMat.opacity = 0.22 + Math.sin(now * 0.0025) * 0.12;
+
     // Auto-rotation
     if (!isDragging && autoSpeed !== 0 && (!stopOnHover || !isHovered)) {
       targetRot.x += autoSpeed * 0.1 * n;
@@ -476,7 +551,6 @@ function initHeroParticleSphere() {
     group.rotation.x = currentRot.y;
     group.updateMatrixWorld(true);
 
-    // Orbit group rotation & dynamic satellite motions
     orbitGroup.rotation.y = currentRot.x * 0.4;
     orbitGroup.rotation.x = currentRot.y * 0.4;
     orbitGroup.updateMatrixWorld(true);
@@ -493,9 +567,9 @@ function initHeroParticleSphere() {
       orb.mesh.position.copy(orbitV);
     }
 
-    // Particle repulsion physics
-    const currentContainerW = container.clientWidth || 500;
-    const currentContainerH = container.clientHeight || 500;
+    // Cursor repulsion
+    const currentContainerW = container.clientWidth || 380;
+    const currentContainerH = container.clientHeight || 380;
     const currentCanvasW = currentContainerW * canvasMultiplier;
     const currentCanvasH = currentContainerH * canvasMultiplier;
     const radSq = cursorRadius * cursorRadius;
@@ -546,13 +620,11 @@ function initHeroParticleSphere() {
           }
         }
 
-        // Damping
         disp.multiplyScalar(Math.pow(frictionCoeff, n));
         disp.multiplyScalar(1 - returnForceCoeff * speed * n);
       }
     }
 
-    // Click wave impulse integration
     if (impulseVelocities.length > 0) {
       for (let i = 0; i < impulseVelocities.length; i++) {
         const vel = impulseVelocities[i];
@@ -562,7 +634,6 @@ function initHeroParticleSphere() {
       }
     }
 
-    // Update InstancedMesh positions
     for (let i = 0; i < originalPositions.length; i++) {
       tempV.copy(originalPositions[i]).add(displacements[i]);
       matrixItem.setPosition(tempV.x, tempV.y, tempV.z);
@@ -619,7 +690,6 @@ function initHeroParticleSphere() {
     });
   }
 
-  // Hover & Magnetic Field Events
   canvas.addEventListener('mouseenter', () => {
     isHovered = true;
   });
@@ -649,8 +719,8 @@ function initHeroParticleSphere() {
     const clickX = e.clientX - rect.left + offsetX;
     const clickY = e.clientY - rect.top + offsetY;
 
-    const currentCanvasW = (container.clientWidth || 500) * canvasMultiplier;
-    const currentCanvasH = (container.clientHeight || 500) * canvasMultiplier;
+    const currentCanvasW = (container.clientWidth || 380) * canvasMultiplier;
+    const currentCanvasH = (container.clientHeight || 380) * canvasMultiplier;
     const ndcX = (clickX / currentCanvasW) * 2 - 1;
     const ndcY = 1 - (clickY / currentCanvasH) * 2;
 
@@ -668,7 +738,6 @@ function initHeroParticleSphere() {
 
     const pVec = new THREE.Vector3();
     const wVec = new THREE.Vector3();
-    const pProj = new THREE.Vector3();
     const pushDir = new THREE.Vector3();
     const invMat = new THREE.Matrix4().copy(group.matrixWorld).invert();
 
@@ -676,12 +745,8 @@ function initHeroParticleSphere() {
       pVec.copy(originalPositions[idx]).add(displacements[idx]);
       wVec.copy(pVec).applyMatrix4(group.matrixWorld);
 
-      pProj.copy(wVec).project(camera);
-      const px = (pProj.x * 0.5 + 0.5) * currentCanvasW;
-      const py = (-pProj.y * 0.5 + 0.5) * currentCanvasH;
-
-      const dx = clickX - px;
-      const dy = clickY - py;
+      const dx = clickX - (wVec.x * 0.5 + 0.5) * currentCanvasW;
+      const dy = clickY - (-wVec.y * 0.5 + 0.5) * currentCanvasH;
       const distSq = dx * dx + dy * dy;
 
       if (distSq < clickRadSq && distSq > 0) {
@@ -700,8 +765,8 @@ function initHeroParticleSphere() {
   // Resize Handling
   const resizeObserver = new ResizeObserver(() => {
     if (!container || !camera || !renderer) return;
-    const cw = container.clientWidth || 500;
-    const ch = container.clientHeight || 500;
+    const cw = container.clientWidth || 380;
+    const ch = container.clientHeight || 380;
     const nw = cw * canvasMultiplier;
     const nh = ch * canvasMultiplier;
     offsetX = (nw - cw) / 2;
@@ -717,5 +782,445 @@ function initHeroParticleSphere() {
     canvas.style.height = `${nh}px`;
   });
   resizeObserver.observe(container);
+
+  // Initialize the Nervous System Neural Threads & Traveling Signals
+  initNeuralNervousSystem();
 }
+
+/* ==========================================================================
+   8. Neural Nervous System: Curved Threads & Traveling Signals
+   - Draws organic curved neural splines from the central brain sphere
+     to each of the 5 service cards.
+   - Dispatches glowing electrical sparks that travel along the threads.
+   - Triggers synchronized haptic glow/pulse reactions when a signal arrives
+     at each service card endpoint.
+   ========================================================================== */
+function initNeuralNervousSystem() {
+  const svg = document.getElementById('hero-neural-svg');
+  const pathsGroup = document.getElementById('neural-paths-group');
+  const signalsGroup = document.getElementById('neural-signals-group');
+  const rootsGroup = document.getElementById('neural-roots-group');
+  const rootSignalsGroup = document.getElementById('root-signals-group');
+  const wrapper = document.querySelector('.hero-3d-experience-wrapper');
+  const sphereContainer = document.getElementById('hero-sphere-container');
+  const rockPedestal = document.getElementById('hero-rock-pedestal');
+  const heroCard = document.querySelector('.hero-canvas-card');
+
+  if (!svg || !pathsGroup || !signalsGroup || !wrapper || !sphereContainer) return;
+
+  const badges = Array.from(wrapper.querySelectorAll('.sphere-badge[data-service]'));
+  if (badges.length === 0) return;
+
+  // Align the static floor rock precisely on the sphere's vertical axis and anchor under sphere with natural air gap
+  function alignRockUnderSphere() {
+    if (!rockPedestal || !sphereContainer || !heroCard || !wrapper) return;
+    const cardRect = heroCard.getBoundingClientRect();
+    const sphereRect = sphereContainer.getBoundingClientRect();
+
+    // Center rock horizontally under sphere
+    const sphereCenterX = (sphereRect.left + sphereRect.width / 2) - cardRect.left;
+    rockPedestal.style.left = `${sphereCenterX.toFixed(1)}px`;
+
+    // Account for current floatingBrain translateY transform on wrapper to anchor to baseline
+    let currentWrapperFloatY = 0;
+    const matrix = window.getComputedStyle(wrapper).transform;
+    if (matrix && matrix !== 'none') {
+      const values = matrix.split('(')[1].split(')')[0].split(',');
+      currentWrapperFloatY = parseFloat(values[5] || values[13] || 0);
+    }
+
+    const baselineSphereTop = sphereRect.top - currentWrapperFloatY;
+    const sphereRadius = (sphereRect.width / 2) * 0.90;
+    const baselineSphereCenterY = (baselineSphereTop + sphereRect.height / 2) - cardRect.top;
+    const baselineSphereBottom = baselineSphereCenterY + sphereRadius;
+
+    // Subtle natural air gap between floating sphere bottom and rock base (~44-48px)
+    const airGap = Math.max(40, Math.min(48, cardRect.height * 0.062));
+    const rockHeight = rockPedestal.offsetHeight || 46;
+    const idealRockTop = baselineSphereBottom + airGap;
+    const maxRockTop = cardRect.height - rockHeight - 16;
+    const targetRockTop = Math.min(idealRockTop, maxRockTop);
+
+    rockPedestal.style.top = `${targetRockTop.toFixed(1)}px`;
+    rockPedestal.style.bottom = 'auto';
+  }
+
+  // Active neural pathway data for service endpoints
+  const pathways = [];
+  // Active root pathways connecting sphere to rock
+  const rootPathways = [];
+
+  // Calibrated asynchronous staggered timing configs for service cards
+  const serviceConfigs = [
+    { startProgress: 0.08, speed: 0.0031 }, // AI & ML
+    { startProgress: 0.44, speed: 0.0027 }, // Product Engineering
+    { startProgress: 0.76, speed: 0.0029 }, // Cloud
+    { startProgress: 0.22, speed: 0.0025 }, // Automation
+    { startProgress: 0.62, speed: 0.0033 }  // E-commerce
+  ];
+
+  // 5 Organic root tendril definitions connecting floating sphere to stationary rock
+  const rootConfigs = [
+    { startProgress: 0.10, speed: 0.0042, dxStart: 0,   dxEnd: 0,   cpX1: -4, cpX2: 4,   tailLen: 12 }, // Central taproot
+    { startProgress: 0.46, speed: 0.0036, dxStart: -12, dxEnd: -18, cpX1: -16, cpX2: -10, tailLen: 10 }, // Left inner root
+    { startProgress: 0.82, speed: 0.0039, dxStart: 12,  dxEnd: 18,  cpX1: 16,  cpX2: 10,  tailLen: 10 }, // Right inner root
+    { startProgress: 0.28, speed: 0.0032, dxStart: -26, dxEnd: -36, cpX1: -32, cpX2: -26, tailLen: 9 },  // Left outer tendril
+    { startProgress: 0.64, speed: 0.0034, dxStart: 26,  dxEnd: 36,  cpX1: 32,  cpX2: 26,  tailLen: 9 }   // Right outer tendril
+  ];
+
+  let sphereCenter = { x: 330, y: 290 };
+  let sphereRadius = 171;
+
+  function buildAllNeuralPathways() {
+    alignRockUnderSphere();
+
+    pathsGroup.innerHTML = '';
+    signalsGroup.innerHTML = '';
+    if (rootsGroup) rootsGroup.innerHTML = '';
+    if (rootSignalsGroup) rootSignalsGroup.innerHTML = '';
+
+    pathways.length = 0;
+    rootPathways.length = 0;
+
+    const wrapRect = wrapper.getBoundingClientRect();
+    const sphereRect = sphereContainer.getBoundingClientRect();
+
+    sphereCenter = {
+      x: (sphereRect.left + sphereRect.width / 2) - wrapRect.left,
+      y: (sphereRect.top + sphereRect.height / 2) - wrapRect.top
+    };
+
+    sphereRadius = (sphereRect.width / 2) * 0.90;
+
+    // 1. Build Service Neural Pathways (Sphere -> Service Cards)
+    badges.forEach((badge, index) => {
+      const dot = badge.querySelector('.connector-dot') || badge;
+      const dotRect = dot.getBoundingClientRect();
+
+      const targetPoint = {
+        x: (dotRect.left + dotRect.width / 2) - wrapRect.left,
+        y: (dotRect.top + dotRect.height / 2) - wrapRect.top
+      };
+
+      const angle = Math.atan2(targetPoint.y - sphereCenter.y, targetPoint.x - sphereCenter.x);
+      const startPoint = {
+        x: sphereCenter.x + Math.cos(angle) * sphereRadius,
+        y: sphereCenter.y + Math.sin(angle) * sphereRadius
+      };
+
+      const dx = targetPoint.x - startPoint.x;
+      const dy = targetPoint.y - startPoint.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      const isTop = targetPoint.y < sphereCenter.y;
+      const isRight = targetPoint.x > sphereCenter.x;
+
+      let cp1, cp2;
+      if (Math.abs(dx) < 70 && isTop) {
+        // Vertical connection for top card (AI & ML)
+        cp1 = {
+          x: startPoint.x + 22,
+          y: startPoint.y - dist * 0.48
+        };
+        cp2 = {
+          x: targetPoint.x + 12,
+          y: targetPoint.y + dist * 0.42
+        };
+      } else {
+        const curveBias = (isTop ? -1 : 1) * Math.min(36, dist * 0.18);
+        cp1 = {
+          x: startPoint.x + Math.cos(angle) * (dist * 0.42) - (isRight ? 12 : -12),
+          y: startPoint.y + Math.sin(angle) * (dist * 0.42) + curveBias
+        };
+        cp2 = {
+          x: targetPoint.x - (isRight ? dist * 0.35 : -dist * 0.35),
+          y: targetPoint.y - curveBias * 0.4
+        };
+      }
+
+      const d = `M ${startPoint.x.toFixed(1)} ${startPoint.y.toFixed(1)} C ${cp1.x.toFixed(1)} ${cp1.y.toFixed(1)}, ${cp2.x.toFixed(1)} ${cp2.y.toFixed(1)}, ${targetPoint.x.toFixed(1)} ${targetPoint.y.toFixed(1)}`;
+
+      const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      pathEl.setAttribute('d', d);
+      pathEl.setAttribute('class', 'neural-thread-path');
+      pathsGroup.appendChild(pathEl);
+
+      const totalLen = pathEl.getTotalLength();
+      const cfg = serviceConfigs[index % serviceConfigs.length];
+
+      pathways.push({
+        badge,
+        pathEl,
+        totalLen,
+        signals: [
+          {
+            progress: cfg.startProgress,
+            speed: cfg.speed,
+            tailLength: 14,
+            orbEl: null,
+            tailEl: null
+          },
+          {
+            progress: (cfg.startProgress + 0.5) % 1.0,
+            speed: cfg.speed * 1.05,
+            tailLength: 12,
+            orbEl: null,
+            tailEl: null
+          }
+        ]
+      });
+    });
+
+    // 2. Build Neural Roots (Sphere Bottom -> Stationary Rock Foundation)
+    if (rockPedestal && rootsGroup) {
+      const rockRect = rockPedestal.getBoundingClientRect();
+      const rockTopX = (rockRect.left + rockRect.width / 2) - wrapRect.left;
+      const rockTopY = (rockRect.top + 8) - wrapRect.top;
+
+      const sphereBottomX = sphereCenter.x;
+      const sphereBottomY = sphereCenter.y + sphereRadius;
+      const dy = rockTopY - sphereBottomY;
+
+      rootConfigs.forEach((cfg) => {
+        const sX = sphereBottomX + cfg.dxStart;
+        const sY = sphereBottomY;
+        const tX = rockTopX + cfg.dxEnd;
+        const tY = rockTopY;
+
+        const cp1X = sX + cfg.cpX1;
+        const cp1Y = sY + dy * 0.38;
+        const cp2X = tX + cfg.cpX2;
+        const cp2Y = tY - dy * 0.32;
+
+        const d = `M ${sX.toFixed(1)} ${sY.toFixed(1)} C ${cp1X.toFixed(1)} ${cp1Y.toFixed(1)}, ${cp2X.toFixed(1)} ${cp2Y.toFixed(1)}, ${tX.toFixed(1)} ${tY.toFixed(1)}`;
+        const rootPathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        rootPathEl.setAttribute('d', d);
+        rootPathEl.setAttribute('class', 'neural-root-path');
+        rootsGroup.appendChild(rootPathEl);
+
+        const totalLen = rootPathEl.getTotalLength();
+
+        rootPathways.push({
+          pathEl: rootPathEl,
+          totalLen,
+          cfg,
+          signals: [
+            {
+              progress: cfg.startProgress,
+              speed: cfg.speed,
+              tailLength: cfg.tailLen,
+              orbEl: null,
+              tailEl: null
+            }
+          ]
+        });
+      });
+    }
+
+    createAllSignalElements();
+  }
+
+  function createAllSignalElements() {
+    // 1. Service Signals
+    signalsGroup.innerHTML = '';
+    pathways.forEach((pathway) => {
+      pathway.signals.forEach((sig) => {
+        const orb = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        orb.setAttribute('r', '3.8');
+        orb.setAttribute('class', 'signal-pulse-orb');
+        orb.setAttribute('filter', 'url(#sparkGlow)');
+        signalsGroup.appendChild(orb);
+        sig.orbEl = orb;
+
+        const tail = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        tail.setAttribute('r', '2.2');
+        tail.setAttribute('fill', '#ff9944');
+        tail.setAttribute('opacity', '0.6');
+        signalsGroup.appendChild(tail);
+        sig.tailEl = tail;
+      });
+    });
+
+    // 2. Root Signals
+    if (rootSignalsGroup) {
+      rootSignalsGroup.innerHTML = '';
+      rootPathways.forEach((rPath) => {
+        rPath.signals.forEach((sig) => {
+          const orb = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          orb.setAttribute('r', '3.4');
+          orb.setAttribute('class', 'root-signal-orb');
+          orb.setAttribute('filter', 'url(#sparkGlow)');
+          rootSignalsGroup.appendChild(orb);
+          sig.orbEl = orb;
+
+          const tail = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          tail.setAttribute('r', '2.0');
+          tail.setAttribute('fill', '#ffaa44');
+          tail.setAttribute('opacity', '0.6');
+          rootSignalsGroup.appendChild(tail);
+          sig.tailEl = tail;
+        });
+      });
+    }
+  }
+
+  buildAllNeuralPathways();
+
+  // Resize and window load listeners to re-anchor threads and rock accurately
+  window.addEventListener('resize', buildAllNeuralPathways, { passive: true });
+  window.addEventListener('load', buildAllNeuralPathways, { passive: true });
+
+  // Nervous System Signal Animation Loop
+  let lastSignalTime = performance.now();
+
+  function animateSignals(now) {
+    const dt = Math.min((now - lastSignalTime) / (1000 / 60), 2.5);
+    lastSignalTime = now;
+
+    // Dynamic flexing of root paths to follow floating sphere while rock is stationary on floor
+    if (rockPedestal && rootPathways.length > 0) {
+      const wrapRect = wrapper.getBoundingClientRect();
+      const rockRect = rockPedestal.getBoundingClientRect();
+      const currentRockTopX = (rockRect.left + rockRect.width / 2) - wrapRect.left;
+      const currentRockTopY = (rockRect.top + 8) - wrapRect.top;
+      const sphereBottomX = sphereCenter.x;
+      const sphereBottomY = sphereCenter.y + sphereRadius;
+      const dy = currentRockTopY - sphereBottomY;
+
+      rootPathways.forEach((rPath) => {
+        const cfg = rPath.cfg;
+        const sX = sphereBottomX + cfg.dxStart;
+        const sY = sphereBottomY;
+        const tX = currentRockTopX + cfg.dxEnd;
+        const tY = currentRockTopY;
+
+        const cp1X = sX + cfg.cpX1;
+        const cp1Y = sY + dy * 0.38;
+        const cp2X = tX + cfg.cpX2;
+        const cp2Y = tY - dy * 0.32;
+
+        const d = `M ${sX.toFixed(1)} ${sY.toFixed(1)} C ${cp1X.toFixed(1)} ${cp1Y.toFixed(1)}, ${cp2X.toFixed(1)} ${cp2Y.toFixed(1)}, ${tX.toFixed(1)} ${tY.toFixed(1)}`;
+        rPath.pathEl.setAttribute('d', d);
+        rPath.totalLen = rPath.pathEl.getTotalLength();
+      });
+    }
+
+    // Animate Service Pathways
+    pathways.forEach((pathway) => {
+      pathway.signals.forEach((sig) => {
+        sig.progress += sig.speed * dt;
+
+        // Signal reaches card endpoint: trigger pulse reaction!
+        if (sig.progress >= 1.0) {
+          sig.progress = 0.0;
+
+          const badge = pathway.badge;
+          badge.classList.remove('synapse-pulse');
+          void badge.offsetWidth;
+          badge.classList.add('synapse-pulse');
+
+          pathway.pathEl.classList.add('active-pulse');
+          setTimeout(() => {
+            pathway.pathEl.classList.remove('active-pulse');
+          }, 350);
+        }
+
+        // Interpolate along curved spline
+        if (pathway.totalLen > 0 && sig.orbEl) {
+          const curDist = sig.progress * pathway.totalLen;
+          const pt = pathway.pathEl.getPointAtLength(curDist);
+          sig.orbEl.setAttribute('cx', pt.x.toFixed(1));
+          sig.orbEl.setAttribute('cy', pt.y.toFixed(1));
+
+          const tailDist = Math.max(0, curDist - sig.tailLength);
+          const tailPt = pathway.pathEl.getPointAtLength(tailDist);
+          if (sig.tailEl) {
+            sig.tailEl.setAttribute('cx', tailPt.x.toFixed(1));
+            sig.tailEl.setAttribute('cy', tailPt.y.toFixed(1));
+            const edgeFade = Math.sin(sig.progress * Math.PI);
+            sig.tailEl.setAttribute('opacity', (0.65 * edgeFade).toFixed(2));
+            sig.orbEl.setAttribute('opacity', (0.2 + 0.8 * edgeFade).toFixed(2));
+          }
+        }
+      });
+    });
+
+    // Animate Neural Roots into Rock Base
+    rootPathways.forEach((rPath) => {
+      rPath.signals.forEach((sig) => {
+        sig.progress += sig.speed * dt;
+
+        // Signal enters rock foundation: trigger subtle rock pulse!
+        if (sig.progress >= 1.0) {
+          sig.progress = 0.0;
+
+          if (rockPedestal) {
+            rockPedestal.classList.remove('root-energy-pulse');
+            void rockPedestal.offsetWidth;
+            rockPedestal.classList.add('root-energy-pulse');
+            setTimeout(() => {
+              rockPedestal.classList.remove('root-energy-pulse');
+            }, 600);
+          }
+
+          rPath.pathEl.classList.add('active-pulse');
+          setTimeout(() => {
+            rPath.pathEl.classList.remove('active-pulse');
+          }, 350);
+        }
+
+        if (rPath.totalLen > 0 && sig.orbEl) {
+          const curDist = sig.progress * rPath.totalLen;
+          const pt = rPath.pathEl.getPointAtLength(curDist);
+          sig.orbEl.setAttribute('cx', pt.x.toFixed(1));
+          sig.orbEl.setAttribute('cy', pt.y.toFixed(1));
+
+          const tailDist = Math.max(0, curDist - sig.tailLength);
+          const tailPt = rPath.pathEl.getPointAtLength(tailDist);
+          if (sig.tailEl) {
+            sig.tailEl.setAttribute('cx', tailPt.x.toFixed(1));
+            sig.tailEl.setAttribute('cy', tailPt.y.toFixed(1));
+            const edgeFade = Math.sin(sig.progress * Math.PI);
+            sig.tailEl.setAttribute('opacity', (0.65 * edgeFade).toFixed(2));
+            sig.orbEl.setAttribute('opacity', (0.25 + 0.75 * edgeFade).toFixed(2));
+          }
+        }
+      });
+    });
+
+    requestAnimationFrame(animateSignals);
+  }
+
+  requestAnimationFrame(animateSignals);
+}
+
+/* ==========================================================================
+   Filter Tabs Logic (Blog & Projects)
+   ========================================================================== */
+function initFilterTabs() {
+  const filterContainers = document.querySelectorAll('.blog-filters, .project-filters');
+  if (!filterContainers.length) return;
+
+  filterContainers.forEach(container => {
+    const buttons = container.querySelectorAll('.filter-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const category = btn.getAttribute('data-category');
+        const cards = document.querySelectorAll('.blog-card, .pricing-card, .project-card');
+        cards.forEach(card => {
+          const cardCat = card.getAttribute('data-category');
+          if (!category || category === 'all' || !cardCat || cardCat === category || cardCat.includes(category)) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+  });
+}
+
+
 
