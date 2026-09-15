@@ -16,6 +16,7 @@
   <!-- Google Fonts Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="/css/variables.css">
@@ -87,22 +88,185 @@
     <section class="hero-section-wrapper">
       <div class="container-wide">
         <div class="hero-canvas-card">
-          <img src="/assets/images/g3B7X5LdequPoPnc0GealXC3VE.png" alt="Kontra AI Surrealist Character" class="hero-canvas-bg">
+          <img src="/assets/images/demaze-hero-arch-bg.jpg" alt="Demaze Architectural Scene" class="hero-canvas-bg">
 
-          <div class="hero-canvas-content">
-            <h1><span class="text-coral">AI services</span> to scale your business here</h1>
-            <p>We design and implement practical AI systems that automate workflows, increase revenue and save your team hundreds of hours every month.</p>
-            <a href="/contact-us.html" class="btn btn-olive">Get free AI Audit</a>
+          <div class="hero-content-split">
+            <!-- Left Column Content -->
+            <div class="hero-canvas-content">
+              <div class="hero-eyebrow">IDEAS &nbsp;→&nbsp; PRODUCTS &nbsp;→&nbsp; REAL IMPACT</div>
+              <h1 class="hero-title">Build what's <span class="text-coral">next</span> for your business.</h1>
+              <p class="hero-subtitle">We design and build intelligent products, applications and automated systems that turn complex business challenges into measurable results.</p>
+              <div class="hero-cta-group">
+                <a href="/contact-us.html" class="btn btn-coral">
+                  Start a conversation
+                  <svg class="btn-arrow" viewBox="0 0 16 16" fill="none">
+                    <path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+                <a href="#partners" class="btn btn-outline-pill">Explore our work</a>
+              </div>
+            </div>
+
+            <!-- Right Column: 3D Experience with Floating Badges & Emblem -->
+            <div class="hero-3d-experience-wrapper">
+              <!-- Interactive 3D Canvas (Particle Sphere, Glowing Orbit Rings & Satellite Orbs) -->
+              <div class="hero-sphere-container" id="hero-sphere-container"></div>
+
+              <!-- Center Brand Emblem inside Sphere -->
+              <div class="sphere-center-emblem">
+                <div class="emblem-logo-icon">
+                  <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
+                    <rect x="2" y="2" width="28" height="28" rx="7" fill="none"/>
+                    <path d="M8 8H20C23.3137 8 26 10.6863 26 14C26 17.3137 23.3137 20 20 20H8V8Z" fill="#ff5c35"/>
+                    <path d="M8 15H17C18.6569 15 20 16.3431 20 18C20 19.6569 18.6569 21 17 21H8V15Z" fill="#ffffff" fill-opacity="0.9"/>
+                    <path d="M8 22H20C21.6569 22 23 23.3431 23 25C23 26.6569 21.6569 28 20 28H8V22Z" fill="#ff5c35"/>
+                  </svg>
+                </div>
+                <div class="emblem-text">
+                  <span class="emblem-brand">Demaze</span>
+                  <span class="emblem-sub">TECHNOLOGIES</span>
+                </div>
+              </div>
+
+              <!-- Floating Glassmorphic Service Badges with Connector Nodes -->
+              <!-- 1. AI & ML (Top) -->
+              <div class="sphere-badge badge-ai-ml">
+                <div class="badge-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 2a4 4 0 0 0-4 4v12a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4z"/>
+                    <path d="M8 7H5a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h3"/>
+                    <path d="M16 7h3a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-3"/>
+                    <path d="M8 15H5a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h3"/>
+                    <path d="M16 15h3a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-3"/>
+                  </svg>
+                </div>
+                <div class="badge-text">
+                  <strong>AI & ML</strong>
+                  <span>Smarter decisions</span>
+                </div>
+                <div class="badge-connector connector-ai-ml">
+                  <span class="connector-line"></span>
+                  <span class="connector-dot"></span>
+                </div>
+              </div>
+
+              <!-- 2. Product Engineering (Mid-Left) -->
+              <div class="sphere-badge badge-product-eng">
+                <div class="badge-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                    <line x1="12" y1="22.08" x2="12" y2="12"/>
+                  </svg>
+                </div>
+                <div class="badge-text">
+                  <strong>Product Engineering</strong>
+                  <span>Digital products</span>
+                </div>
+                <div class="badge-connector connector-product-eng">
+                  <span class="connector-line"></span>
+                  <span class="connector-dot"></span>
+                </div>
+              </div>
+
+              <!-- 3. Cloud (Bottom-Left) -->
+              <div class="sphere-badge badge-cloud">
+                <div class="badge-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>
+                  </svg>
+                </div>
+                <div class="badge-text">
+                  <strong>Cloud</strong>
+                  <span>Scale with confidence</span>
+                </div>
+                <div class="badge-connector connector-cloud">
+                  <span class="connector-line"></span>
+                  <span class="connector-dot"></span>
+                </div>
+              </div>
+
+              <!-- 4. Automation (Top-Right) -->
+              <div class="sphere-badge badge-automation">
+                <div class="badge-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                  </svg>
+                </div>
+                <div class="badge-text">
+                  <strong>Automation</strong>
+                  <span>Efficient operations</span>
+                </div>
+                <div class="badge-connector connector-automation">
+                  <span class="connector-line"></span>
+                  <span class="connector-dot"></span>
+                </div>
+              </div>
+
+              <!-- 5. E-commerce (Mid-Right) -->
+              <div class="sphere-badge badge-ecommerce">
+                <div class="badge-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                  </svg>
+                </div>
+                <div class="badge-text">
+                  <strong>E-commerce</strong>
+                  <span>Connected experiences</span>
+                </div>
+                <div class="badge-connector connector-ecommerce">
+                  <span class="connector-line"></span>
+                  <span class="connector-dot"></span>
+                </div>
+              </div>
+
+              <!-- Terracotta Script Callout (Bottom-Right) -->
+              <div class="hero-script-callout">
+                <div class="script-lines">
+                  <span>A Smarter</span>
+                  <span>Brighter</span>
+                  <span>More Human</span>
+                  <span class="script-highlight">Tomorrow</span>
+                </div>
+                <div class="script-swoosh"></div>
+              </div>
+            </div>
           </div>
 
-          <!-- Interactive 3D Particle Sphere from Ionyx Hero Section -->
-          <div class="hero-sphere-container" id="hero-sphere-container"></div>
+          <!-- Bottom Stats & Scroll Bar -->
+          <div class="hero-bottom-stats-bar">
+            <div class="hero-stats-group">
+              <div class="hero-stat-item">
+                <span class="stat-number">50+</span>
+                <span class="stat-label">Projects Delivered</span>
+              </div>
+              <div class="hero-stat-divider"></div>
+              <div class="hero-stat-item">
+                <span class="stat-number">99%</span>
+                <span class="stat-label">Client Satisfaction</span>
+              </div>
+              <div class="hero-stat-divider"></div>
+              <div class="hero-stat-item">
+                <span class="stat-number">10+</span>
+                <span class="stat-label">Industries Served</span>
+              </div>
+            </div>
 
-          <a href="#partners" class="hero-scroll-btn" aria-label="Scroll down">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M12 5v14M19 12l-7 7-7-7"/>
-            </svg>
-          </a>
+            <div class="hero-scroll-explore">
+              <a href="#partners" class="scroll-explore-link">
+                <span class="scroll-explore-icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M12 5v14M19 12l-7 7-7-7"/>
+                  </svg>
+                </span>
+                <span class="scroll-explore-text">SCROLL TO EXPLORE</span>
+                <span class="scroll-explore-line"></span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>

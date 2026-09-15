@@ -298,18 +298,97 @@ function initHeroParticleSphere() {
   }
   instancedMesh.instanceMatrix.needsUpdate = true;
 
-  // Particle color: rgb(227, 227, 230)
-  const particleColor = new THREE.Color(227 / 255, 227 / 255, 230 / 255);
+  // Particle color: warm luminous golden pearl
+  const particleColor = new THREE.Color(0.96, 0.94, 0.90);
   const colorsArray = new Float32Array(particlesCount * 3);
   for (let i = 0; i < particlesCount; i++) {
     const idx = i * 3;
-    colorsArray[idx] = particleColor.r;
-    colorsArray[idx + 1] = particleColor.g;
-    colorsArray[idx + 2] = particleColor.b;
+    const brightness = 0.92 + Math.random() * 0.16;
+    colorsArray[idx] = Math.min(1, particleColor.r * brightness);
+    colorsArray[idx + 1] = Math.min(1, particleColor.g * brightness);
+    colorsArray[idx + 2] = Math.min(1, particleColor.b * brightness * 0.95);
   }
   instancedMesh.instanceColor = new THREE.InstancedBufferAttribute(colorsArray, 3);
   instancedMesh.instanceColor.needsUpdate = true;
   group.add(instancedMesh);
+
+  // Glowing Golden Orbital Rings (tightened for compact, elegant fit)
+  const orbitGroup = new THREE.Group();
+  scene.add(orbitGroup);
+
+  const ringGeo1 = new THREE.TorusGeometry(sphereRadius * 1.08, 0.0030, 16, 120);
+  const ringMat1 = new THREE.MeshBasicMaterial({
+    color: 0xffaa44,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    opacity: 0.85
+  });
+  const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
+  ring1.rotation.x = Math.PI * 0.38;
+  ring1.rotation.y = Math.PI * 0.12;
+  orbitGroup.add(ring1);
+
+  const ringGeo2 = new THREE.TorusGeometry(sphereRadius * 1.14, 0.0025, 16, 120);
+  const ringMat2 = new THREE.MeshBasicMaterial({
+    color: 0xff7722,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    opacity: 0.72
+  });
+  const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
+  ring2.rotation.x = -Math.PI * 0.32;
+  ring2.rotation.z = Math.PI * 0.36;
+  orbitGroup.add(ring2);
+
+  // Orbiting Metallic & Golden Satellite Orbs
+  const satelliteOrbs = [
+    {
+      mesh: new THREE.Mesh(
+        new THREE.SphereGeometry(0.028, 24, 24),
+        new THREE.MeshBasicMaterial({ color: 0xffdd88 })
+      ),
+      radius: sphereRadius * 1.08,
+      inclination: Math.PI * 0.38,
+      yaw: Math.PI * 0.12,
+      speed: 0.0016,
+      offset: 0
+    },
+    {
+      mesh: new THREE.Mesh(
+        new THREE.SphereGeometry(0.022, 24, 24),
+        new THREE.MeshBasicMaterial({ color: 0xe0e6ed })
+      ),
+      radius: sphereRadius * 1.08,
+      inclination: Math.PI * 0.38,
+      yaw: Math.PI * 0.12,
+      speed: 0.0016,
+      offset: Math.PI * 0.85
+    },
+    {
+      mesh: new THREE.Mesh(
+        new THREE.SphereGeometry(0.024, 24, 24),
+        new THREE.MeshBasicMaterial({ color: 0xffaa44 })
+      ),
+      radius: sphereRadius * 1.14,
+      inclination: -Math.PI * 0.32,
+      yaw: Math.PI * 0.36,
+      speed: -0.0012,
+      offset: 1.5
+    },
+    {
+      mesh: new THREE.Mesh(
+        new THREE.SphereGeometry(0.018, 24, 24),
+        new THREE.MeshBasicMaterial({ color: 0xffffff })
+      ),
+      radius: sphereRadius * 1.14,
+      inclination: -Math.PI * 0.32,
+      yaw: Math.PI * 0.36,
+      speed: -0.0012,
+      offset: 4.2
+    }
+  ];
+
+  satelliteOrbs.forEach(orb => orbitGroup.add(orb.mesh));
 
   // Renderer & Camera setup with extended canvas multiplier to avoid particle clipping
   const canvasMultiplier = 2.5;
@@ -396,6 +475,23 @@ function initHeroParticleSphere() {
     group.rotation.y = currentRot.x;
     group.rotation.x = currentRot.y;
     group.updateMatrixWorld(true);
+
+    // Orbit group rotation & dynamic satellite motions
+    orbitGroup.rotation.y = currentRot.x * 0.4;
+    orbitGroup.rotation.x = currentRot.y * 0.4;
+    orbitGroup.updateMatrixWorld(true);
+
+    const orbitV = new THREE.Vector3();
+    const axisX = new THREE.Vector3(1, 0, 0);
+    const axisY = new THREE.Vector3(0, 1, 0);
+    for (let k = 0; k < satelliteOrbs.length; k++) {
+      const orb = satelliteOrbs[k];
+      const theta = now * orb.speed + orb.offset;
+      orbitV.set(Math.cos(theta) * orb.radius, Math.sin(theta) * orb.radius, 0);
+      orbitV.applyAxisAngle(axisX, orb.inclination);
+      orbitV.applyAxisAngle(axisY, orb.yaw);
+      orb.mesh.position.copy(orbitV);
+    }
 
     // Particle repulsion physics
     const currentContainerW = container.clientWidth || 500;
