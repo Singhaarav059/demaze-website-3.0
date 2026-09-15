@@ -15,8 +15,6 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  max-width: 100vw;
 }
 
 body {
@@ -25,7 +23,6 @@ body {
   color: var(--color-text-body);
   line-height: 1.6;
   overflow-x: hidden;
-  max-width: 100vw;
   position: relative;
   min-height: 100vh;
 }
@@ -2065,222 +2062,76 @@ p {
 /* ==========================================================================
    Responsive Breakpoints
    ========================================================================== */
-/* Short-height screen optimization (1280x720, 1366x768, laptops with browser toolbars: 580px - 760px height) */
+/* Short-height screen optimization (1280x720, 1366x768, laptops with browser toolbars) */
 @media (max-height: 760px) and (min-width: 810px) {
   .site-header {
-    padding: 8px 0;
-  }
-  .nav-wrapper {
-    padding: 6px 14px 6px 20px;
-  }
-  .brand-logo-img {
-    height: 26px;
-  }
-  .nav-links {
-    gap: 20px;
-  }
-  .nav-link {
-    font-size: 0.88rem;
-    padding: 4px 0;
-  }
-  .header-actions .btn-olive {
-    padding: 7px 16px;
-    font-size: 0.82rem;
+    padding: 10px 0;
   }
   .hero-section-wrapper {
-    padding-top: 56px;
-    padding-bottom: 6px;
-    min-height: 100vh;
-    height: 100vh;
+    padding-top: 66px;
+    padding-bottom: 8px;
   }
   .hero-canvas-card {
-    padding: 14px clamp(20px, 3vw, 40px) 12px;
-    height: calc(100vh - 62px);
-    max-height: calc(100vh - 62px);
-    min-height: 0;
-    border-radius: 22px;
-  }
-  .hero-content-split {
-    align-items: center;
-  }
-  .hero-canvas-content {
-    max-width: clamp(340px, 34vw, 420px);
+    padding: 18px clamp(24px, 3.2vw, 42px) 14px;
+    height: calc(100dvh - 74px);
+    max-height: 650px;
+    border-radius: 24px;
   }
   .hero-eyebrow {
-    font-size: 0.68rem;
-    margin-bottom: 6px;
-    letter-spacing: 0.14em;
+    margin-bottom: 8px;
   }
   .hero-title {
-    font-size: clamp(1.75rem, 2.7vw, 2.35rem);
-    margin-bottom: 8px;
-    line-height: 1.08;
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    margin-bottom: 10px;
+    line-height: 1.06;
   }
   .hero-subtitle {
-    font-size: 0.82rem;
-    line-height: 1.4;
-    margin-bottom: 12px;
-    max-width: 380px;
+    font-size: 0.86rem;
+    line-height: 1.48;
+    margin-bottom: 16px;
   }
   .hero-cta-group {
-    gap: 8px;
+    gap: 10px;
   }
-  .btn-coral {
-    padding: 8px 18px;
-    font-size: 0.82rem;
-  }
-  .btn-outline-pill {
-    padding: 8px 18px;
-    font-size: 0.82rem;
+  .btn-coral, .btn-outline-pill {
+    padding: 9px 20px;
+    font-size: 0.86rem;
   }
   .hero-3d-experience-wrapper {
-    width: clamp(340px, 32vw, 420px);
-    height: 310px;
+    width: clamp(380px, 34vw, 450px);
+    height: clamp(340px, 46vh, 410px);
   }
   .hero-sphere-container {
-    width: clamp(210px, 19vw, 250px);
-    height: clamp(210px, 19vw, 250px);
+    width: clamp(230px, 20vw, 280px);
+    height: clamp(230px, 20vw, 280px);
   }
   .sphere-badge {
-    padding: 4px 10px;
-    gap: 6px;
+    padding: 5px 12px;
+    gap: 7px;
   }
   .badge-icon {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
   }
   .badge-icon svg {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
   }
   .badge-text strong {
-    font-size: 0.68rem;
+    font-size: 0.72rem;
   }
   .badge-text span {
-    font-size: 0.58rem;
-  }
-  .hero-static-rock-base {
-    bottom: 12px;
-    width: 96px;
-    height: 36px;
-  }
-  .rock-floor-glow {
-    width: 120px;
-    height: 18px;
+    font-size: 0.6rem;
   }
   .hero-script-callout {
-    bottom: 6px;
+    bottom: 8px;
     right: 14px;
   }
   .script-lines {
-    font-size: 1.35rem;
+    font-size: 1.6rem;
   }
   .script-swoosh {
-    width: 75px;
-  }
-}
-
-/* Ultra-compact viewport height (under 600px, e.g. 585px laptop screen) */
-@media (max-height: 600px) and (min-width: 810px) {
-  .site-header {
-    padding: 4px 0;
-  }
-  .nav-wrapper {
-    padding: 4px 12px 4px 16px;
-  }
-  .brand-logo-img {
-    height: 22px;
-  }
-  .nav-links {
-    gap: 16px;
-  }
-  .nav-link {
-    font-size: 0.82rem;
-  }
-  .header-actions .btn-olive {
-    padding: 5px 12px;
-    font-size: 0.78rem;
-  }
-  .hero-section-wrapper {
-    padding-top: 46px;
-    padding-bottom: 4px;
-    min-height: 100vh;
-    height: 100vh;
-  }
-  .hero-canvas-card {
-    height: calc(100vh - 50px);
-    max-height: calc(100vh - 50px);
-    padding: 8px 22px 6px;
-    border-radius: 18px;
-  }
-  .hero-canvas-content {
-    max-width: 380px;
-  }
-  .hero-eyebrow {
-    font-size: 0.64rem;
-    margin-bottom: 4px;
-  }
-  .hero-title {
-    font-size: clamp(1.45rem, 2.2vw, 1.95rem);
-    margin-bottom: 6px;
-  }
-  .hero-subtitle {
-    font-size: 0.78rem;
-    line-height: 1.35;
-    margin-bottom: 10px;
-    max-width: 360px;
-  }
-  .hero-cta-group {
-    gap: 6px;
-  }
-  .btn-coral, .btn-outline-pill {
-    padding: 6px 14px;
-    font-size: 0.78rem;
-  }
-  .hero-3d-experience-wrapper {
-    width: 330px;
-    height: 270px;
-  }
-  .hero-sphere-container {
-    width: 190px;
-    height: 190px;
-  }
-  .sphere-badge {
-    padding: 3px 8px;
-    gap: 5px;
-  }
-  .badge-icon {
-    width: 18px;
-    height: 18px;
-  }
-  .badge-icon svg {
-    width: 11px;
-    height: 11px;
-  }
-  .badge-text strong {
-    font-size: 0.64rem;
-  }
-  .badge-text span {
-    font-size: 0.54rem;
-  }
-  .hero-static-rock-base {
-    bottom: 8px;
-    width: 82px;
-    height: 30px;
-  }
-  .rock-floor-glow {
-    width: 100px;
-    height: 14px;
-  }
-  .hero-script-callout {
-    bottom: 4px;
-    right: 10px;
-  }
-  .script-lines {
-    font-size: 1.15rem;
-  }
-  .script-swoosh {
-    width: 65px;
+    width: 90px;
   }
 }
 
@@ -3379,40 +3230,44 @@ p {
   display: grid;
   grid-template-columns: 1fr 48px 1fr;
   align-items: center;
-  margin-bottom: 36px;
+  margin-bottom: 32px;
   position: relative;
 }
 
-.journey-card {
-  min-width: 0;
-  background: #ffffff;
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  padding: 22px 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-  transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-spring), border-color 0.3s ease;
-}
-
-.journey-card h4 {
-  font-family: var(--font-heading);
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  margin-bottom: 8px;
-  line-height: 1.3;
-}
-
-.journey-card p {
-  font-size: 0.88rem;
-  line-height: 1.55;
-  color: var(--color-text-body);
+@media (max-width: 768px) {
+  .journey-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 48px;
+    margin-bottom: 28px;
+  }
 }
 
 .journey-year-pill {
   font-family: var(--font-heading);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--color-primary);
+}
+
+.journey-item:nth-child(odd) .journey-year-pill {
+  text-align: right;
+  padding-right: 20px;
+}
+
+.journey-item:nth-child(even) .journey-year-pill {
+  text-align: left;
+  padding-left: 20px;
+  order: 3;
+}
+
+@media (max-width: 768px) {
+  .journey-item .journey-year-pill {
+    order: 1 !important;
+    text-align: left !important;
+    padding: 0 0 6px 0 !important;
+  }
 }
 
 .journey-dot-wrap {
@@ -3420,6 +3275,14 @@ p {
   align-items: center;
   justify-content: center;
   z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .journey-dot-wrap {
+    position: absolute;
+    left: 12px;
+    top: 6px;
+  }
 }
 
 .journey-dot {
@@ -3437,66 +3300,27 @@ p {
   background: var(--color-primary);
 }
 
-/* ODD items: Pill on Left (col 1), Dot in Center (col 2), Card on Right (col 3) */
-.journey-item:nth-child(odd) .journey-year-pill {
-  grid-column: 1;
-  grid-row: 1;
-  text-align: right;
-  padding-right: 28px;
+.journey-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-spring), border-color 0.3s ease;
 }
 
-.journey-item:nth-child(odd) .journey-dot-wrap {
-  grid-column: 2;
-  grid-row: 1;
+.journey-item:nth-child(even) .journey-card {
+  order: 1;
 }
 
 .journey-item:nth-child(odd) .journey-card {
-  grid-column: 3;
-  grid-row: 1;
-}
-
-/* EVEN items: Card on Left (col 1), Dot in Center (col 2), Pill on Right (col 3) */
-.journey-item:nth-child(even) .journey-card {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-.journey-item:nth-child(even) .journey-dot-wrap {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.journey-item:nth-child(even) .journey-year-pill {
-  grid-column: 3;
-  grid-row: 1;
-  text-align: left;
-  padding-left: 28px;
+  order: 3;
 }
 
 @media (max-width: 768px) {
-  .journey-item {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding-left: 48px;
-    margin-bottom: 28px;
-  }
-
-  .journey-item .journey-dot-wrap {
-    position: absolute;
-    left: 12px;
-    top: 6px;
-  }
-
-  .journey-item .journey-year-pill {
-    order: 1 !important;
-    text-align: left !important;
-    padding: 0 0 6px 0 !important;
-  }
-
-  .journey-item .journey-card {
+  .journey-card {
     order: 2 !important;
-    width: 100% !important;
+    width: 100%;
   }
 }
 
@@ -3504,6 +3328,21 @@ p {
   transform: translateY(-3px);
   box-shadow: var(--shadow-card-hover);
   border-color: rgba(255, 106, 42, 0.35);
+}
+
+.journey-card h4 {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--color-text-primary);
+}
+
+.journey-card p {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin: 0;
 }
 
 /* About Us: Bento Values Grid */
