@@ -1560,8 +1560,8 @@ function initScrollRevealStorytelling() {
       }
     });
   }, {
-    threshold: 0.12,
-    rootMargin: '0px 0px -30px 0px'
+    threshold: 0.05,
+    rootMargin: '40px 0px -10px 0px'
   });
 
   elements.forEach(el => {
