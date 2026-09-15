@@ -15,6 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initFilterTabs();
   initIndustriesTabs();
   initDroneCurtainTransition();
+  initScrollRevealStorytelling();
+  initAnimatedCounters();
+  initInteractiveContactForm();
+  initCardTiltMicroInteractions();
 });
 
 /* ==========================================================================
@@ -1206,16 +1210,25 @@ function initFilterTabs() {
   filterContainers.forEach(container => {
     const buttons = container.querySelectorAll('.filter-btn');
     buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        // If it's an anchor link hash on services page, allow anchor behavior
+        const href = btn.getAttribute('href');
+        if (href && href.startsWith('#')) return;
+
+        e.preventDefault();
         buttons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const category = btn.getAttribute('data-category');
-        const cards = document.querySelectorAll('.blog-card, .pricing-card, .project-card');
+        const cards = document.querySelectorAll('.blog-card, .pricing-card, .project-card, .project-showcase-card');
         cards.forEach(card => {
-          const cardCat = card.getAttribute('data-category');
-          if (!category || category === 'all' || !cardCat || cardCat === category || cardCat.includes(category)) {
+          const cardCat = card.getAttribute('data-category') || '';
+          if (!category || category === 'all' || cardCat.includes(category)) {
+            card.classList.remove('is-hidden');
             card.style.display = '';
+            // Trigger quick re-reveal
+            setTimeout(() => card.classList.add('is-revealed'), 50);
           } else {
+            card.classList.add('is-hidden');
             card.style.display = 'none';
           }
         });
@@ -1513,4 +1526,188 @@ function initDroneCurtainTransition() {
   window.addEventListener('resize', updateDims);
   document.addEventListener('visibilitychange', requestTick);
 }
+
+/* ==========================================================================
+   Storytelling Scroll Reveal Engine
+   ========================================================================== */
+function initScrollRevealStorytelling() {
+  const elements = document.querySelectorAll(`
+    .scroll-reveal, 
+    .scroll-reveal-left, 
+    .scroll-reveal-right, 
+    .stagger-group,
+    .section-header,
+    .service-sticky-card,
+    .featured-project-card,
+    .project-showcase-card,
+    .why-card,
+    .value-card,
+    .how-card,
+    .stat-ribbon-card,
+    .journey-item,
+    .bento-value-card,
+    .contact-info-card,
+    .contact-form-card
+  `);
+
+  if (!elements.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.12,
+    rootMargin: '0px 0px -30px 0px'
+  });
+
+  elements.forEach(el => {
+    if (!el.classList.contains('scroll-reveal') && !el.classList.contains('scroll-reveal-left') && !el.classList.contains('scroll-reveal-right') && !el.classList.contains('stagger-group')) {
+      el.classList.add('scroll-reveal');
+    }
+    observer.observe(el);
+  });
+}
+
+/* ==========================================================================
+   Animated Numeric Counters
+   ========================================================================== */
+function initAnimatedCounters() {
+  const counterEls = document.querySelectorAll('[data-counter]');
+  if (!counterEls.length) return;
+
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        counterObserver.unobserve(el);
+
+        const target = parseFloat(el.getAttribute('data-counter'));
+        const prefix = el.getAttribute('data-prefix') || '';
+        const suffix = el.getAttribute('data-suffix') || '';
+        const duration = 1500;
+        const startTime = performance.now();
+
+        function updateCount(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(1, elapsed / duration);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const currentVal = Math.floor(eased * target);
+
+          el.textContent = `${prefix}${currentVal}${suffix}`;
+
+          if (progress < 1) {
+            requestAnimationFrame(updateCount);
+          } else {
+            el.textContent = `${prefix}${target}${suffix}`;
+          }
+        }
+
+        requestAnimationFrame(updateCount);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  counterEls.forEach(el => counterObserver.observe(el));
+}
+
+/* ==========================================================================
+   Interactive Contact Form Studio
+   ========================================================================== */
+function initInteractiveContactForm() {
+  const form = document.getElementById('contact-form');
+  const subjectInput = document.getElementById('contact-subject');
+  const subjectBtns = document.querySelectorAll('[data-subject-pill]');
+  const budgetBtns = document.querySelectorAll('[data-budget-pill]');
+  const banner = document.querySelector('.form-success-banner');
+
+  if (subjectBtns.length && subjectInput) {
+    subjectBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        subjectBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        subjectInput.value = btn.getAttribute('data-subject-pill') || btn.textContent.trim();
+      });
+    });
+  }
+
+  if (budgetBtns.length) {
+    const budgetInput = document.getElementById('contact-budget');
+    budgetBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        budgetBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (budgetInput) budgetInput.value = btn.getAttribute('data-budget-pill') || btn.textContent.trim();
+      });
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Transmitting Inquiry...';
+      }
+
+      setTimeout(() => {
+        if (banner) {
+          banner.classList.add('is-visible');
+        }
+        form.reset();
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `Submit Inquiry <svg class="btn-arrow" viewBox="0 0 16 16" fill="none"><path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+        }
+        setTimeout(() => {
+          if (banner) banner.classList.remove('is-visible');
+        }, 6000);
+      }, 600);
+    });
+  }
+}
+
+/* ==========================================================================
+   Micro-Interaction: Subtle 3D Card Tilt on Hover
+   ========================================================================== */
+function initCardTiltMicroInteractions() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth < 992) return;
+
+  const tiltCards = document.querySelectorAll('.project-showcase-card, .stat-ribbon-card, .bento-value-card');
+  tiltCards.forEach(card => {
+    let bounds;
+
+    function onMouseEnter() {
+      bounds = card.getBoundingClientRect();
+      card.style.transition = 'transform 0.1s ease, box-shadow 0.25s ease';
+    }
+
+    function onMouseMove(e) {
+      if (!bounds) bounds = card.getBoundingClientRect();
+      const mouseX = e.clientX - bounds.left;
+      const mouseY = e.clientY - bounds.top;
+      const xPct = (mouseX / bounds.width - 0.5) * 2;
+      const yPct = (mouseY / bounds.height - 0.5) * 2;
+
+      const rotateX = (-yPct * 3.5).toFixed(2);
+      const rotateY = (xPct * 3.5).toFixed(2);
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+    }
+
+    function onMouseLeave() {
+      card.style.transition = 'transform 0.4s var(--ease-spring), box-shadow 0.4s ease';
+      card.style.transform = '';
+      bounds = null;
+    }
+
+    card.addEventListener('mouseenter', onMouseEnter);
+    card.addEventListener('mousemove', onMouseMove);
+    card.addEventListener('mouseleave', onMouseLeave);
+  });
+}
+
 

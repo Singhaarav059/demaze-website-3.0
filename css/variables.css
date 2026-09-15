@@ -50,10 +50,23 @@
   --radius-xl: 32px;
   --radius-pill: 9999px;
 
-  /* Layout */
-  --max-width-container: 1200px;
-  --max-width-wide: 1440px;
-  --header-height: 80px;
+  /* Layout & Compact Spacing */
+  --max-width-container: 1180px;
+  --max-width-wide: 1380px;
+  --header-height: 72px;
+
+  /* Compact Typography Scales (Calibrated minimal agency standard) */
+  --font-size-hero: clamp(2rem, 3.6vw, 2.95rem);
+  --font-size-h1: clamp(1.85rem, 3.2vw, 2.65rem);
+  --font-size-h2: clamp(1.45rem, 2.2vw, 1.95rem);
+  --font-size-h3: clamp(1.08rem, 1.4vw, 1.25rem);
+  --font-size-body: 0.95rem;
+  --font-size-sm: 0.84rem;
+  --font-size-xs: 0.75rem;
+
+  /* Section Spacing */
+  --section-padding-y: clamp(52px, 6.8vh, 76px);
+  --section-padding-sm: clamp(36px, 4.5vh, 52px);
 
   /* Transitions */
   --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
