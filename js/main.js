@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   highlightActiveNavLink();
   initFilterTabs();
   initIndustriesTabs();
+  initDroneCurtainTransition();
 });
 
 /* ==========================================================================
@@ -1350,3 +1351,166 @@ function initIndustriesTabs() {
     });
   });
 }
+
+/* ==========================================================================
+   Drone Curtain Scroll Transition (Ascend Architecture Adapted)
+   ========================================================================== */
+function initDroneCurtainTransition() {
+  const stage = document.getElementById('hero-drone-stage');
+  const heroInner = document.getElementById('hero-section-inner');
+  const curtainFold = document.getElementById('curtain-fold-layer');
+  const curtainInner = document.getElementById('curtain-fold-inner');
+  const edgePath = document.getElementById('curtain-edge-path');
+  const cablePath = document.getElementById('drone-cable-path');
+  const droneFlyer = document.getElementById('drone-flyer');
+
+  if (!stage || !curtainFold || !droneFlyer || !cablePath) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  let rAF = 0;
+  let lastTime = 0;
+  let curProgress = 0;
+  let velocity = 0;
+
+  let winWidth = window.innerWidth;
+  let winHeight = window.innerHeight;
+  let stageTop = 0;
+  let maxScroll = 1;
+
+  const clamp = (v) => Math.max(0, Math.min(1, v));
+  const smoothstep = (v) => v * v * (3 - 2 * v);
+
+  const updateDims = () => {
+    winWidth = stage.clientWidth || window.innerWidth;
+    winHeight = window.innerHeight;
+    const rect = stage.getBoundingClientRect();
+    stageTop = rect.top + window.scrollY;
+    maxScroll = Math.max(1, stage.offsetHeight - winHeight);
+    requestTick();
+  };
+
+  const requestTick = () => {
+    if (!rAF && !document.hidden) {
+      rAF = requestAnimationFrame(onFrame);
+    }
+  };
+
+  const onFrame = (now) => {
+    rAF = 0;
+    const dt = Math.min((now - (lastTime || now)) / 1000, 0.032);
+    lastTime = now;
+
+    const targetProgress = clamp((window.scrollY - stageTop) / maxScroll);
+
+    if (prefersReduced.matches) {
+      curProgress = targetProgress;
+      velocity = 0;
+    } else {
+      velocity += ((targetProgress - curProgress) * 65 - 15 * velocity) * dt;
+      curProgress += velocity * dt;
+    }
+
+    const N = clamp(curProgress);
+    const k = smoothstep(clamp(N / 0.95));
+    const B = Math.sin(k * Math.PI); // bell curve (0 -> 1 -> 0)
+
+    // Aerodynamic idle sway & bob
+    const bob = prefersReduced.matches ? 0 : 5 * Math.sin(0.0024 * now) * (1 - k);
+    const sway = prefersReduced.matches ? 0 : 3 * Math.sin(0.0016 * now) * (1 - k);
+
+    // Drone flight path (starts hovering mid-right, climbs up and off-screen)
+    const droneX = winWidth * (0.64 - 0.12 * k) + Math.sin(6 * k) * winWidth * 0.018 + sway;
+    const initialY = winHeight * 0.52;
+    const droneY = initialY - winHeight * k * 1.15 + bob;
+    const droneWidth = Math.min(winWidth * (winWidth < 640 ? 0.44 : 0.22), 290);
+
+    // Curtain baseline position (moving upward from bottom of screen to top)
+    const baselineY = winHeight * (1.06 - 1.38 * k);
+    const pullDisplacement = 0.16 * winHeight * B;
+
+    // Cloth edge curve W(x) with Gaussian pull and wave flutter
+    const W = (x) => {
+      const s = (x - droneX) / winWidth;
+      return (
+        baselineY -
+        Math.exp(-s * s * 15) * pullDisplacement +
+        Math.sin(13 * s - 7 * k) * winHeight * 0.032 * B +
+        Math.sin(18 * s) * velocity * winHeight * 0.05 * B
+      );
+    };
+
+    // Build 64-segment path for cloth top edge
+    const points = [];
+    for (let i = 0; i <= 64; i++) {
+      const px = (winWidth * i) / 64;
+      points.push(`${i === 0 ? 'M' : 'L'} ${px.toFixed(2)} ${W(px).toFixed(2)}`);
+    }
+
+    const edgeD = points.join(' ');
+    const clipPathD = `${edgeD} L ${winWidth} ${winHeight + 10} L 0 ${winHeight + 10} Z`;
+
+    curtainFold.style.clipPath = `path('${clipPathD}')`;
+    if (edgePath) {
+      edgePath.setAttribute('d', edgeD);
+    }
+
+    // Dynamic cable connecting drone bottom hook to cloth apex
+    const droneHookY = droneY + 0.205 * droneWidth;
+    const clothApexY = W(droneX);
+    const cableSag = 16 * Math.sin(8 * k) * B + 35 * velocity + 2 * sway;
+
+    if (cablePath) {
+      cablePath.setAttribute(
+        'd',
+        `M ${droneX.toFixed(2)} ${droneHookY.toFixed(2)} C ${(droneX + cableSag).toFixed(2)} ${(droneHookY + (clothApexY - droneHookY) * 0.38).toFixed(2)}, ${(droneX - cableSag).toFixed(2)} ${(clothApexY - 45).toFixed(2)}, ${droneX.toFixed(2)} ${clothApexY.toFixed(2)}`
+      );
+    }
+
+    // Drone flight rotation & position
+    const tiltDeg = -(9 * velocity) + Math.sin(7 * k) * B * 3;
+    droneFlyer.style.width = `${droneWidth.toFixed(1)}px`;
+    droneFlyer.style.transform = `translate3d(${(droneX - droneWidth / 2).toFixed(2)}px, ${(droneY - 0.28 * droneWidth).toFixed(2)}px, 0) rotate(${tiltDeg.toFixed(2)}deg)`;
+
+    // Drone visibility activation: smoothly fades in when scrolling begins
+    if (N > 0.005) {
+      droneFlyer.classList.add('active');
+      droneFlyer.style.opacity = `${clamp(N * 8)}`;
+      if (edgePath) edgePath.style.opacity = `${clamp(N * 4) * 0.8}`;
+      if (cablePath) cablePath.style.opacity = `${clamp(N * 4) * 0.9}`;
+    } else {
+      droneFlyer.classList.remove('active');
+      droneFlyer.style.opacity = '0';
+      if (edgePath) edgePath.style.opacity = '0';
+      if (cablePath) cablePath.style.opacity = '0';
+    }
+
+    // Curtain content parallax translation
+    if (curtainInner) {
+      const innerShift = Math.max(0, baselineY * 0.25);
+      curtainInner.style.transform = `translate3d(0, ${innerShift.toFixed(2)}px, 0)`;
+    }
+
+    // Hero subtle fade and parallax response
+    if (heroInner) {
+      heroInner.style.opacity = `${1 - smoothstep(clamp((N - 0.1) / 0.35))}`;
+      heroInner.style.transform = `translateY(${(-80 * N).toFixed(2)}px)`;
+      heroInner.style.pointerEvents = N > 0.35 ? 'none' : 'auto';
+    }
+
+    // Keep loop active while animating or scrolling
+    if (
+      !document.hidden &&
+      ((!prefersReduced.matches && N > 0.0001 && N < 0.9999) ||
+        Math.abs(targetProgress - curProgress) > 0.0001)
+    ) {
+      requestTick();
+    }
+  };
+
+  updateDims();
+  window.addEventListener('scroll', requestTick, { passive: true });
+  window.addEventListener('resize', updateDims);
+  document.addEventListener('visibilitychange', requestTick);
+}
+

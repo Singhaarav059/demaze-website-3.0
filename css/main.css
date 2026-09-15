@@ -2678,3 +2678,208 @@ p {
   }
 }
 
+/* ==========================================================================
+   Hero Drone Curtain Pull Transition (Ascend Architecture Adapted)
+   ========================================================================== */
+.hero-drone-stage {
+  position: relative;
+  height: 250vh;
+  width: 100%;
+}
+
+.hero-drone-viewport {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+  z-index: 10;
+}
+
+#hero-section-inner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  will-change: transform, opacity;
+}
+
+.curtain-fold-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #fbf7f2;
+  color: var(--color-text);
+  z-index: 2;
+  clip-path: inset(100% 0 0);
+  will-change: clip-path;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 -18px 45px rgba(0, 0, 0, 0.08);
+}
+
+.curtain-fold-layer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(255, 106, 42, 0.04), transparent 60%);
+  pointer-events: none;
+}
+
+.curtain-fold-inner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(75px, 11vh, 105px) 4% clamp(20px, 4vh, 40px);
+  will-change: transform;
+}
+
+.curtain-header {
+  text-align: center;
+  margin-bottom: clamp(20px, 3.5vh, 36px);
+}
+
+.curtain-title {
+  font-size: clamp(2rem, 3.8vw, 3.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.curtain-subtitle {
+  font-size: clamp(0.9375rem, 1.3vw, 1.125rem);
+  color: var(--color-text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.curtain-cta-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(20px, 3vh, 32px);
+}
+
+.drone-physics-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.drone-flyer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 270px;
+  pointer-events: none;
+  z-index: 4;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.22));
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+}
+
+.drone-flyer.active {
+  opacity: 1;
+}
+
+.drone-flyer .drone-body-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.drone-rotors-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.rotor-spin,
+.rotor-reverse {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  animation: drone-rotor-turn 85ms linear infinite;
+}
+
+.rotor-reverse {
+  animation-duration: 95ms;
+  animation-direction: reverse;
+}
+
+@keyframes drone-rotor-turn {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (max-width: 991px) {
+  .hero-drone-stage {
+    height: 220vh;
+  }
+  .drone-flyer {
+    width: 220px;
+  }
+  .curtain-fold-inner {
+    padding-top: 60px;
+    padding-bottom: 30px;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-drone-stage {
+    height: 200vh;
+  }
+  .drone-flyer {
+    width: 170px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-drone-stage {
+    height: auto !important;
+  }
+  .hero-drone-viewport {
+    position: static !important;
+    height: auto !important;
+  }
+  #hero-section-inner {
+    position: static !important;
+  }
+  .curtain-fold-layer {
+    position: static !important;
+    clip-path: none !important;
+  }
+  .curtain-fold-inner {
+    position: static !important;
+    transform: none !important;
+  }
+  .drone-flyer,
+  .drone-physics-svg {
+    display: none !important;
+  }
+  .rotor-spin,
+  .rotor-reverse {
+    animation: none !important;
+  }
+}
+
+
