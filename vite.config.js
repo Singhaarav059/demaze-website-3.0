@@ -9,7 +9,6 @@ export default defineConfig({
         about: resolve(__dirname, 'about-us.html'),
         services: resolve(__dirname, 'services.html'),
         projects: resolve(__dirname, 'projects.html'),
-        blog: resolve(__dirname, 'blog.html'),
         contact: resolve(__dirname, 'contact-us.html'),
         privacy: resolve(__dirname, 'privacy-policy.html'),
         terms: resolve(__dirname, 'terms-of-use.html'),

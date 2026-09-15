@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initBackToTop();
   highlightActiveNavLink();
   initFilterTabs();
+  initIndustriesTabs();
 });
 
 /* ==========================================================================
@@ -1222,5 +1223,130 @@ function initFilterTabs() {
   });
 }
 
+/* ==========================================================================
+   Demaze 19 Industries Interactive Progressive Disclosure
+   ========================================================================== */
+function initIndustriesTabs() {
+  const navItems = document.querySelectorAll('.industry-nav-item');
+  const displayCard = document.querySelector('.industry-display-card');
+  if (!navItems.length || !displayCard) return;
 
+  const industriesData = {
+    'healthcare': {
+      title: 'Healthcare & Life Sciences',
+      desc: 'Architecting HIPAA-compliant clinical platforms, AI patient triage assistants, diagnostic intelligence models, and medical practice workflow automation.',
+      capabilities: ['AI Triage Assistant', 'Clinical NLP Extraction', 'Symptom Verification', 'HIPAA Secure Storage', 'Telehealth Systems']
+    },
+    'fintech': {
+      title: 'Fintech & Digital Banking',
+      desc: 'Engineering high-throughput transaction processing, AI fraud prevention engines, regulatory compliance automation, and algorithmic underwriting.',
+      capabilities: ['Real-Time Fraud Detection', 'Cross-Border Rails', 'Automated KYC/AML', 'Algorithmic Underwriting', 'High-Speed Ledgers']
+    },
+    'logistics': {
+      title: 'Logistics & Supply Chain',
+      desc: 'Deploying autonomous dispatch algorithms, route optimization engines, cold-chain telemetry monitoring, and multi-hub inventory reconciliation.',
+      capabilities: ['Route Optimization', 'Fleet Telematics', 'Predictive Restocking', 'Warehouse OS Integration', 'Dynamic Dispatch']
+    },
+    'retail': {
+      title: 'Modern Retail & Omnichannel',
+      desc: 'Unifying physical and online point-of-sale systems, dynamic inventory allocation, automated vendor sync, and customer lifetime value prediction.',
+      capabilities: ['Omnichannel Sync', 'Smart POS Integration', 'Inventory Allocation', 'Predictive Restocking', 'Vendor Dashboards']
+    },
+    'ecommerce': {
+      title: 'E-commerce & Marketplaces',
+      desc: 'Powering high-conversion multi-vendor marketplaces with AI visual search, live commerce streaming, personalized recommendations, and instant checkout.',
+      capabilities: ['AI Personalization', 'Multi-Vendor Gateways', 'Live Video Shopping', 'Dynamic Pricing Engine', 'Automated Cataloging']
+    },
+    'education': {
+      title: 'Education & EdTech',
+      desc: 'Building adaptive learning platforms, automated grading assistants, interactive virtual classrooms, and predictive student progress analytics.',
+      capabilities: ['Adaptive Learning AI', 'Automated Grading', 'Virtual Classroom Hubs', 'Student Retention Analytics', 'Curriculum Mapping']
+    },
+    'bfsi': {
+      title: 'BFSI & Wealth Management',
+      desc: 'Enterprise financial software with institutional security, automated wealth advisory engines, audit trails, and automated regulatory reporting.',
+      capabilities: ['Wealth Advisory Portals', 'Automated Compliance', 'Risk Estimation Models', 'Institutional Security', 'Auditing Pipelines']
+    },
+    'gaming': {
+      title: 'Sports, Gaming & Esports',
+      desc: 'Ultra-low latency streaming architectures, real-time player telemetry, fantasy sports tournament backends, and community engagement engines.',
+      capabilities: ['Player Telemetry', 'Fantasy League Engines', 'Sub-Second Live Streaming', 'Fan Engagement Hubs', 'Leaderboard Scaling']
+    },
+    'energy': {
+      title: 'Energy & Utilities',
+      desc: 'Smart grid IoT data ingestion, equipment failure prediction, utility consumption forecasting, and enterprise billing synchronization.',
+      capabilities: ['Predictive Maintenance', 'IoT Sensor Ingestion', 'Consumption Forecasting', 'Automated Utility Billing', 'Grid Telemetry']
+    },
+    'realestate': {
+      title: 'Real Estate & PropTech',
+      desc: 'AI property valuation algorithms, virtual staging pipelines, tenant management portals, and automated digital lease execution workflows.',
+      capabilities: ['AI Valuation Models', 'Virtual Staging Pipelines', 'Tenant Portals', 'Automated Lease Signing', 'Property Search API']
+    },
+    'media': {
+      title: 'Media & Entertainment',
+      desc: 'Generative AI script-to-storyboard pipelines, automated multi-language transcription, digital asset management, and high-concurrency video delivery.',
+      capabilities: ['Script-to-Storyboard GenAI', 'Speech-to-Text Transcription', 'Digital Rights Management', 'Adaptive Video Delivery', 'Asset Cataloging']
+    },
+    'saas': {
+      title: 'SaaS & Enterprise Products',
+      desc: 'Cloud-native multi-tenant SaaS platforms featuring automated self-serve onboarding, usage-based billing, role-based security, and extensible APIs.',
+      capabilities: ['Multi-Tenant Core', 'Usage-Based Billing', 'Role-Based Access Control', 'Developer API Gateways', 'Analytics Dashboards']
+    },
+    'automotive': {
+      title: 'Automotive & Dealership OS',
+      desc: 'Enterprise operating systems for luxury dealerships, automating used car valuation, instant EMI financing calculation, and workshop refurbishment.',
+      capabilities: ['Used Car Valuation AI', 'Instant Financing/EMI', 'Refurbishment Tracker', 'Lead Management Backend', 'DMS System Sync']
+    },
+    'food': {
+      title: 'Food, Beverage & Hospitality',
+      desc: 'Kitchen display systems, cold-chain temperature telemetry, customer loyalty mobile applications, and automated restaurant reservations.',
+      capabilities: ['Kitchen Display Systems', 'Cold-Chain Monitoring', 'Loyalty Mobile Apps', 'Dynamic Table Reservation', 'Supply Tracking']
+    },
+    'legal': {
+      title: 'LegalTech & Professional Services',
+      desc: 'Secure case management platforms for legal teams and investigators, featuring AI speech transcription, document indexing, and automated deposits.',
+      capabilities: ['Case Media Vault', 'AI Audio Transcription', 'Document Automation', 'Retainer Auto-Deposit', 'Evidence Chain Tracking']
+    },
+    'hr': {
+      title: 'Human Resources & Talent',
+      desc: 'Intelligent candidate matching, resume parsing pipelines, onboarding automation, and organizational sentiment and retention analytics.',
+      capabilities: ['AI Resume Screening', 'Candidate Matching', 'Onboarding Workflows', 'Sentiment Analytics', 'Performance Reviews']
+    },
+    'insurance': {
+      title: 'Insurance & InsurTech',
+      desc: 'Automated claim adjudication pipelines, digital policy administration, risk scoring engines, and instant automated payouts.',
+      capabilities: ['Claims Adjudication', 'Policy Administration', 'Risk Scoring Models', 'Parametric Payouts', 'Fraud Screening']
+    },
+    'social': {
+      title: 'Social Commerce & Influencer Tech',
+      desc: 'Merging social discovery with instant commerce, enabling live streaming shopping, creator affiliate tracking, and friction-free social checkout.',
+      capabilities: ['Live Stream Selling', 'Creator Attribution', 'Social Feed Tagging', 'In-App 1-Click Buy', 'Micro-Storefronts']
+    },
+    'manufacturing': {
+      title: 'Manufacturing & B2B Industry',
+      desc: 'Industrial IoT predictive maintenance, supply chain procurement automation, factory floor visualization, and legacy ERP modernization.',
+      capabilities: ['Industrial IoT Telemetry', 'Predictive Failure AI', 'Procurement Automation', 'Legacy ERP Modernization', 'Quality Inspection']
+    }
+  };
 
+  const titleEl = displayCard.querySelector('.industry-display-title');
+  const descEl = displayCard.querySelector('.industry-display-desc');
+  const capsGrid = displayCard.querySelector('.industry-caps-grid');
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const key = item.getAttribute('data-industry');
+      const data = industriesData[key];
+      if (!data) return;
+
+      navItems.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+
+      if (titleEl) titleEl.textContent = data.title;
+      if (descEl) descEl.textContent = data.desc;
+      if (capsGrid) {
+        capsGrid.innerHTML = data.capabilities.map(cap => `<span class="industry-cap-chip">${cap}</span>`).join('');
+      }
+    });
+  });
+}
