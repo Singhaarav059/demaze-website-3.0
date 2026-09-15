@@ -27,7 +27,7 @@
   <!-- ==========================================================================
        Navigation Header
        ========================================================================== -->
-  <header class="site-header">
+  <header class="site-header site-header-dark">
     <div class="container-wide">
       <nav class="nav-wrapper">
         <a href="/" class="brand-logo" aria-label="Demaze Technologies Home">
@@ -82,7 +82,7 @@
         <section class="hero-section-wrapper" id="hero-section-inner">
           <div class="container-wide">
         <div class="hero-canvas-card">
-          <img src="/assets/images/demaze-hero-architectural-v2.jpg" alt="Demaze Architectural Scene" class="hero-canvas-bg">
+          <img src="/assets/images/demaze-hero-dark-cinematic.jpg" alt="Demaze Architectural Scene" class="hero-canvas-bg">
 
           <div class="hero-content-split">
             <!-- Left Column Content -->
@@ -97,7 +97,15 @@
                     <path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </a>
-                <a href="#featured-work" class="btn btn-outline-pill">Explore our work</a>
+                <a href="#featured-work" class="btn btn-dark-glass">Explore our work</a>
+              </div>
+
+              <!-- Editorial Accent Caption -->
+              <div class="hero-left-editorial" aria-hidden="true">
+                <div class="editorial-accent-bar"></div>
+                <p class="editorial-text">A MORE<br>INTELLIGENT<br>TOMORROW.</p>
+                <div class="editorial-divider"></div>
+                <p class="editorial-sub">BUILT<br>TOGETHER.</p>
               </div>
             </div>
 
@@ -137,7 +145,7 @@
 
               <!-- Center Brand Emblem inside Sphere -->
               <div class="sphere-center-emblem">
-                <img src="/assets/images/demaze-official-logo.png" alt="Demaze Technologies" style="height: 20px; width: auto; max-width: 95px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(255,255,255,0.7));">
+                <img src="/assets/images/demaze-official-logo.png" alt="Demaze Technologies" style="height: 20px; width: auto; max-width: 95px; object-fit: contain;">
               </div>
 
               <!-- Floating Glassmorphic Service Badges with Neural Node Connectors -->
@@ -226,26 +234,33 @@
                   <span class="connector-dot"></span>
                 </div>
               </div>
-
-              <!-- Terracotta Script Callout (Bottom-Right) -->
-              <div class="hero-script-callout">
-                <div class="script-lines">
-                  <span>A smarter</span>
-                  <span>digital future</span>
-                  <span class="script-highlight">starts here.</span>
-                </div>
-                <div class="script-swoosh"></div>
-              </div>
             </div>
           </div>
 
-          <!-- Independent Static Natural Rock Base on the Floor (Never floats or moves) -->
+          <!-- Vertical Scroll to Explore Indicator -->
+          <div class="hero-scroll-indicator" aria-hidden="true">
+            <div class="scroll-label">SCROLL<br>TO<br>EXPLORE</div>
+            <div class="scroll-track">
+              <div class="scroll-bar"></div>
+            </div>
+          </div>
+
+          <!-- Bottom Navigation / Pagination Indicator -->
+          <div class="hero-bottom-bar">
+            <div class="hero-pagination-indicator">
+              <span class="page-current">01</span>
+              <span class="page-sep">—</span>
+              <span class="page-total">/ 06</span>
+            </div>
+          </div>
+
+          <!-- Static Natural Rock Landing Nexus in the center of the rock -->
           <div class="hero-static-rock-base" id="hero-rock-pedestal">
-            <div class="rock-floor-glow"></div>
-            <div class="rock-glowing-ring"></div>
-            <img src="/assets/images/hero-moss-rock.png" alt="Natural Foundation Stone" class="rock-image">
             <div class="rock-neural-landing" id="rock-landing-target"></div>
           </div>
+
+          <!-- Floor Outer Ring Glow (Synchronized with Sphere Glow) -->
+          <div class="hero-floor-outer-ring" id="hero-floor-outer-ring" aria-hidden="true"></div>
         </div>
       </div>
     </section>

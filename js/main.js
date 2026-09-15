@@ -818,38 +818,78 @@ function initNeuralNervousSystem() {
   const badges = Array.from(wrapper.querySelectorAll('.sphere-badge[data-service]'));
   if (badges.length === 0) return;
 
-  // Align the static floor rock precisely on the sphere's vertical axis and anchor under sphere with natural air gap
-  function alignRockUnderSphere() {
-    if (!rockPedestal || !sphereContainer || !heroCard || !wrapper) return;
+  // Architectural chamber alignment: centers sphere and rock pedestal directly on the background oculus & stone
+  function alignHeroArchitecture() {
+    if (!heroCard || !wrapper || !sphereContainer) return;
     const cardRect = heroCard.getBoundingClientRect();
-    const sphereRect = sphereContainer.getBoundingClientRect();
+    const split = document.querySelector('.hero-content-split');
+    const splitRect = split ? split.getBoundingClientRect() : cardRect;
 
-    // Center rock horizontally under sphere
-    const sphereCenterX = (sphereRect.left + sphereRect.width / 2) - cardRect.left;
-    rockPedestal.style.left = `${sphereCenterX.toFixed(1)}px`;
-
-    // Account for current floatingBrain translateY transform on wrapper to anchor to baseline
-    let currentWrapperFloatY = 0;
-    const matrix = window.getComputedStyle(wrapper).transform;
-    if (matrix && matrix !== 'none') {
-      const values = matrix.split('(')[1].split(')')[0].split(',');
-      currentWrapperFloatY = parseFloat(values[5] || values[13] || 0);
+    const imgAspect = 16 / 9;
+    const cardAspect = cardRect.width / cardRect.height;
+    let renderedW, renderedH, offsetX, offsetY;
+    if (cardAspect >= imgAspect) {
+      renderedW = cardRect.width;
+      renderedH = cardRect.width / imgAspect;
+      offsetX = 0;
+      offsetY = cardRect.height - renderedH;
+    } else {
+      renderedH = cardRect.height;
+      renderedW = cardRect.height * imgAspect;
+      offsetX = (cardRect.width - renderedW) / 2;
+      offsetY = 0;
     }
 
-    const baselineSphereTop = sphereRect.top - currentWrapperFloatY;
-    const sphereRadius = (sphereRect.width / 2) * 0.90;
-    const baselineSphereCenterY = (baselineSphereTop + sphereRect.height / 2) - cardRect.top;
-    const baselineSphereBottom = baselineSphereCenterY + sphereRadius;
+    // In the architectural background render:
+    // The ceiling oculus, stone pedestal, and glowing ring center is at X = 68.8%
+    const rockCenterX = offsetX + renderedW * 0.688;
+    // The top surface center of the stone pedestal is at Y = 74.5%
+    const rockTopY = offsetY + renderedH * 0.745;
 
-    // Subtle natural air gap between floating sphere bottom and rock base (~44-48px)
-    const airGap = Math.max(40, Math.min(48, cardRect.height * 0.062));
-    const rockHeight = rockPedestal.offsetHeight || 46;
-    const idealRockTop = baselineSphereBottom + airGap;
-    const maxRockTop = cardRect.height - rockHeight - 16;
-    const targetRockTop = Math.min(idealRockTop, maxRockTop);
+    if (window.innerWidth > 991) {
+      const wrapperW = wrapper.offsetWidth;
+      const rightMargin = (cardRect.right - rockCenterX) - (wrapperW / 2) - (cardRect.right - splitRect.right);
+      wrapper.style.marginRight = `${Math.max(0, rightMargin).toFixed(1)}px`;
 
-    rockPedestal.style.top = `${targetRockTop.toFixed(1)}px`;
-    rockPedestal.style.bottom = 'auto';
+      if (rockPedestal) {
+        rockPedestal.style.left = `${rockCenterX.toFixed(1)}px`;
+        rockPedestal.style.top = `${rockTopY.toFixed(1)}px`;
+        rockPedestal.style.bottom = 'auto';
+        rockPedestal.style.transform = 'translate(-50%, -50%)';
+      }
+    } else {
+      wrapper.style.marginRight = 'auto';
+      if (rockPedestal) {
+        rockPedestal.style.left = '50%';
+        rockPedestal.style.top = 'auto';
+        rockPedestal.style.bottom = 'clamp(40px, 6vh, 60px)';
+        rockPedestal.style.transform = 'translate(-50%, 0)';
+      }
+    }
+
+    // Position outer floor ring directly over the outer ring in the architectural background
+    const outerRing = document.getElementById('hero-floor-outer-ring');
+    if (outerRing) {
+      if (window.innerWidth > 991) {
+        const floorRingY = offsetY + renderedH * 0.835;
+        const ringW = renderedW * 0.43;
+        const ringH = renderedH * 0.13;
+        outerRing.style.left = `${rockCenterX.toFixed(1)}px`;
+        outerRing.style.top = `${floorRingY.toFixed(1)}px`;
+        outerRing.style.width = `${ringW.toFixed(1)}px`;
+        outerRing.style.height = `${ringH.toFixed(1)}px`;
+        outerRing.style.transform = 'translate(-50%, -50%)';
+        outerRing.style.display = 'block';
+      } else {
+        outerRing.style.left = '50%';
+        outerRing.style.bottom = 'clamp(20px, 4vh, 40px)';
+        outerRing.style.top = 'auto';
+        outerRing.style.width = 'clamp(240px, 75vw, 320px)';
+        outerRing.style.height = 'clamp(50px, 15vw, 75px)';
+        outerRing.style.transform = 'translate(-50%, 0)';
+        outerRing.style.display = 'block';
+      }
+    }
   }
 
   // Active neural pathway data for service endpoints
@@ -866,20 +906,20 @@ function initNeuralNervousSystem() {
     { startProgress: 0.62, speed: 0.0033 }  // E-commerce
   ];
 
-  // 5 Organic root tendril definitions connecting floating sphere to stationary rock
+  // 5 Organic root tendril definitions connecting floating sphere to the exact center of the rock
   const rootConfigs = [
-    { startProgress: 0.10, speed: 0.0042, dxStart: 0,   dxEnd: 0,   cpX1: -4, cpX2: 4,   tailLen: 12 }, // Central taproot
-    { startProgress: 0.46, speed: 0.0036, dxStart: -12, dxEnd: -18, cpX1: -16, cpX2: -10, tailLen: 10 }, // Left inner root
-    { startProgress: 0.82, speed: 0.0039, dxStart: 12,  dxEnd: 18,  cpX1: 16,  cpX2: 10,  tailLen: 10 }, // Right inner root
-    { startProgress: 0.28, speed: 0.0032, dxStart: -26, dxEnd: -36, cpX1: -32, cpX2: -26, tailLen: 9 },  // Left outer tendril
-    { startProgress: 0.64, speed: 0.0034, dxStart: 26,  dxEnd: 36,  cpX1: 32,  cpX2: 26,  tailLen: 9 }   // Right outer tendril
+    { startProgress: 0.10, speed: 0.0042, dxStart: 0,   dxEnd: 0,  cpX1: -6,  cpX2: 2,   tailLen: 12 }, // Central taproot
+    { startProgress: 0.46, speed: 0.0036, dxStart: -16, dxEnd: -3, cpX1: -22, cpX2: -5,  tailLen: 10 }, // Left inner root
+    { startProgress: 0.82, speed: 0.0039, dxStart: 16,  dxEnd: 3,  cpX1: 22,  cpX2: 5,   tailLen: 10 }, // Right inner root
+    { startProgress: 0.28, speed: 0.0032, dxStart: -32, dxEnd: -6, cpX1: -36, cpX2: -8,  tailLen: 9 },  // Left outer tendril
+    { startProgress: 0.64, speed: 0.0034, dxStart: 32,  dxEnd: 6,  cpX1: 36,  cpX2: 8,   tailLen: 9 }   // Right outer tendril
   ];
 
   let sphereCenter = { x: 330, y: 290 };
   let sphereRadius = 171;
 
   function buildAllNeuralPathways() {
-    alignRockUnderSphere();
+    alignHeroArchitecture();
 
     pathsGroup.innerHTML = '';
     signalsGroup.innerHTML = '';
@@ -978,26 +1018,26 @@ function initNeuralNervousSystem() {
       });
     });
 
-    // 2. Build Neural Roots (Sphere Bottom -> Stationary Rock Foundation)
+    // 2. Build Neural Roots (Sphere Bottom -> Exactly Centered Rock Foundation)
     if (rockPedestal && rootsGroup) {
       const rockRect = rockPedestal.getBoundingClientRect();
-      const rockTopX = (rockRect.left + rockRect.width / 2) - wrapRect.left;
-      const rockTopY = (rockRect.top + 8) - wrapRect.top;
+      const rockCenterX = (rockRect.left + rockRect.width / 2) - wrapRect.left;
+      const rockCenterY = (rockRect.top + rockRect.height / 2) - wrapRect.top;
 
       const sphereBottomX = sphereCenter.x;
       const sphereBottomY = sphereCenter.y + sphereRadius;
-      const dy = rockTopY - sphereBottomY;
+      const dy = rockCenterY - sphereBottomY;
 
       rootConfigs.forEach((cfg) => {
         const sX = sphereBottomX + cfg.dxStart;
         const sY = sphereBottomY;
-        const tX = rockTopX + cfg.dxEnd;
-        const tY = rockTopY;
+        const tX = rockCenterX + cfg.dxEnd;
+        const tY = rockCenterY;
 
         const cp1X = sX + cfg.cpX1;
-        const cp1Y = sY + dy * 0.38;
+        const cp1Y = sY + dy * 0.42;
         const cp2X = tX + cfg.cpX2;
-        const cp2Y = tY - dy * 0.32;
+        const cp2Y = tY - dy * 0.28;
 
         const d = `M ${sX.toFixed(1)} ${sY.toFixed(1)} C ${cp1X.toFixed(1)} ${cp1Y.toFixed(1)}, ${cp2X.toFixed(1)} ${cp2Y.toFixed(1)}, ${tX.toFixed(1)} ${tY.toFixed(1)}`;
         const rootPathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -1088,23 +1128,23 @@ function initNeuralNervousSystem() {
     if (rockPedestal && rootPathways.length > 0) {
       const wrapRect = wrapper.getBoundingClientRect();
       const rockRect = rockPedestal.getBoundingClientRect();
-      const currentRockTopX = (rockRect.left + rockRect.width / 2) - wrapRect.left;
-      const currentRockTopY = (rockRect.top + 8) - wrapRect.top;
+      const currentRockCenterX = (rockRect.left + rockRect.width / 2) - wrapRect.left;
+      const currentRockCenterY = (rockRect.top + rockRect.height / 2) - wrapRect.top;
       const sphereBottomX = sphereCenter.x;
       const sphereBottomY = sphereCenter.y + sphereRadius;
-      const dy = currentRockTopY - sphereBottomY;
+      const dy = currentRockCenterY - sphereBottomY;
 
       rootPathways.forEach((rPath) => {
         const cfg = rPath.cfg;
         const sX = sphereBottomX + cfg.dxStart;
         const sY = sphereBottomY;
-        const tX = currentRockTopX + cfg.dxEnd;
-        const tY = currentRockTopY;
+        const tX = currentRockCenterX + cfg.dxEnd;
+        const tY = currentRockCenterY;
 
         const cp1X = sX + cfg.cpX1;
-        const cp1Y = sY + dy * 0.38;
+        const cp1Y = sY + dy * 0.42;
         const cp2X = tX + cfg.cpX2;
-        const cp2Y = tY - dy * 0.32;
+        const cp2Y = tY - dy * 0.28;
 
         const d = `M ${sX.toFixed(1)} ${sY.toFixed(1)} C ${cp1X.toFixed(1)} ${cp1Y.toFixed(1)}, ${cp2X.toFixed(1)} ${cp2Y.toFixed(1)}, ${tX.toFixed(1)} ${tY.toFixed(1)}`;
         rPath.pathEl.setAttribute('d', d);
@@ -1167,6 +1207,16 @@ function initNeuralNervousSystem() {
             rockPedestal.classList.add('root-energy-pulse');
             setTimeout(() => {
               rockPedestal.classList.remove('root-energy-pulse');
+            }, 600);
+          }
+
+          const outerRing = document.getElementById('hero-floor-outer-ring');
+          if (outerRing) {
+            outerRing.classList.remove('energy-surge');
+            void outerRing.offsetWidth;
+            outerRing.classList.add('energy-surge');
+            setTimeout(() => {
+              outerRing.classList.remove('energy-surge');
             }, 600);
           }
 
