@@ -1330,41 +1330,47 @@ p {
 .service-sticky-card {
   position: sticky;
   width: 100%;
-  border-top-left-radius: 60px;
-  border-top-right-radius: 60px;
-  padding: 60px 48px;
-  margin-bottom: 24px;
-  min-height: 280px;
+  border-top-left-radius: 48px;
+  border-top-right-radius: 48px;
+  padding: clamp(28px, 4vh, 44px) clamp(24px, 3.5vw, 48px) clamp(24px, 3.5vh, 36px);
+  margin-bottom: clamp(100px, 18vh, 180px);
+  min-height: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.06);
+  opacity: 1 !important;
+  isolation: isolate;
   transition: transform 0.2s ease;
 }
 
+.service-sticky-card:last-child {
+  margin-bottom: 40px;
+}
+
 .service-sticky-card:nth-child(1) {
-  top: 130px;
+  top: clamp(74px, 10vh, 90px);
   z-index: 1;
   background-color: #ff6a2a;
   color: #ffffff;
 }
 
 .service-sticky-card:nth-child(2) {
-  top: 170px;
+  top: calc(clamp(74px, 10vh, 90px) + 24px);
   z-index: 2;
   background-color: #ff9c5e;
   color: #ffffff;
 }
 
 .service-sticky-card:nth-child(3) {
-  top: 210px;
+  top: calc(clamp(74px, 10vh, 90px) + 48px);
   z-index: 3;
   background-color: #ffe1d4;
   color: var(--color-text-primary);
 }
 
 .service-sticky-card:nth-child(4) {
-  top: 250px;
+  top: calc(clamp(74px, 10vh, 90px) + 72px);
   z-index: 4;
   background-color: #ffffff;
   color: var(--color-text-primary);
@@ -1376,15 +1382,16 @@ p {
 }
 
 .service-sticky-card h3 {
-  font-size: clamp(1.75rem, 3.2vw, 2.75rem);
-  font-weight: 600;
-  margin-bottom: 16px;
+  font-size: clamp(1.6rem, 2.8vw, 2.35rem);
+  font-weight: 700;
+  margin-bottom: 10px;
   color: inherit;
+  letter-spacing: -0.02em;
 }
 
 .service-sticky-card p {
-  font-size: 1.125rem;
-  line-height: 1.6;
+  font-size: clamp(0.92rem, 1.1vw, 1.05rem);
+  line-height: 1.55;
   color: inherit;
   opacity: 0.92;
 }
@@ -2366,7 +2373,7 @@ p {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 20px 0 24px;
+  margin: 12px 0 16px;
 }
 
 .service-cap-pill {

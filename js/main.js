@@ -1537,7 +1537,6 @@ function initScrollRevealStorytelling() {
     .scroll-reveal-right, 
     .stagger-group,
     .section-header,
-    .service-sticky-card,
     .featured-project-card,
     .project-showcase-card,
     .why-card,
