@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAnimatedCounters();
   initInteractiveContactForm();
   initCardTiltMicroInteractions();
+  initBentoTerminalSimulation();
 });
 
 /* ==========================================================================
@@ -1404,7 +1405,7 @@ function initDroneCurtainTransition() {
   };
 
   const requestTick = () => {
-    if (!rAF && !document.hidden) {
+    if (!rAF) {
       rAF = requestAnimationFrame(onFrame);
     }
   };
@@ -1513,9 +1514,8 @@ function initDroneCurtainTransition() {
 
     // Keep loop active while animating or scrolling
     if (
-      !document.hidden &&
-      ((!prefersReduced.matches && N > 0.0001 && N < 0.9999) ||
-        Math.abs(targetProgress - curProgress) > 0.0001)
+      (!prefersReduced.matches && N > 0.0001 && N < 0.9999) ||
+      Math.abs(targetProgress - curProgress) > 0.0001
     ) {
       requestTick();
     }
@@ -1677,7 +1677,7 @@ function initInteractiveContactForm() {
 function initCardTiltMicroInteractions() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth < 992) return;
 
-  const tiltCards = document.querySelectorAll('.project-showcase-card, .stat-ribbon-card, .bento-value-card');
+  const tiltCards = document.querySelectorAll('.tilt-card, [data-tilt], .featured-project-card, .project-showcase-card, .stat-ribbon-card, .bento-value-card');
   tiltCards.forEach(card => {
     let bounds;
 
@@ -1693,13 +1693,13 @@ function initCardTiltMicroInteractions() {
       const xPct = (mouseX / bounds.width - 0.5) * 2;
       const yPct = (mouseY / bounds.height - 0.5) * 2;
 
-      const rotateX = (-yPct * 3.5).toFixed(2);
-      const rotateY = (xPct * 3.5).toFixed(2);
+      const rotateX = (-yPct * 4).toFixed(2);
+      const rotateY = (xPct * 4).toFixed(2);
       card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
     }
 
     function onMouseLeave() {
-      card.style.transition = 'transform 0.4s var(--ease-spring), box-shadow 0.4s ease';
+      card.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease';
       card.style.transform = '';
       bounds = null;
     }
@@ -1709,5 +1709,57 @@ function initCardTiltMicroInteractions() {
     card.addEventListener('mouseleave', onMouseLeave);
   });
 }
+
+/* ==========================================================================
+   Bento Terminal Live Simulation Typewriter
+   ========================================================================== */
+function initBentoTerminalSimulation() {
+  const target = document.getElementById('terminal-live-typing');
+  if (!target) return;
+
+  const messages = [
+    'Deploying autonomous optimization agent to production...',
+    'Fine-tuning LoRA adapter for enterprise schema [Loss: 0.012]...',
+    'Indexing 1.2M vector embeddings into Pinecone index...',
+    'Routing multi-tenant workflow via distributed edge workers...',
+    'Synthesizing predictive forecasting model for Q4 pipeline...'
+  ];
+
+  let msgIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+  const typingSpeed = 38;
+
+  function typeStep() {
+    const currentMsg = messages[msgIndex];
+
+    if (!isDeleting) {
+      target.textContent = currentMsg.substring(0, charIndex + 1);
+      charIndex++;
+
+      if (charIndex === currentMsg.length) {
+        isDeleting = true;
+        setTimeout(typeStep, 2600); // pause at end of sentence
+        return;
+      }
+      setTimeout(typeStep, typingSpeed + Math.random() * 20);
+    } else {
+      target.textContent = currentMsg.substring(0, charIndex - 1);
+      charIndex--;
+
+      if (charIndex === 0) {
+        isDeleting = false;
+        msgIndex = (msgIndex + 1) % messages.length;
+        setTimeout(typeStep, 500); // pause before next message
+        return;
+      }
+      setTimeout(typeStep, 20);
+    }
+  }
+
+  // Start after small initial delay
+  setTimeout(typeStep, 1200);
+}
+
 
 
