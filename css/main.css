@@ -1162,11 +1162,15 @@ p {
 /* ==========================================================================
    Static Natural Rock Base (Roots converge into rock center)
    ========================================================================== */
+/* ==========================================================================
+   Static Natural Rock Base & Organic Branch Nexus
+   - The living organic branch emerges from the rock surface and anchors the sphere.
+   ========================================================================== */
 .hero-static-rock-base {
   position: absolute;
   left: 68.8%;
   transform: translate(-50%, -50%);
-  width: 24px;
+  width: 60px;
   height: 24px;
   z-index: 4;
   pointer-events: none;
@@ -1175,31 +1179,90 @@ p {
   justify-content: center;
 }
 
-/* Remove any glowing ring below the sphere */
+/* Remove any outdated glowing ring or rock image element */
 .rock-floor-glow,
 .rock-glowing-ring,
 .rock-image {
   display: none !important;
 }
 
-/* Neural Root Connection Center Nexus (Center of Rock) */
+/* Radiant Ambient Stone Energy Pool */
+.rock-energy-pool {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 52px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255, 175, 60, 0.45) 0%, rgba(255, 110, 30, 0.22) 55%, transparent 80%);
+  filter: blur(5px);
+  pointer-events: none;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+/* Primary Neural Rock Nexus (The luminous aperture where branch sprouts) */
 .rock-neural-landing {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 14px;
-  height: 14px;
+  width: 32px;
+  height: 13px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 230, 150, 0.95) 0%, rgba(255, 140, 40, 0.45) 60%, transparent 100%);
-  box-shadow: 0 0 14px rgba(255, 160, 60, 0.85);
+  background: radial-gradient(ellipse at center, rgba(255, 248, 215, 0.98) 0%, rgba(255, 165, 55, 0.8) 45%, rgba(255, 95, 30, 0.35) 75%, transparent 100%);
+  box-shadow: 0 0 16px rgba(255, 160, 50, 0.9), 0 0 32px rgba(255, 100, 30, 0.5);
   pointer-events: none;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.rock-neural-landing::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px #ffffff, 0 0 16px #ffbe45;
+}
+
+/* Organic Root Collar / Clasp at stone surface */
+.rock-root-collar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 235, 180, 0.75);
+  box-shadow: 0 0 10px rgba(255, 150, 40, 0.6);
+  pointer-events: none;
+  animation: rootCollarBreathe 4s ease-in-out infinite;
+}
+
+@keyframes rootCollarBreathe {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1.0);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 1.0;
+  }
 }
 
 .hero-static-rock-base.root-energy-pulse .rock-neural-landing {
-  transform: translate(-50%, -50%) scale(1.6);
-  box-shadow: 0 0 24px #ffa73b, 0 0 42px #ff7a3d;
+  transform: translate(-50%, -50%) scale(1.5);
+  box-shadow: 0 0 28px #ffa73b, 0 0 48px #ff7a3d, 0 0 70px rgba(255, 92, 43, 0.6);
+}
+
+.hero-static-rock-base.root-energy-pulse .rock-energy-pool {
+  transform: translate(-50%, -50%) scale(1.35);
+  opacity: 1;
 }
 
 /* ==========================================================================
@@ -1235,25 +1298,51 @@ p {
   filter: blur(16px);
 }
 
-/* Neural Roots SVG Paths */
-.neural-root-path {
+/* ==========================================================================
+   Organic Branch of the Sphere: Layered Volumetric SVG Paths
+   ========================================================================== */
+.neural-branch-aura {
   fill: none;
-  stroke: rgba(255, 160, 60, 0.76);
-  stroke-width: 2px;
+  stroke: rgba(255, 120, 30, 0.24);
   stroke-linecap: round;
-  filter: drop-shadow(0 0 5px rgba(255, 120, 30, 0.7)) drop-shadow(0 0 10px rgba(255, 170, 60, 0.45));
+  filter: drop-shadow(0 0 8px rgba(255, 110, 25, 0.45));
   transition: stroke 0.3s ease;
 }
 
+.neural-branch-body {
+  fill: none;
+  stroke: url(#branchGradient);
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(255, 140, 40, 0.6)) drop-shadow(0 0 12px rgba(255, 90, 25, 0.35));
+  transition: stroke 0.3s ease;
+}
+
+.neural-branch-core {
+  fill: none;
+  stroke: url(#branchCoreGrad);
+  stroke-linecap: round;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 3px #ffffff);
+  transition: opacity 0.3s ease;
+}
+
+.neural-root-path {
+  fill: none;
+  stroke: url(#branchGradient);
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(255, 140, 40, 0.6)) drop-shadow(0 0 12px rgba(255, 90, 25, 0.35));
+  transition: stroke 0.3s ease;
+}
+
+.neural-branch-body.active-pulse,
 .neural-root-path.active-pulse {
-  stroke: rgba(255, 230, 140, 1);
-  stroke-width: 2.8px;
-  filter: drop-shadow(0 0 10px #ffa73b) drop-shadow(0 0 18px #ff7a3d);
+  stroke: #ffe299 !important;
+  filter: drop-shadow(0 0 10px #ffa73b) drop-shadow(0 0 20px #ff7a3d);
 }
 
 .root-signal-orb {
   fill: #ffffff;
-  filter: drop-shadow(0 0 6px #ffbf47) drop-shadow(0 0 10px #ff7a3d);
+  filter: drop-shadow(0 0 6px #ffbf47) drop-shadow(0 0 12px #ff7a3d);
 }
 
 /* Terracotta Script Callout */
@@ -2398,6 +2487,9 @@ p {
     min-height: auto;
     max-height: none !important;
   }
+  .hero-canvas-bg {
+    object-position: 68.8% bottom;
+  }
   .hero-content-split {
     flex-direction: column;
     align-items: center;
@@ -2442,6 +2534,12 @@ p {
     height: 280px;
     margin: 24px auto 0 !important;
     align-self: center;
+  }
+  .hero-static-rock-base {
+    left: 50% !important;
+    bottom: clamp(140px, 20vh, 180px) !important;
+    top: auto !important;
+    transform: translate(-50%, 0) !important;
   }
   .hero-sphere-container {
     width: 185px !important;

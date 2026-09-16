@@ -857,12 +857,31 @@ function initNeuralNervousSystem() {
         rockPedestal.style.bottom = 'auto';
         rockPedestal.style.transform = 'translate(-50%, -50%)';
       }
+
+      // Exact vertical elevation calibration:
+      // Guarantee an elegant, distinct gap between sphere bottom and rock top so the branch is fully visible
+      const targetGap = Math.round(Math.max(62, Math.min(90, renderedH * 0.092)));
+
+      // Reset margin-top to measure baseline flex layout position
+      wrapper.style.marginTop = '0px';
+      const baselineWrapRect = wrapper.getBoundingClientRect();
+      const sphereRect = sphereContainer.getBoundingClientRect();
+      const currentSphereRadius = (sphereRect.width / 2) * 0.90;
+
+      // Calculate where sphere bottom currently lands relative to card top
+      const currentSphereBottom = (sphereRect.top - cardRect.top) + (sphereRect.height / 2) + currentSphereRadius * 1.04;
+      const desiredSphereBottom = rockTopY - targetGap;
+      const shiftY = desiredSphereBottom - currentSphereBottom;
+
+      wrapper.style.marginTop = `${shiftY.toFixed(1)}px`;
     } else {
       wrapper.style.marginRight = 'auto';
+      wrapper.style.marginLeft = 'auto';
+      wrapper.style.marginTop = '16px';
       if (rockPedestal) {
         rockPedestal.style.left = '50%';
         rockPedestal.style.top = 'auto';
-        rockPedestal.style.bottom = 'clamp(40px, 6vh, 60px)';
+        rockPedestal.style.bottom = window.innerWidth <= 810 ? 'clamp(140px, 20vh, 180px)' : 'clamp(55px, 8vh, 75px)';
         rockPedestal.style.transform = 'translate(-50%, 0)';
       }
     }
@@ -906,14 +925,46 @@ function initNeuralNervousSystem() {
     { startProgress: 0.62, speed: 0.0033 }  // E-commerce
   ];
 
-  // 5 Organic root tendril definitions connecting floating sphere to the exact center of the rock
-  const rootConfigs = [
-    { startProgress: 0.10, speed: 0.0042, dxStart: 0,   dxEnd: 0,  cpX1: -6,  cpX2: 2,   tailLen: 12 }, // Central taproot
-    { startProgress: 0.46, speed: 0.0036, dxStart: -16, dxEnd: -3, cpX1: -22, cpX2: -5,  tailLen: 10 }, // Left inner root
-    { startProgress: 0.82, speed: 0.0039, dxStart: 16,  dxEnd: 3,  cpX1: 22,  cpX2: 5,   tailLen: 10 }, // Right inner root
-    { startProgress: 0.28, speed: 0.0032, dxStart: -32, dxEnd: -6, cpX1: -36, cpX2: -8,  tailLen: 9 },  // Left outer tendril
-    { startProgress: 0.64, speed: 0.0034, dxStart: 32,  dxEnd: 6,  cpX1: 36,  cpX2: 8,   tailLen: 9 }   // Right outer tendril
+  // 7 Organic branch tendril definitions connecting the rock foundation to the sphere
+  const branchConfigs = [
+    // 1. Central Core Taproot (Main spinal branch conduit)
+    { id: 'taproot',        dxStart: 0,   trunkDx: 0,    width: 3.4, auraWidth: 8.5, coreWidth: 1.4, speed: 0.0036, startProgress: 0.10, tailLen: 14, dir: 'up' },
+    // 2. Left Inner Branch
+    { id: 'inner-left',     dxStart: -18, trunkDx: -1.6, width: 2.6, auraWidth: 6.8, coreWidth: 1.1, speed: 0.0032, startProgress: 0.46, tailLen: 12, dir: 'up' },
+    // 3. Right Inner Branch
+    { id: 'inner-right',    dxStart: 18,  trunkDx: 1.6,  width: 2.6, auraWidth: 6.8, coreWidth: 1.1, speed: 0.0034, startProgress: 0.74, tailLen: 12, dir: 'down' },
+    // 4. Left Mid Branch
+    { id: 'mid-left',       dxStart: -36, trunkDx: -3.0, width: 2.1, auraWidth: 5.8, coreWidth: 0.9, speed: 0.0029, startProgress: 0.28, tailLen: 10, dir: 'up' },
+    // 5. Right Mid Branch
+    { id: 'mid-right',      dxStart: 36,  trunkDx: 3.0,  width: 2.1, auraWidth: 5.8, coreWidth: 0.9, speed: 0.0031, startProgress: 0.88, tailLen: 10, dir: 'up' },
+    // 6. Left Grasping Tendril
+    { id: 'outer-left',     dxStart: -56, trunkDx: -4.2, width: 1.6, auraWidth: 4.6, coreWidth: 0.7, speed: 0.0026, startProgress: 0.60, tailLen: 9,  dir: 'down' },
+    // 7. Right Grasping Tendril
+    { id: 'outer-right',    dxStart: 56,  trunkDx: 4.2,  width: 1.6, auraWidth: 4.6, coreWidth: 0.7, speed: 0.0028, startProgress: 0.20, tailLen: 9,  dir: 'up' }
   ];
+
+  // Computes continuous natural branch path from rock base, through trunk, to the spherical contour
+  function getBranchPathData(cfg, sphereBottomX, sphereBottomY, currentSphereRadius, currentRockCenterX, currentRockCenterY) {
+    const dy = currentRockCenterY - sphereBottomY;
+    const radSq = currentSphereRadius * currentSphereRadius;
+    const arcOffset = currentSphereRadius - Math.sqrt(Math.max(0, radSq - cfg.dxStart * cfg.dxStart * 0.88));
+    const sX = sphereBottomX + cfg.dxStart;
+    const sY = sphereBottomY - arcOffset;
+    const tX = currentRockCenterX + cfg.trunkDx;
+    const tY = currentRockCenterY;
+
+    // Organic trunk fork point: bundled together near rock, branching gracefully upward
+    const forkY = tY - dy * 0.30;
+    const forkX = currentRockCenterX + cfg.trunkDx * 0.6;
+
+    const branchDy = forkY - sY;
+    const cp1X = sphereBottomX + cfg.dxStart * 0.72;
+    const cp1Y = sY + branchDy * 0.40;
+    const cp2X = forkX + (cfg.dxStart * 0.16);
+    const cp2Y = forkY - branchDy * 0.35;
+
+    return `M ${tX.toFixed(1)} ${tY.toFixed(1)} L ${forkX.toFixed(1)} ${forkY.toFixed(1)} C ${cp2X.toFixed(1)} ${cp2Y.toFixed(1)}, ${cp1X.toFixed(1)} ${cp1Y.toFixed(1)}, ${sX.toFixed(1)} ${sY.toFixed(1)}`;
+  }
 
   let sphereCenter = { x: 330, y: 290 };
   let sphereRadius = 171;
@@ -1018,37 +1069,47 @@ function initNeuralNervousSystem() {
       });
     });
 
-    // 2. Build Neural Roots (Sphere Bottom -> Exactly Centered Rock Foundation)
+    // 2. Build Organic Neural Branch System (Rock Foundation -> Floating Sphere)
     if (rockPedestal && rootsGroup) {
       const rockRect = rockPedestal.getBoundingClientRect();
-      const rockCenterX = (rockRect.left + rockRect.width / 2) - wrapRect.left;
-      const rockCenterY = (rockRect.top + rockRect.height / 2) - wrapRect.top;
+      const currentRockCenterX = (rockRect.left + rockRect.width / 2) - wrapRect.left;
+      const currentRockCenterY = (rockRect.top + rockRect.height / 2) - wrapRect.top;
 
       const sphereBottomX = sphereCenter.x;
       const sphereBottomY = sphereCenter.y + sphereRadius;
-      const dy = rockCenterY - sphereBottomY;
 
-      rootConfigs.forEach((cfg) => {
-        const sX = sphereBottomX + cfg.dxStart;
-        const sY = sphereBottomY;
-        const tX = rockCenterX + cfg.dxEnd;
-        const tY = rockCenterY;
+      branchConfigs.forEach((cfg) => {
+        const d = getBranchPathData(cfg, sphereBottomX, sphereBottomY, sphereRadius, currentRockCenterX, currentRockCenterY);
 
-        const cp1X = sX + cfg.cpX1;
-        const cp1Y = sY + dy * 0.42;
-        const cp2X = tX + cfg.cpX2;
-        const cp2Y = tY - dy * 0.28;
+        // 1. Volumetric Aura Glow Path
+        const auraPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        auraPath.setAttribute('d', d);
+        auraPath.setAttribute('class', 'neural-branch-aura');
+        auraPath.setAttribute('stroke-width', cfg.auraWidth.toFixed(1));
+        auraPath.setAttribute('filter', 'url(#branchAuraGlow)');
+        rootsGroup.appendChild(auraPath);
 
-        const d = `M ${sX.toFixed(1)} ${sY.toFixed(1)} C ${cp1X.toFixed(1)} ${cp1Y.toFixed(1)}, ${cp2X.toFixed(1)} ${cp2Y.toFixed(1)}, ${tX.toFixed(1)} ${tY.toFixed(1)}`;
-        const rootPathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        rootPathEl.setAttribute('d', d);
-        rootPathEl.setAttribute('class', 'neural-root-path');
-        rootsGroup.appendChild(rootPathEl);
+        // 2. Main Organic Conduit Body Path
+        const bodyPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        bodyPath.setAttribute('d', d);
+        bodyPath.setAttribute('class', 'neural-branch-body');
+        bodyPath.setAttribute('stroke-width', cfg.width.toFixed(1));
+        rootsGroup.appendChild(bodyPath);
 
-        const totalLen = rootPathEl.getTotalLength();
+        // 3. Hyper-luminous Core Spine
+        const corePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        corePath.setAttribute('d', d);
+        corePath.setAttribute('class', 'neural-branch-core');
+        corePath.setAttribute('stroke-width', cfg.coreWidth.toFixed(1));
+        rootsGroup.appendChild(corePath);
+
+        const totalLen = bodyPath.getTotalLength();
 
         rootPathways.push({
-          pathEl: rootPathEl,
+          auraPath,
+          bodyPath,
+          corePath,
+          pathEl: bodyPath,
           totalLen,
           cfg,
           signals: [
@@ -1056,6 +1117,7 @@ function initNeuralNervousSystem() {
               progress: cfg.startProgress,
               speed: cfg.speed,
               tailLength: cfg.tailLen,
+              dir: cfg.dir,
               orbEl: null,
               tailEl: null
             }
@@ -1088,22 +1150,22 @@ function initNeuralNervousSystem() {
       });
     });
 
-    // 2. Root Signals
+    // 2. Organic Branch Energy Signals
     if (rootSignalsGroup) {
       rootSignalsGroup.innerHTML = '';
       rootPathways.forEach((rPath) => {
         rPath.signals.forEach((sig) => {
           const orb = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          orb.setAttribute('r', '3.4');
+          orb.setAttribute('r', '3.6');
           orb.setAttribute('class', 'root-signal-orb');
           orb.setAttribute('filter', 'url(#sparkGlow)');
           rootSignalsGroup.appendChild(orb);
           sig.orbEl = orb;
 
           const tail = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          tail.setAttribute('r', '2.0');
-          tail.setAttribute('fill', '#ffaa44');
-          tail.setAttribute('opacity', '0.6');
+          tail.setAttribute('r', '2.2');
+          tail.setAttribute('fill', '#ffbe47');
+          tail.setAttribute('opacity', '0.7');
           rootSignalsGroup.appendChild(tail);
           sig.tailEl = tail;
         });
@@ -1124,7 +1186,7 @@ function initNeuralNervousSystem() {
     const dt = Math.min((now - lastSignalTime) / (1000 / 60), 2.5);
     lastSignalTime = now;
 
-    // Dynamic flexing of root paths to follow floating sphere while rock is stationary on floor
+    // Dynamic flexing of organic branch paths to follow floating sphere while rock is stationary on floor
     if (rockPedestal && rootPathways.length > 0) {
       const wrapRect = wrapper.getBoundingClientRect();
       const rockRect = rockPedestal.getBoundingClientRect();
@@ -1132,23 +1194,13 @@ function initNeuralNervousSystem() {
       const currentRockCenterY = (rockRect.top + rockRect.height / 2) - wrapRect.top;
       const sphereBottomX = sphereCenter.x;
       const sphereBottomY = sphereCenter.y + sphereRadius;
-      const dy = currentRockCenterY - sphereBottomY;
 
       rootPathways.forEach((rPath) => {
-        const cfg = rPath.cfg;
-        const sX = sphereBottomX + cfg.dxStart;
-        const sY = sphereBottomY;
-        const tX = currentRockCenterX + cfg.dxEnd;
-        const tY = currentRockCenterY;
-
-        const cp1X = sX + cfg.cpX1;
-        const cp1Y = sY + dy * 0.42;
-        const cp2X = tX + cfg.cpX2;
-        const cp2Y = tY - dy * 0.28;
-
-        const d = `M ${sX.toFixed(1)} ${sY.toFixed(1)} C ${cp1X.toFixed(1)} ${cp1Y.toFixed(1)}, ${cp2X.toFixed(1)} ${cp2Y.toFixed(1)}, ${tX.toFixed(1)} ${tY.toFixed(1)}`;
-        rPath.pathEl.setAttribute('d', d);
-        rPath.totalLen = rPath.pathEl.getTotalLength();
+        const d = getBranchPathData(rPath.cfg, sphereBottomX, sphereBottomY, sphereRadius, currentRockCenterX, currentRockCenterY);
+        rPath.auraPath.setAttribute('d', d);
+        rPath.bodyPath.setAttribute('d', d);
+        rPath.corePath.setAttribute('d', d);
+        rPath.totalLen = rPath.bodyPath.getTotalLength();
       });
     }
 
@@ -1192,48 +1244,68 @@ function initNeuralNervousSystem() {
       });
     });
 
-    // Animate Neural Roots into Rock Base
+    // Animate Organic Branch Signals (Bi-directional Living Circuit)
+    const sphereEmblem = wrapper.querySelector('.sphere-center-emblem');
     rootPathways.forEach((rPath) => {
       rPath.signals.forEach((sig) => {
-        sig.progress += sig.speed * dt;
+        const delta = sig.speed * dt;
 
-        // Signal enters rock foundation: trigger subtle rock pulse!
-        if (sig.progress >= 1.0) {
-          sig.progress = 0.0;
-
-          if (rockPedestal) {
-            rockPedestal.classList.remove('root-energy-pulse');
-            void rockPedestal.offsetWidth;
-            rockPedestal.classList.add('root-energy-pulse');
+        if (sig.dir === 'up') {
+          // Ascending energy: rock foundation -> brain sphere
+          sig.progress += delta;
+          if (sig.progress >= 1.0) {
+            sig.progress = 0.0;
+            // Energy enters sphere: pulse emblem and trigger luminescence
+            if (sphereEmblem) {
+              sphereEmblem.classList.remove('synapse-pulse');
+              void sphereEmblem.offsetWidth;
+              sphereEmblem.classList.add('synapse-pulse');
+            }
+            rPath.bodyPath.classList.add('active-pulse');
             setTimeout(() => {
+              rPath.bodyPath.classList.remove('active-pulse');
+            }, 300);
+          }
+        } else {
+          // Descending energy: brain sphere -> rock foundation
+          sig.progress -= delta;
+          if (sig.progress <= 0.0) {
+            sig.progress = 1.0;
+            // Energy enters rock foundation: trigger subtle rock pulse!
+            if (rockPedestal) {
               rockPedestal.classList.remove('root-energy-pulse');
-            }, 600);
-          }
-
-          const outerRing = document.getElementById('hero-floor-outer-ring');
-          if (outerRing) {
-            outerRing.classList.remove('energy-surge');
-            void outerRing.offsetWidth;
-            outerRing.classList.add('energy-surge');
-            setTimeout(() => {
+              void rockPedestal.offsetWidth;
+              rockPedestal.classList.add('root-energy-pulse');
+              setTimeout(() => {
+                rockPedestal.classList.remove('root-energy-pulse');
+              }, 550);
+            }
+            const outerRing = document.getElementById('hero-floor-outer-ring');
+            if (outerRing) {
               outerRing.classList.remove('energy-surge');
-            }, 600);
+              void outerRing.offsetWidth;
+              outerRing.classList.add('energy-surge');
+              setTimeout(() => {
+                outerRing.classList.remove('energy-surge');
+              }, 550);
+            }
+            rPath.bodyPath.classList.add('active-pulse');
+            setTimeout(() => {
+              rPath.bodyPath.classList.remove('active-pulse');
+            }, 300);
           }
-
-          rPath.pathEl.classList.add('active-pulse');
-          setTimeout(() => {
-            rPath.pathEl.classList.remove('active-pulse');
-          }, 350);
         }
 
         if (rPath.totalLen > 0 && sig.orbEl) {
-          const curDist = sig.progress * rPath.totalLen;
-          const pt = rPath.pathEl.getPointAtLength(curDist);
+          const curDist = Math.max(0, Math.min(rPath.totalLen, sig.progress * rPath.totalLen));
+          const pt = rPath.bodyPath.getPointAtLength(curDist);
           sig.orbEl.setAttribute('cx', pt.x.toFixed(1));
           sig.orbEl.setAttribute('cy', pt.y.toFixed(1));
 
-          const tailDist = Math.max(0, curDist - sig.tailLength);
-          const tailPt = rPath.pathEl.getPointAtLength(tailDist);
+          // Tail points behind moving spark
+          const tailOffset = (sig.dir === 'up' ? -1 : 1) * sig.tailLength;
+          const tailDist = Math.max(0, Math.min(rPath.totalLen, curDist + tailOffset));
+          const tailPt = rPath.bodyPath.getPointAtLength(tailDist);
           if (sig.tailEl) {
             sig.tailEl.setAttribute('cx', tailPt.x.toFixed(1));
             sig.tailEl.setAttribute('cy', tailPt.y.toFixed(1));

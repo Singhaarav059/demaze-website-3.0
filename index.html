@@ -131,11 +131,30 @@
                       <feMergeNode in="SourceGraphic"/>
                     </feMerge>
                   </filter>
+                  <filter id="branchAuraGlow" x="-40%" y="-40%" width="180%" height="180%">
+                    <feGaussianBlur stdDeviation="4.2" result="blur"/>
+                    <feMerge>
+                      <feMergeNode in="blur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
                   <radialGradient id="sparkGradient">
                     <stop offset="0%" stop-color="#ffffff"/>
                     <stop offset="40%" stop-color="#ffbf47"/>
                     <stop offset="100%" stop-color="#ff5c35" stop-opacity="0"/>
                   </radialGradient>
+                  <!-- Organic Branch of the Sphere Gradients -->
+                  <linearGradient id="branchGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                    <stop offset="0%" stop-color="#ff9933" stop-opacity="0.95"/>
+                    <stop offset="28%" stop-color="#ffa63d" stop-opacity="0.92"/>
+                    <stop offset="65%" stop-color="#ff6a35" stop-opacity="0.88"/>
+                    <stop offset="100%" stop-color="#ffe4a0" stop-opacity="0.96"/>
+                  </linearGradient>
+                  <linearGradient id="branchCoreGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                    <stop offset="0%" stop-color="#ffe7b0" stop-opacity="0.92"/>
+                    <stop offset="50%" stop-color="#ffffff" stop-opacity="0.96"/>
+                    <stop offset="100%" stop-color="#fff8e8" stop-opacity="0.92"/>
+                  </linearGradient>
                 </defs>
                 <g id="neural-roots-group"></g>
                 <g id="root-signals-group"></g>
@@ -256,7 +275,9 @@
 
           <!-- Static Natural Rock Landing Nexus in the center of the rock -->
           <div class="hero-static-rock-base" id="hero-rock-pedestal">
+            <div class="rock-energy-pool" aria-hidden="true"></div>
             <div class="rock-neural-landing" id="rock-landing-target"></div>
+            <div class="rock-root-collar" aria-hidden="true"></div>
           </div>
 
           <!-- Floor Outer Ring Glow (Synchronized with Sphere Glow) -->
