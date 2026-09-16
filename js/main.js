@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initBackToTop();
   highlightActiveNavLink();
   initFilterTabs();
+  initTechFilterTabs();
   initIndustriesTabs();
   initDroneCurtainTransition();
   initScrollRevealStorytelling();
@@ -1355,6 +1356,46 @@ function initFilterTabs() {
             card.style.display = 'none';
           }
         });
+      });
+    });
+  });
+}
+
+/* ==========================================================================
+   Technologies Category Filter Tabs
+   ========================================================================== */
+function initTechFilterTabs() {
+  const tabsBar = document.querySelector('.tech-filter-tabs-bar');
+  const cards = document.querySelectorAll('.tech-logo-card');
+  if (!tabsBar || !cards.length) return;
+
+  const tabs = tabsBar.querySelectorAll('.tech-filter-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+
+      const selectedCategory = tab.getAttribute('data-category');
+
+      cards.forEach(card => {
+        const cardCats = (card.getAttribute('data-category') || '').split(/\s+/);
+        if (selectedCategory === 'all' || cardCats.includes(selectedCategory)) {
+          card.classList.remove('is-hidden');
+          // Add brief entry animation
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.95)';
+          requestAnimationFrame(() => {
+            card.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'scale(1)';
+          });
+        } else {
+          card.classList.add('is-hidden');
+        }
       });
     });
   });
