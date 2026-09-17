@@ -1,6 +1,6 @@
 # UI Design & Motion System Rules
 
-These design and animation rules govern all user interface development, redesigns, and styling across the project.
+These design, animation, and interaction rules govern all user interface development, redesigns, and styling across the project.
 
 ---
 
@@ -20,7 +20,7 @@ Maintain strict visual balance and intentional hierarchy across all pages and co
 ---
 
 ## 2. Animation & Motion Standards ($1000 Premium Feel)
-Every interaction must feel deliberate, fluid, and expensive. Follow the 4 core animation pillars:
+Every interaction must feel deliberate, fluid, and expensive. "Good animation isn't decoration. It's feedback."
 
 ### Pillar 01: Scroll -> Storytelling ("Make the Page Move With You")
 1. **Parallax**:
@@ -40,6 +40,17 @@ Every interaction must feel deliberate, fluid, and expensive. Follow the 4 core 
    - Sibling elements (cards, badges, grid items, metrics) enter sequentially with calibrated delays (e.g., 50ms – 80ms per index) to create dynamic visual rhythm.
 3. **Clip Reveal**:
    - Dynamic `clip-path` (e.g., `polygon()` or `inset()`) uncovers impactful headlines, banner media, and hero imagery as the element enters the viewport.
+
+### Pillar 03: Click -> Confirmation ("Every Click Should Get a Response")
+1. **Press + Spring**:
+   - Tactile interactive response: button compresses on interaction (`transform: scale(0.97)`) and springs back dynamically.
+   - Never leave a button or clickable control dead to user touch/click.
+2. **State Change**:
+   - Clear multi-phase feedback on asynchronous and form actions:
+     - `Idle` (e.g., "Send Message")
+     - `In-Progress / Pending` (e.g., spinner, pulse, "Sending...")
+     - `Confirmed / Success` (e.g., checkmark, "Sent ✓", success toast)
+   - Disables re-submission while pending to prevent duplicate actions.
 
 ---
 
