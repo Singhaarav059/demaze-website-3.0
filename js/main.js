@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initInteractiveContactForm();
   initCardTiltMicroInteractions();
   initBentoTerminalSimulation();
+  initAxnixInteractive();
 });
 
 /* ==========================================================================
@@ -233,15 +234,18 @@ function initHeroParticleSphere() {
   }
   instancedMesh.instanceMatrix.needsUpdate = true;
 
-  // Particle color: warm luminous golden pearl
-  const particleColor = new THREE.Color(0.96, 0.94, 0.90);
+  // Particle color: dynamic gradient blending electric cyan and emerald green
+  const colorA = new THREE.Color(0.22, 0.74, 0.97); // #38bdf8 Electric Cyan
+  const colorB = new THREE.Color(0.13, 0.77, 0.37); // #22c55e Emerald Green
   const colorsArray = new Float32Array(particlesCount * 3);
   for (let i = 0; i < particlesCount; i++) {
     const idx = i * 3;
-    const brightness = 0.90 + Math.random() * 0.18;
-    colorsArray[idx] = Math.min(1, particleColor.r * brightness);
-    colorsArray[idx + 1] = Math.min(1, particleColor.g * brightness);
-    colorsArray[idx + 2] = Math.min(1, particleColor.b * brightness * 0.95);
+    const t = i / (particlesCount - 1);
+    const mixed = colorA.clone().lerp(colorB, t);
+    const brightness = 0.92 + Math.random() * 0.16;
+    colorsArray[idx] = Math.min(1, mixed.r * brightness);
+    colorsArray[idx + 1] = Math.min(1, mixed.g * brightness);
+    colorsArray[idx + 2] = Math.min(1, mixed.b * brightness);
   }
   instancedMesh.instanceColor = new THREE.InstancedBufferAttribute(colorsArray, 3);
   instancedMesh.instanceColor.needsUpdate = true;
@@ -282,9 +286,9 @@ function initHeroParticleSphere() {
   const synapseGeo = new THREE.BufferGeometry();
   synapseGeo.setAttribute('position', new THREE.Float32BufferAttribute(synapseLinePositions, 3));
   const synapseMat = new THREE.LineBasicMaterial({
-    color: 0xffaa44,
+    color: 0x38bdf8,
     transparent: true,
-    opacity: 0.58,
+    opacity: 0.65,
     blending: THREE.AdditiveBlending
   });
   const synapseMesh = new THREE.LineSegments(synapseGeo, synapseMat);
@@ -293,9 +297,9 @@ function initHeroParticleSphere() {
   // Core Luminous Brain Glow & Glass Shell Boundary
   const coreGlowGeo = new THREE.SphereGeometry(sphereRadius * 0.35, 16, 16);
   const coreGlowMat = new THREE.MeshBasicMaterial({
-    color: 0xff7722,
+    color: 0x0284c7,
     transparent: true,
-    opacity: 0.28,
+    opacity: 0.32,
     blending: THREE.AdditiveBlending
   });
   const coreGlow = new THREE.Mesh(coreGlowGeo, coreGlowMat);
@@ -304,24 +308,24 @@ function initHeroParticleSphere() {
   // Ethereal Glass Shell Rim
   const glassRimGeo = new THREE.SphereGeometry(sphereRadius * 1.025, 32, 32);
   const glassRimMat = new THREE.MeshBasicMaterial({
-    color: 0xffeedd,
+    color: 0xa7f3d0,
     transparent: true,
-    opacity: 0.12,
+    opacity: 0.14,
     blending: THREE.AdditiveBlending
   });
   const glassRim = new THREE.Mesh(glassRimGeo, glassRimMat);
   group.add(glassRim);
 
-  // Glowing Golden Orbital Rings
+  // Glowing Cyan & Emerald Orbital Rings
   const orbitGroup = new THREE.Group();
   scene.add(orbitGroup);
 
   const ringGeo1 = new THREE.TorusGeometry(sphereRadius * 1.08, 0.0028, 16, 120);
   const ringMat1 = new THREE.MeshBasicMaterial({
-    color: 0xffaa44,
+    color: 0x38bdf8,
     blending: THREE.AdditiveBlending,
     transparent: true,
-    opacity: 0.8
+    opacity: 0.85
   });
   const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
   ring1.rotation.x = Math.PI * 0.38;
@@ -330,22 +334,22 @@ function initHeroParticleSphere() {
 
   const ringGeo2 = new THREE.TorusGeometry(sphereRadius * 1.14, 0.0024, 16, 120);
   const ringMat2 = new THREE.MeshBasicMaterial({
-    color: 0xff7722,
+    color: 0x22c55e,
     blending: THREE.AdditiveBlending,
     transparent: true,
-    opacity: 0.65
+    opacity: 0.75
   });
   const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
   ring2.rotation.x = -Math.PI * 0.32;
   ring2.rotation.z = Math.PI * 0.36;
   orbitGroup.add(ring2);
 
-  // Orbiting Metallic & Golden Satellite Orbs
+  // Orbiting Metallic & Emerald/Cyan Satellite Orbs
   const satelliteOrbs = [
     {
       mesh: new THREE.Mesh(
         new THREE.SphereGeometry(0.026, 24, 24),
-        new THREE.MeshBasicMaterial({ color: 0xffdd88 })
+        new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
       ),
       radius: sphereRadius * 1.08,
       inclination: Math.PI * 0.38,
@@ -356,7 +360,7 @@ function initHeroParticleSphere() {
     {
       mesh: new THREE.Mesh(
         new THREE.SphereGeometry(0.020, 24, 24),
-        new THREE.MeshBasicMaterial({ color: 0xe0e6ed })
+        new THREE.MeshBasicMaterial({ color: 0x34d399 })
       ),
       radius: sphereRadius * 1.08,
       inclination: Math.PI * 0.38,
@@ -367,7 +371,7 @@ function initHeroParticleSphere() {
     {
       mesh: new THREE.Mesh(
         new THREE.SphereGeometry(0.022, 24, 24),
-        new THREE.MeshBasicMaterial({ color: 0xffaa44 })
+        new THREE.MeshBasicMaterial({ color: 0x22c55e })
       ),
       radius: sphereRadius * 1.14,
       inclination: -Math.PI * 0.32,
@@ -2164,3 +2168,74 @@ function initHeroInteractiveGlow() {
     glow.style.opacity = '0';
   });
 }
+
+/* ==========================================================================
+   Axnix Design System Interactive Enhancements
+   - FAQ accordion expand/collapse
+   - Mobile navigation drawer
+   - Pricing annual/monthly toggle
+   ========================================================================== */
+function initAxnixInteractive() {
+  // FAQ Accordion
+  const faqQuestions = document.querySelectorAll('.axnix-faq-question');
+  faqQuestions.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.axnix-faq-item');
+      if (!item) return;
+      const wasOpen = item.classList.contains('open');
+      
+      // Close other open items in the same list
+      const list = item.closest('.axnix-faq-list');
+      if (list) {
+        list.querySelectorAll('.axnix-faq-item').forEach(i => i.classList.remove('open'));
+      }
+      
+      if (!wasOpen) {
+        item.classList.add('open');
+      }
+    });
+  });
+
+  // Mobile Drawer
+  const mobileToggle = document.getElementById('axnix-mobile-toggle');
+  const mobileDrawer = document.getElementById('axnix-mobile-drawer');
+  const drawerClose = document.getElementById('axnix-drawer-close');
+
+  if (mobileToggle && mobileDrawer) {
+    mobileToggle.addEventListener('click', () => {
+      mobileDrawer.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  if (drawerClose && mobileDrawer) {
+    drawerClose.addEventListener('click', () => {
+      mobileDrawer.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+  }
+
+  if (mobileDrawer) {
+    mobileDrawer.addEventListener('click', (e) => {
+      if (e.target === mobileDrawer) {
+        mobileDrawer.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  // Sticky Scroll density on Axnix floating navbar
+  const navPill = document.querySelector('.axnix-nav-pill');
+  if (navPill) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        navPill.style.padding = '8px 12px 8px 18px';
+        navPill.style.boxShadow = '0 15px 35px -5px rgba(15, 23, 42, 0.12)';
+      } else {
+        navPill.style.padding = '10px 14px 10px 22px';
+        navPill.style.boxShadow = '0 10px 30px -5px rgba(15, 23, 42, 0.08)';
+      }
+    }, { passive: true });
+  }
+}
+
