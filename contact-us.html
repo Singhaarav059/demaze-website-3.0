@@ -162,30 +162,7 @@
             </div>
 
             <form id="contact-form">
-              <!-- Interactive Subject Selector Pills -->
-              <div class="form-group">
-                <label class="form-label">Primary Area of Interest</label>
-                <div class="pill-selector-group">
-                  <button type="button" class="pill-selector-btn active" data-subject-pill="AI & Machine Learning">AI & Machine Learning</button>
-                  <button type="button" class="pill-selector-btn" data-subject-pill="Web / Mobile App / SaaS">Web / Mobile / SaaS</button>
-                  <button type="button" class="pill-selector-btn" data-subject-pill="Intelligent E-commerce">E-commerce</button>
-                  <button type="button" class="pill-selector-btn" data-subject-pill="Cloud & DevOps">Cloud & DevOps</button>
-                  <button type="button" class="pill-selector-btn" data-subject-pill="Strategic AI Partnership">Strategic AI Partnership</button>
-                </div>
-                <input type="hidden" id="contact-subject" name="subject" value="AI & Machine Learning">
-              </div>
 
-              <!-- Estimated Budget Tier Selector -->
-              <div class="form-group">
-                <label class="form-label">Estimated Investment Scope</label>
-                <div class="pill-selector-group">
-                  <button type="button" class="pill-selector-btn" data-budget-pill="< $25k">&lt; $25,000</button>
-                  <button type="button" class="pill-selector-btn active" data-budget-pill="$25k - $50k">$25k – $50k</button>
-                  <button type="button" class="pill-selector-btn" data-budget-pill="$50k - $100k">$50k – $100k</button>
-                  <button type="button" class="pill-selector-btn" data-budget-pill="$100k+">$100k+ / Enterprise</button>
-                </div>
-                <input type="hidden" id="contact-budget" name="budget" value="$25k - $50k">
-              </div>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                 <div class="form-group">
@@ -226,52 +203,50 @@
     </section>
 
     <!-- ==========================================================================
-         FAQ Section
+         FAQ Section (Cognira Minimal Centered FAQ)
          ========================================================================== -->
-    <section class="section" style="background-color: #fbf7f2;">
+    <section class="cognira-faq-section scroll-reveal">
       <div class="container">
         <div class="section-header">
-          <span class="section-badge-pill">FAQ</span>
-          <h2>Frequently asked questions</h2>
+          <span class="cognira-pill"><span class="cognira-pill-dot"></span>Frequently Asked Questions</span>
+          <h2>Clear answers to your questions</h2>
           <p>Everything you need to know about initiating a project with Demaze Technologies.</p>
         </div>
 
-        <div class="faq-container">
-          <div class="faq-list">
-            <div class="faq-item">
-              <button class="faq-trigger" type="button">
-                <span>What happens after I submit this inquiry form?</span>
-                <span class="faq-icon-wrap">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                </span>
-              </button>
-              <div class="faq-content">
-                <p>A Senior Solution Architect reviews your technical requirements and schedules a 30-minute discovery call within 24 hours. We prepare initial architecture ideas and discuss timeline, feasibility, and investment scope.</p>
-              </div>
+        <div class="cognira-faq-card">
+          <div class="cognira-faq-item active">
+            <button class="cognira-faq-trigger" type="button" aria-expanded="true">
+              <span>What happens after I submit this inquiry form?</span>
+              <span class="cognira-faq-chevron">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="cognira-faq-content">
+              <p>A Senior Solution Architect reviews your technical requirements and schedules a 30-minute discovery call within 24 hours. We prepare initial architecture ideas and discuss timeline, feasibility, and investment scope.</p>
             </div>
+          </div>
 
-            <div class="faq-item">
-              <button class="faq-trigger" type="button">
-                <span>Do you work under non-disclosure agreements (NDAs)?</span>
-                <span class="faq-icon-wrap">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                </span>
-              </button>
-              <div class="faq-content">
-                <p>Absolutely. We routinely sign bilateral NDAs before sensitive architectural discussions or reviewing existing codebases. Your business intelligence and proprietary concepts remain strictly protected.</p>
-              </div>
+          <div class="cognira-faq-item">
+            <button class="cognira-faq-trigger" type="button" aria-expanded="false">
+              <span>Do you work under non-disclosure agreements (NDAs)?</span>
+              <span class="cognira-faq-chevron">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="cognira-faq-content">
+              <p>Absolutely. We routinely sign bilateral NDAs before sensitive architectural discussions or reviewing existing codebases. Your business intelligence and proprietary concepts remain strictly protected.</p>
             </div>
+          </div>
 
-            <div class="faq-item">
-              <button class="faq-trigger" type="button">
-                <span>Can you provide a fixed-price quotation or do you work on time & materials?</span>
-                <span class="faq-icon-wrap">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                </span>
-              </button>
-              <div class="faq-content">
-                <p>We offer both models depending on your needs: Milestone-based Fixed Pricing for well-defined scopes and MVPs, or Dedicated Team Augmentation / Time & Materials for evolving AI research and enterprise roadmaps.</p>
-              </div>
+          <div class="cognira-faq-item">
+            <button class="cognira-faq-trigger" type="button" aria-expanded="false">
+              <span>Can you provide a fixed-price quotation or do you work on time & materials?</span>
+              <span class="cognira-faq-chevron">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="cognira-faq-content">
+              <p>We offer both models depending on your needs: Milestone-based Fixed Pricing for well-defined scopes and MVPs, or Dedicated Team Augmentation / Time & Materials for evolving AI research and enterprise roadmaps.</p>
             </div>
           </div>
         </div>

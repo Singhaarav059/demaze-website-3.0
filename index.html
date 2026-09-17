@@ -89,7 +89,56 @@
             <div class="hero-soft-glow-spot-left"></div>
             <div class="hero-soft-glow-spot-right"></div>
             <div class="hero-interactive-glow" id="hero-interactive-glow"></div>
-            <div class="hero-canvas-gradient-overlay"></div>
+            
+            <svg class="hero-glow-wave-live" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <!-- Multi-tier soft glow bloom filters -->
+                <filter id="heroBloomAtmosphere" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="38" result="deepBlur" />
+                  <feMerge>
+                    <feMergeNode in="deepBlur" />
+                  </feMerge>
+                </filter>
+                <filter id="heroBloomRadiance" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="15" result="midBlur" />
+                  <feMerge>
+                    <feMergeNode in="midBlur" />
+                  </feMerge>
+                </filter>
+                <filter id="heroBloomCore" x="-15%" y="-15%" width="130%" height="130%">
+                  <feGaussianBlur stdDeviation="3.2" result="sharpBlur" />
+                  <feMerge>
+                    <feMergeNode in="sharpBlur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+
+                <!-- Radiant Golden-Orange Gradient for wave crest -->
+                <linearGradient id="glowWaveGradLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ff7b1a" stop-opacity="0.8" />
+                  <stop offset="35%" stop-color="#ffa633" stop-opacity="0.95" />
+                  <stop offset="55%" stop-color="#fff1b8" stop-opacity="1" />
+                  <stop offset="75%" stop-color="#ff8724" stop-opacity="0.9" />
+                  <stop offset="100%" stop-color="#e65100" stop-opacity="0.6" />
+                </linearGradient>
+
+                <linearGradient id="glowWaveGradRight" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#e65100" stop-opacity="0.5" />
+                  <stop offset="25%" stop-color="#ff7f20" stop-opacity="0.85" />
+                  <stop offset="55%" stop-color="#ffa836" stop-opacity="0.95" />
+                  <stop offset="85%" stop-color="#ffefb3" stop-opacity="1" />
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="1" />
+                </linearGradient>
+              </defs>
+
+              <!-- Left Wave Crest (Atmospheric Soft Glow & Radiance) -->
+              <path class="wave-glow-path glow-atmosphere" d="M 0 300 C 130 330, 260 495, 365 536 C 445 540, 520 575, 630 690 C 690 750, 750 800, 840 845" filter="url(#heroBloomAtmosphere)" />
+              <path class="wave-glow-path glow-radiance" d="M 0 300 C 130 330, 260 495, 365 536 C 445 540, 520 575, 630 690 C 690 750, 750 800, 840 845" stroke="url(#glowWaveGradLeft)" filter="url(#heroBloomRadiance)" />
+
+              <!-- Right Wave Crest (Atmospheric Soft Glow & Radiance) -->
+              <path class="wave-glow-path glow-atmosphere" d="M 1080 680 C 1240 560, 1380 460, 1530 395 C 1660 365, 1750 300, 1800 200 C 1850 100, 1880 60, 1920 50" filter="url(#heroBloomAtmosphere)" />
+              <path class="wave-glow-path glow-radiance" d="M 1080 680 C 1240 560, 1380 460, 1530 395 C 1660 365, 1750 300, 1800 200 C 1850 100, 1880 60, 1920 50" stroke="url(#glowWaveGradRight)" filter="url(#heroBloomRadiance)" />
+            </svg>
           </div>
 
           <div class="hero-content-split">
@@ -281,15 +330,7 @@
             </div>
           </div>
 
-          <!-- Static Natural Rock Landing Nexus in the center of the rock -->
-          <div class="hero-static-rock-base" id="hero-rock-pedestal">
-            <div class="rock-energy-pool" aria-hidden="true"></div>
-            <div class="rock-neural-landing" id="rock-landing-target"></div>
-            <div class="rock-root-collar" aria-hidden="true"></div>
-          </div>
-
-          <!-- Floor Outer Ring Glow (Synchronized with Sphere Glow) -->
-          <div class="hero-floor-outer-ring" id="hero-floor-outer-ring" aria-hidden="true"></div>
+          <!-- Hero Bottom Pagination Indicator -->
         </div>
       </div>
     </section>
@@ -428,7 +469,7 @@
     <!-- ==========================================================================
          03. Founder Statement (Executive Commitment & Leadership Vision)
          ========================================================================== -->
-    <section class="founder-statement-section scroll-reveal">
+    <section class="founder-statement-section">
       <div class="container">
         <div class="founder-statement-card">
           <div class="founder-quote-mark" aria-hidden="true">
@@ -459,105 +500,129 @@
     </section>
 
     <!-- ==========================================================================
-         04. Core Capabilities (Official 4 Demaze Service Pillars)
+         04. Core Capabilities (Cognira Features Section Pattern)
          ========================================================================== -->
-    <section id="services" class="services-sticky-section">
-      <div class="services-heading-center">
-        <span class="section-badge-pill" style="margin-bottom: 16px;">Core Capabilities</span>
-        <h2>What We Build</h2>
-      </div>
-
-      <div class="services-stack-container">
-        <!-- Card 1: AI & Machine Learning -->
-        <div class="service-sticky-card">
-          <div class="service-card-info">
-            <h3>AI & Machine Learning</h3>
-            <p>We build AI-powered solutions that transform enterprise data into actionable intelligence, automate complex operations, and drive smarter business decisions.</p>
-            <div class="service-capabilities-list">
-              <span class="service-cap-pill">Predictive Analytics & Forecasting</span>
-              <span class="service-cap-pill">NLP & Conversational AI</span>
-              <span class="service-cap-pill">Computer Vision & Image Processing</span>
-              <span class="service-cap-pill">Generative Models & Content Synthesis</span>
-              <span class="service-cap-pill">Recommendation Systems & Personalization</span>
-              <span class="service-cap-pill">AI Dashboards & Insights</span>
-            </div>
-            <a href="/services.html#ai-ml" class="btn btn-dark" style="margin-top: 12px; display: inline-flex;">
-              Explore AI & ML Services
-              <svg class="btn-arrow" viewBox="0 0 16 16" fill="none">
-                <path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </a>
+    <section id="services" class="cognira-features-section">
+      <div class="container">
+        <div class="cognira-header-split">
+          <div class="header-left">
+            <span class="cognira-pill"><span class="cognira-pill-dot"></span>Core Capabilities</span>
+            <h2>Intelligent architectures, <br><span class="text-coral">built for scale</span></h2>
           </div>
-          <div class="service-card-tag-num">|| 1</div>
+          <div class="header-right">
+            <p>From generative AI platforms to cloud-native distributed backends, we engineer high-concurrency systems built for production resilience and long-term business value.</p>
+          </div>
         </div>
 
-        <!-- Card 2: Web / Mobile App / SaaS -->
-        <div class="service-sticky-card">
-          <div class="service-card-info">
-            <h3>Web / Mobile App / SaaS</h3>
-            <p>We build scalable software and enterprise applications that deliver seamless user experiences, high concurrency, and long-term business value.</p>
-            <div class="service-capabilities-list">
-              <span class="service-cap-pill">Web App Development</span>
-              <span class="service-cap-pill">Mobile App Development</span>
-              <span class="service-cap-pill">Custom SaaS Development</span>
-              <span class="service-cap-pill">Workflow Automation</span>
-              <span class="service-cap-pill">API Development & System Integration</span>
-              <span class="service-cap-pill">Progressive Web App</span>
+        <div class="cognira-features-grid">
+          <!-- Feature 1: AI & Machine Learning -->
+          <div class="cognira-feature-card">
+            <div class="cognira-feature-preview">
+              <div class="cognira-feature-preview-glow"></div>
+              <div class="cognira-feature-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+              </div>
             </div>
-            <a href="/services.html#web-mobile" class="btn btn-dark" style="margin-top: 12px; display: inline-flex;">
-              Explore Software & SaaS
-              <svg class="btn-arrow" viewBox="0 0 16 16" fill="none">
-                <path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+            <div class="cognira-feature-content">
+              <h3>AI & Machine Learning</h3>
+              <p>Predictive analytics, custom LLM models, and autonomous decision agents turning data into strategic advantage.</p>
+              <div class="cognira-feature-tags">
+                <span class="cognira-feature-tag">Predictive AI</span>
+                <span class="cognira-feature-tag">NLP & Agents</span>
+                <span class="cognira-feature-tag">Vector RAG</span>
+                <span class="cognira-feature-tag">Vision AI</span>
+              </div>
+            </div>
+            <a href="/services.html#ai-ml" class="cognira-feature-cta">
+              Explore AI & ML
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
           </div>
-          <div class="service-card-tag-num">|| 2</div>
-        </div>
 
-        <!-- Card 3: Intelligent E-commerce -->
-        <div class="service-sticky-card">
-          <div class="service-card-info">
-            <h3>Intelligent E-commerce</h3>
-            <p>We engineer intelligent eCommerce platforms that elevate shopping experiences, optimize conversions, and scale global direct-to-consumer revenue.</p>
-            <div class="service-capabilities-list">
-              <span class="service-cap-pill">D2C & Multi-Vendor Marketplaces</span>
-              <span class="service-cap-pill">AI Personalization & Search</span>
-              <span class="service-cap-pill">Subscription & Recurring Billing</span>
-              <span class="service-cap-pill">Checkout & Fraud Protection</span>
-              <span class="service-cap-pill">Logistics & Courier Integration</span>
-              <span class="service-cap-pill">UI/UX for Storefront Experience</span>
+          <!-- Feature 2: Web / Mobile App / SaaS -->
+          <div class="cognira-feature-card">
+            <div class="cognira-feature-preview">
+              <div class="cognira-feature-preview-glow" style="background: radial-gradient(circle, rgba(107, 127, 42, 0.25) 0%, transparent 70%);"></div>
+              <div class="cognira-feature-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                  <line x1="8" y1="21" x2="16" y2="21"/>
+                  <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+              </div>
             </div>
-            <a href="/services.html#ecommerce" class="btn btn-dark" style="margin-top: 12px; display: inline-flex;">
+            <div class="cognira-feature-content">
+              <h3>Web / Mobile & SaaS</h3>
+              <p>Scalable cloud applications and native mobile experiences built with modern microservices and high concurrency.</p>
+              <div class="cognira-feature-tags">
+                <span class="cognira-feature-tag">Next.js & React</span>
+                <span class="cognira-feature-tag">React Native</span>
+                <span class="cognira-feature-tag">Multi-Tenant</span>
+                <span class="cognira-feature-tag">APIs</span>
+              </div>
+            </div>
+            <a href="/services.html#web-mobile" class="cognira-feature-cta">
+              Explore Software
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+
+          <!-- Feature 3: Intelligent E-commerce -->
+          <div class="cognira-feature-card">
+            <div class="cognira-feature-preview">
+              <div class="cognira-feature-preview-glow"></div>
+              <div class="cognira-feature-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="9" cy="21" r="1"/>
+                  <circle cx="20" cy="21" r="1"/>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="cognira-feature-content">
+              <h3>Intelligent E-commerce</h3>
+              <p>Headless storefronts, dynamic conversion optimization, and automated multi-vendor commerce engines.</p>
+              <div class="cognira-feature-tags">
+                <span class="cognira-feature-tag">Headless D2C</span>
+                <span class="cognira-feature-tag">Dynamic Cart</span>
+                <span class="cognira-feature-tag">Marketplaces</span>
+                <span class="cognira-feature-tag">Fraud AI</span>
+              </div>
+            </div>
+            <a href="/services.html#ecommerce" class="cognira-feature-cta">
               Explore E-commerce
-              <svg class="btn-arrow" viewBox="0 0 16 16" fill="none">
-                <path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
           </div>
-          <div class="service-card-tag-num">|| 3</div>
-        </div>
 
-        <!-- Card 4: Cloud Architecture & DevOps -->
-        <div class="service-sticky-card">
-          <div class="service-card-info">
-            <h3>Cloud Architecture & DevOps</h3>
-            <p>We design resilient cloud architectures that ensure scalability, zero-downtime reliability, and enterprise-grade security for modern businesses.</p>
-            <div class="service-capabilities-list">
-              <span class="service-cap-pill">Cloud Migration & Modernization</span>
-              <span class="service-cap-pill">Cloud Native App Development</span>
-              <span class="service-cap-pill">Multi-Cloud & Hybrid Cloud Architecture</span>
-              <span class="service-cap-pill">Cloud Security, Compliance & Governance</span>
-              <span class="service-cap-pill">Observability, Monitoring & Performance Optimization</span>
-              <span class="service-cap-pill">Disaster Recovery, Backup & Business Continuity</span>
+          <!-- Feature 4: Cloud Architecture & DevOps -->
+          <div class="cognira-feature-card">
+            <div class="cognira-feature-preview">
+              <div class="cognira-feature-preview-glow" style="background: radial-gradient(circle, rgba(107, 127, 42, 0.25) 0%, transparent 70%);"></div>
+              <div class="cognira-feature-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+                </svg>
+              </div>
             </div>
-            <a href="/services.html#cloud" class="btn btn-dark" style="margin-top: 12px; display: inline-flex;">
-              Explore Cloud & DevOps
-              <svg class="btn-arrow" viewBox="0 0 16 16" fill="none">
-                <path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+            <div class="cognira-feature-content">
+              <h3>Cloud & DevOps</h3>
+              <p>Zero-downtime distributed infrastructure, automated CI/CD pipelines, and multi-cloud governance for enterprise resilience.</p>
+              <div class="cognira-feature-tags">
+                <span class="cognira-feature-tag">AWS & GCP</span>
+                <span class="cognira-feature-tag">K8s & Docker</span>
+                <span class="cognira-feature-tag">Observability</span>
+                <span class="cognira-feature-tag">Zero-Trust</span>
+              </div>
+            </div>
+            <a href="/services.html#cloud" class="cognira-feature-cta">
+              Explore Cloud
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
           </div>
-          <div class="service-card-tag-num">|| 4</div>
         </div>
       </div>
     </section>
@@ -900,188 +965,206 @@
     </section>
 
     <!-- ==========================================================================
-         06. Featured Work (Real Demaze Projects with Official Screenshots)
+         06. Featured Work (Cognira Use Cases Section Pattern)
          ========================================================================== -->
-    <section id="featured-work" class="section" style="background-color: #fcf9f5;">
+    <section id="featured-work" class="cognira-usecases-section">
       <div class="container">
-        <div class="section-header">
-          <span class="section-badge-pill">Featured Work</span>
-          <h2>Proven systems that deliver <span class="text-coral">real business impact</span></h2>
-          <p>Explore production-grade software and AI models built and scaled by Demaze Technologies.</p>
+        <div class="cognira-header-split">
+          <div class="header-left">
+            <span class="cognira-pill"><span class="cognira-pill-dot"></span>Featured Work</span>
+            <h2>Proven systems that deliver <br><span class="text-coral">real business impact</span></h2>
+          </div>
+          <div class="header-right">
+            <p>Explore production-grade software and AI models built and scaled by Demaze Technologies for industry innovators worldwide.</p>
+          </div>
         </div>
 
-        <div class="featured-projects-list">
-          <!-- Project 1: Luxury Automotive Dealership (Image Left / Text Right) -->
-          <article class="featured-project-row">
-            <div class="featured-project-media">
-              <img src="/assets/images/demaze-project-luxury-car.png" alt="Luxury Automotive Dealership Software" loading="lazy">
-            </div>
-            <div class="featured-project-content">
-              <span class="featured-category-pill">Automotive & AI</span>
-              <h3 class="featured-project-title">Luxury Automotive Dealership OS</h3>
-              <p class="featured-project-desc">Comprehensive dealership operating software developed for one of India's largest luxury car dealerships to streamline vehicle valuation, sales, and refurbishments.</p>
-              <div class="featured-chips-grid">
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Accurate Used Car Valuation Engine
-                </span>
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Instant New Car EMI & Financing Calculators
-                </span>
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Refurbishment Tracking & Team Management
-                </span>
+        <div class="cognira-usecases-layout">
+          <!-- Sticky Category Nav Pills -->
+          <aside class="cognira-usecases-nav" aria-label="Project Categories">
+            <button type="button" class="cognira-usecase-tab active" data-target="proj-automotive">
+              <span>Automotive & AI OS</span>
+              <span class="cognira-usecase-tab-arrow">→</span>
+            </button>
+            <button type="button" class="cognira-usecase-tab" data-target="proj-luxury">
+              <span>Sustainable Luxury & AI</span>
+              <span class="cognira-usecase-tab-arrow">→</span>
+            </button>
+            <button type="button" class="cognira-usecase-tab" data-target="proj-legaltech">
+              <span>LegalTech & Case Vault</span>
+              <span class="cognira-usecase-tab-arrow">→</span>
+            </button>
+            <button type="button" class="cognira-usecase-tab" data-target="proj-wellness">
+              <span>Community & Health</span>
+              <span class="cognira-usecase-tab-arrow">→</span>
+            </button>
+            <button type="button" class="cognira-usecase-tab" data-target="proj-marketplaces">
+              <span>Multi-Vendor Retail</span>
+              <span class="cognira-usecase-tab-arrow">→</span>
+            </button>
+          </aside>
+
+          <!-- Projects Feed -->
+          <div class="cognira-usecases-feed">
+            <!-- Project 1: Luxury Automotive -->
+            <article class="cognira-project-card" id="proj-automotive">
+              <div class="cognira-project-card-media">
+                <img src="/assets/images/demaze-project-luxury-car.png" alt="Luxury Automotive Dealership Software" loading="lazy">
               </div>
-              <div class="featured-project-action">
-                <a href="/projects.html" class="btn btn-dark">
+              <div class="cognira-project-card-body">
+                <span class="cognira-project-badge">Automotive & AI</span>
+                <h3 class="cognira-project-title">Luxury Automotive Dealership OS</h3>
+                <p class="cognira-project-desc">Comprehensive dealership operating software developed for one of India's largest luxury car dealerships to streamline vehicle valuation, sales, and refurbishments.</p>
+                <div class="cognira-project-chips">
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Accurate Used Car Valuation Engine</span>
+                  </div>
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Instant New Car EMI & Financing Calculators</span>
+                  </div>
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Refurbishment Tracking & Team Management</span>
+                  </div>
+                </div>
+                <a href="/projects.html" class="btn-cognira-white">
                   Explore Case Study
-                  <svg class="btn-arrow" viewBox="0 0 16 16" fill="none"><path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
               </div>
-            </div>
-          </article>
+            </article>
 
-          <!-- Project 2: Circular Luxury Fashion Platform (Text Left / Image Right) -->
-          <article class="featured-project-row reverse">
-            <div class="featured-project-media">
-              <img src="/assets/images/demaze-project-luxury-ecommerce.png" alt="Circular Luxury Fashion Platform" loading="lazy">
-            </div>
-            <div class="featured-project-content">
-              <span class="featured-category-pill">Sustainable Luxury & AI</span>
-              <h3 class="featured-project-title">Circular Luxury Fashion Platform</h3>
-              <p class="featured-project-desc">Sustainable designer fashion marketplace and mobile app featuring AI-powered virtual try-ons, live commerce, and blockchain digital product passports.</p>
-              <div class="featured-chips-grid">
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  AI-Powered Search, Try-ons & Recommendation
-                </span>
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Blockchain Digital Product Passports
-                </span>
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Live Commerce & Product Authentication
-                </span>
+            <!-- Project 2: Circular Luxury Fashion -->
+            <article class="cognira-project-card" id="proj-luxury">
+              <div class="cognira-project-card-media">
+                <img src="/assets/images/demaze-project-luxury-ecommerce.png" alt="Circular Luxury Fashion Platform" loading="lazy">
               </div>
-              <div class="featured-project-action">
-                <a href="/projects.html" class="btn btn-dark">
+              <div class="cognira-project-card-body">
+                <span class="cognira-project-badge">Sustainable Luxury & AI</span>
+                <h3 class="cognira-project-title">Circular Luxury Fashion Platform</h3>
+                <p class="cognira-project-desc">Sustainable designer fashion marketplace and mobile app featuring AI-powered virtual try-ons, live commerce, and blockchain digital product passports.</p>
+                <div class="cognira-project-chips">
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>AI-Powered Search, Try-ons & Recommendation</span>
+                  </div>
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Blockchain Digital Product Passports</span>
+                  </div>
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Live Commerce & Product Authentication</span>
+                  </div>
+                </div>
+                <a href="/projects.html" class="btn-cognira-white">
                   Explore Case Study
-                  <svg class="btn-arrow" viewBox="0 0 16 16" fill="none"><path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
               </div>
-            </div>
-          </article>
+            </article>
 
-          <!-- Project 3: Investigative Case Management (Image Left / Text Right) -->
-          <article class="featured-project-row">
-            <div class="featured-project-media">
-              <img src="/assets/images/demaze-project-investigative.png" alt="Investigative Case Management Software" loading="lazy">
-            </div>
-            <div class="featured-project-content">
-              <span class="featured-category-pill">LegalTech & AI</span>
-              <h3 class="featured-project-title">Investigative Case Management</h3>
-              <p class="featured-project-desc">Cloud software platform designed for private investigators and legal teams with automated AI audio/video transcription, document indexing, and case billing.</p>
-              <div class="featured-chips-grid">
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Automated AI Speech & Video Transcription
-                </span>
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Document Automation & Secure Case Vault
-                </span>
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Subscription & Retainer Auto-Deposit Billing
-                </span>
+            <!-- Project 3: Investigative Case Management -->
+            <article class="cognira-project-card" id="proj-legaltech">
+              <div class="cognira-project-card-media">
+                <img src="/assets/images/demaze-project-investigative.png" alt="Investigative Case Management Software" loading="lazy">
               </div>
-              <div class="featured-project-action">
-                <a href="/projects.html" class="btn btn-dark">
+              <div class="cognira-project-card-body">
+                <span class="cognira-project-badge">LegalTech & AI</span>
+                <h3 class="cognira-project-title">Investigative Case Management</h3>
+                <p class="cognira-project-desc">Cloud software platform designed for private investigators and legal teams with automated AI audio/video transcription, document indexing, and case billing.</p>
+                <div class="cognira-project-chips">
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Automated AI Speech & Video Transcription</span>
+                  </div>
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Document Automation & Secure Case Vault</span>
+                  </div>
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Subscription & Retainer Auto-Deposit Billing</span>
+                  </div>
+                </div>
+                <a href="/projects.html" class="btn-cognira-white">
                   Explore Case Study
-                  <svg class="btn-arrow" viewBox="0 0 16 16" fill="none"><path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
               </div>
-            </div>
-          </article>
+            </article>
 
-          <!-- Project 4: Sukoon Unlimited (Text Left / Image Right) -->
-          <article class="featured-project-row reverse">
-            <div class="featured-project-media">
-              <img src="/assets/images/demaze-project-sukoon.png" alt="Sukoon Unlimited Community Platform" loading="lazy">
-            </div>
-            <div class="featured-project-content">
-              <span class="featured-category-pill">Community & Well-being</span>
-              <h3 class="featured-project-title">Sukoon Unlimited</h3>
-              <p class="featured-project-desc">A dedicated digital community platform built for senior citizens to share life experiences, seek medical guidance, and participate in enriching mental wellness discussions.</p>
-              <div class="featured-chips-grid">
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Senior-Friendly Accessible UI/UX Design
-                </span>
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Moderated Community Groups & Events
-                </span>
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Interactive Tele-Consultation Bookings
-                </span>
+            <!-- Project 4: Sukoon Unlimited -->
+            <article class="cognira-project-card" id="proj-wellness">
+              <div class="cognira-project-card-media">
+                <img src="/assets/images/demaze-project-sukoon.png" alt="Sukoon Unlimited Community Platform" loading="lazy">
               </div>
-              <div class="featured-project-action">
-                <a href="/projects.html" class="btn btn-dark">
+              <div class="cognira-project-card-body">
+                <span class="cognira-project-badge">Community & Well-being</span>
+                <h3 class="cognira-project-title">Sukoon Unlimited Platform</h3>
+                <p class="cognira-project-desc">A dedicated digital community platform built for senior citizens to share life experiences, seek medical guidance, and participate in enriching mental wellness discussions.</p>
+                <div class="cognira-project-chips">
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Senior-Friendly Accessible UI/UX Design</span>
+                  </div>
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Moderated Community Groups & Events</span>
+                  </div>
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Interactive Tele-Consultation Bookings</span>
+                  </div>
+                </div>
+                <a href="/projects.html" class="btn-cognira-white">
                   Explore Case Study
-                  <svg class="btn-arrow" viewBox="0 0 16 16" fill="none"><path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
               </div>
-            </div>
-          </article>
+            </article>
 
-          <!-- Project 5: Multi-Vendor Marketplace (Image Left / Text Right) -->
-          <article class="featured-project-row">
-            <div class="featured-project-media">
-              <img src="/assets/images/demaze-project-marketplace.png" alt="Australia and New Zealand Marketplace" loading="lazy">
-            </div>
-            <div class="featured-project-content">
-              <span class="featured-category-pill">eCommerce & Marketplaces</span>
-              <h3 class="featured-project-title">Australia & NZ Marketplace</h3>
-              <p class="featured-project-desc">Leading online multi-vendor retail platform connecting shoppers and retailers with category-wise live auctions, seller storefronts, and ultra-fast checkout.</p>
-              <div class="featured-chips-grid">
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Live Dynamic Auction & Bidding Engine
-                </span>
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Multi-Tenant Vendor Portals & Settlement
-                </span>
-                <span class="project-tag-chip">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  Automated Inventory & Courier Integration
-                </span>
+            <!-- Project 5: Multi-Vendor Marketplace -->
+            <article class="cognira-project-card" id="proj-marketplaces">
+              <div class="cognira-project-card-media">
+                <img src="/assets/images/demaze-project-marketplace.png" alt="Australia and New Zealand Marketplace" loading="lazy">
               </div>
-              <div class="featured-project-action">
-                <a href="/projects.html" class="btn btn-dark">
+              <div class="cognira-project-card-body">
+                <span class="cognira-project-badge">eCommerce & Marketplaces</span>
+                <h3 class="cognira-project-title">Australia & NZ Marketplace</h3>
+                <p class="cognira-project-desc">Leading online multi-vendor retail platform connecting shoppers and retailers with category-wise live auctions, seller storefronts, and ultra-fast checkout.</p>
+                <div class="cognira-project-chips">
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Live Dynamic Auction & Bidding Engine</span>
+                  </div>
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Multi-Tenant Vendor Portals & Settlement</span>
+                  </div>
+                  <div class="cognira-project-chip">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Automated Inventory & Courier Integration</span>
+                  </div>
+                </div>
+                <a href="/projects.html" class="btn-cognira-white">
                   Explore Case Study
-                  <svg class="btn-arrow" viewBox="0 0 16 16" fill="none"><path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
               </div>
-            </div>
-          </article>
+            </article>
 
-          <!-- Quick Discovery Card -->
-          <div class="featured-catalogue-banner">
-            <div>
-              <span class="featured-category-pill" style="background: rgba(255, 106, 42, 0.2); color: #ff9c5e;">Full Catalogue</span>
-              <h3 class="featured-catalogue-title">17+ Production Case Studies</h3>
-              <p class="featured-catalogue-desc">Discover our comprehensive portfolio of AI integrations, enterprise cloud platforms, and custom digital transformations across 19 industries.</p>
+            <!-- Full Catalogue Link -->
+            <div style="background: #0d0f14; border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+              <div>
+                <span class="cognira-pill" style="margin-bottom: 6px;"><span class="cognira-pill-dot"></span>Production Portfolio</span>
+                <h4 style="color: #ffffff; font-size: 1.15rem; margin-bottom: 4px;">Explore all 17+ production case studies</h4>
+                <p style="color: rgba(255,255,255,0.55); font-size: 0.85rem; margin: 0;">Comprehensive portfolio spanning 19 industry verticals.</p>
+              </div>
+              <a href="/projects.html" class="btn-cognira-white">View All Projects &rarr;</a>
             </div>
-            <a href="/projects.html" class="btn btn-coral">
-              View All Projects
-              <svg class="btn-arrow" viewBox="0 0 16 16" fill="none"><path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </a>
           </div>
         </div>
       </div>
@@ -1098,7 +1181,7 @@
           <p>We are not a routine outsourced agency. We are strategic technology and AI transformation partners.</p>
         </div>
 
-        <div class="why-bento-grid stagger-group scroll-reveal">
+        <div class="why-bento-grid">
           <!-- Bento 1: AI-First Architecture (Wide Card with Live Terminal Simulation) -->
           <div class="why-bento-card bento-wide">
             <div class="bento-content-head">
@@ -1364,7 +1447,7 @@
     <!-- ==========================================================================
          09. About / Who We Are (Homepage Section with Scroll Reveal)
          ========================================================================== -->
-    <section class="about-home-section scroll-reveal">
+    <section class="about-home-section">
       <div class="container">
         <div class="about-home-grid">
           <div>
@@ -1388,36 +1471,66 @@
     </section>
 
     <!-- ==========================================================================
-         10. Values (Official 4 Demaze Core Values)
+         10. Values (Cognira Benefits Pattern for Core Values)
          ========================================================================== -->
-    <section class="section" style="background-color: #faf4ee;">
+    <section class="cognira-values-section">
       <div class="container">
-        <div class="section-header">
-          <span class="section-badge-pill">Our Core Values</span>
-          <h2>Principles that define <span class="text-coral">every system we build</span></h2>
-          <p>The operational DNA that powers our engineering culture and client partnerships.</p>
+        <div class="cognira-header-split">
+          <div class="header-left">
+            <span class="cognira-pill"><span class="cognira-pill-dot"></span>Our Core Values</span>
+            <h2>Principles that define <br><span class="text-coral">every system we build</span></h2>
+          </div>
+          <div class="header-right">
+            <p>The operational DNA that powers our engineering culture, client partnerships, and long-term delivery standards.</p>
+          </div>
         </div>
 
-        <div class="values-grid stagger-group scroll-reveal">
-          <div class="value-card">
-            <div class="value-num">01</div>
-            <h3>Innovation at Our Core</h3>
-            <p>Constantly pushing technical frontiers to architect intelligent solutions that solve complex real-world challenges.</p>
+        <div class="cognira-values-grid">
+          <div class="cognira-value-card">
+            <div class="cognira-value-num">01</div>
+            <div class="cognira-value-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            </div>
+            <h3 class="cognira-value-title">Innovation at Our Core</h3>
+            <p class="cognira-value-desc">Constantly pushing technical frontiers to architect intelligent solutions that solve complex real-world challenges.</p>
           </div>
-          <div class="value-card">
-            <div class="value-num">02</div>
-            <h3>Client Success Obsession</h3>
-            <p>Your business milestones are our sole metrics. We measure our achievements strictly by the tangible value we deliver.</p>
+
+          <div class="cognira-value-card">
+            <div class="cognira-value-num">02</div>
+            <div class="cognira-value-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <circle cx="12" cy="12" r="6"/>
+                <circle cx="12" cy="12" r="2"/>
+              </svg>
+            </div>
+            <h3 class="cognira-value-title">Client Success Obsession</h3>
+            <p class="cognira-value-desc">Your business milestones are our sole metrics. We measure our achievements strictly by the tangible value we deliver.</p>
           </div>
-          <div class="value-card">
-            <div class="value-num">03</div>
-            <h3>Technology for Good</h3>
-            <p>Engineering ethical, accessible, and high-integrity software designed to empower human talent and positive impact.</p>
+
+          <div class="cognira-value-card">
+            <div class="cognira-value-num">03</div>
+            <div class="cognira-value-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <h3 class="cognira-value-title">Technology for Good</h3>
+            <p class="cognira-value-desc">Engineering ethical, accessible, and high-integrity software designed to empower human talent and positive impact.</p>
           </div>
-          <div class="value-card">
-            <div class="value-num">04</div>
-            <h3>Continuous Learning</h3>
-            <p>Staying ahead of rapid AI breakthroughs, continuously mastering state-of-the-art frameworks to benefit our clients.</p>
+
+          <div class="cognira-value-card">
+            <div class="cognira-value-num">04</div>
+            <div class="cognira-value-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+            </div>
+            <h3 class="cognira-value-title">Continuous Learning</h3>
+            <p class="cognira-value-desc">Staying ahead of rapid AI breakthroughs, continuously mastering state-of-the-art frameworks to benefit our clients.</p>
           </div>
         </div>
       </div>
@@ -1428,12 +1541,17 @@
          ========================================================================== -->
     <section class="how-it-works-section">
       <div class="container">
-        <div class="section-header text-left">
-          <span class="section-badge-pill">Our Process</span>
-          <h2><span class="text-coral">How we build</span> intelligent solutions</h2>
+        <div class="cognira-header-split">
+          <div class="header-left">
+            <span class="cognira-pill"><span class="cognira-pill-dot"></span>Our Process</span>
+            <h2><span class="text-coral">How we build</span> intelligent solutions</h2>
+          </div>
+          <div class="header-right">
+            <p>From initial discovery to enterprise rollout, our disciplined lifecycle delivers predictable execution and rapid speed-to-market.</p>
+          </div>
         </div>
 
-        <div class="how-cards-row stagger-group scroll-reveal">
+        <div class="how-cards-row">
           <div class="how-card">
             <div>
               <div class="how-card-num-circle">01</div>
@@ -1467,91 +1585,74 @@
     </section>
 
     <!-- ==========================================================================
-         12. FAQ Accordion Section (Official Demaze FAQs)
+         12. FAQ Accordion Section (Cognira Minimal Centered FAQ)
          ========================================================================== -->
-    <section id="faq" class="section" style="background-color: #fbf7f2;">
+    <section id="faq" class="cognira-faq-section">
       <div class="container">
         <div class="section-header">
-          <span class="section-badge-pill">FAQ</span>
-          <h2>Frequently asked questions</h2>
+          <span class="cognira-pill"><span class="cognira-pill-dot"></span>Frequently Asked Questions</span>
+          <h2>Clear answers to your questions</h2>
           <p>Everything you need to know about partnering with Demaze Technologies</p>
         </div>
 
-        <div class="faq-container">
-          <div class="faq-list">
-            <div class="faq-item">
-              <button class="faq-trigger" type="button">
-                <span>What makes Demaze different from other development companies?</span>
-                <span class="faq-icon-wrap">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                  </svg>
-                </span>
-              </button>
-              <div class="faq-content">
-                <p>We're an AI-first technology partner, not just a development service provider. Unlike traditional companies that focus solely on coding, we specialize in intelligent solutions that leverage cutting-edge AI, machine learning, and automation. We work as an extension of your team, focusing on long-term partnerships and measurable business outcomes rather than just project delivery.</p>
-              </div>
+        <div class="cognira-faq-card">
+          <div class="cognira-faq-item active">
+            <button class="cognira-faq-trigger" type="button" aria-expanded="true">
+              <span>What makes Demaze different from other development companies?</span>
+              <span class="cognira-faq-chevron">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="cognira-faq-content">
+              <p>We're an AI-first technology partner, not just a development service provider. Unlike traditional companies that focus solely on coding, we specialize in intelligent solutions that leverage cutting-edge AI, machine learning, and automation. We work as an extension of your team, focusing on long-term partnerships and measurable business outcomes rather than just project delivery.</p>
             </div>
+          </div>
 
-            <div class="faq-item">
-              <button class="faq-trigger" type="button">
-                <span>How long does it typically take to develop a custom solution?</span>
-                <span class="faq-icon-wrap">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                  </svg>
-                </span>
-              </button>
-              <div class="faq-content">
-                <p>Project timelines vary based on complexity and requirements, but most custom solutions take 3-6 months from concept to deployment. Simple applications may take 6-12 weeks, while complex AI-powered platforms or enterprise solutions can take 6-12 months. We provide detailed project timelines during our initial consultation and maintain transparent communication throughout the development process.</p>
-              </div>
+          <div class="cognira-faq-item">
+            <button class="cognira-faq-trigger" type="button" aria-expanded="false">
+              <span>How long does it typically take to develop a custom solution?</span>
+              <span class="cognira-faq-chevron">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="cognira-faq-content">
+              <p>Project timelines vary based on complexity and requirements, but most custom solutions take 3-6 months from concept to deployment. Simple applications may take 6-12 weeks, while complex AI-powered platforms or enterprise solutions can take 6-12 months. We provide detailed project timelines during our initial consultation and maintain transparent communication throughout the development process.</p>
             </div>
+          </div>
 
-            <div class="faq-item">
-              <button class="faq-trigger" type="button">
-                <span>Do you work with startups or only established enterprises?</span>
-                <span class="faq-icon-wrap">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                  </svg>
-                </span>
-              </button>
-              <div class="faq-content">
-                <p>We work with both startups and established enterprises across various industries. Our scalable approach allows us to support early-stage companies with MVP development and growth-stage businesses with comprehensive digital transformation. We tailor our solutions and engagement models to match your business size, budget, and growth objectives.</p>
-              </div>
+          <div class="cognira-faq-item">
+            <button class="cognira-faq-trigger" type="button" aria-expanded="false">
+              <span>Do you work with startups or only established enterprises?</span>
+              <span class="cognira-faq-chevron">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="cognira-faq-content">
+              <p>We work with both startups and established enterprises across various industries. Our scalable approach allows us to support early-stage companies with MVP development and growth-stage businesses with comprehensive digital transformation. We tailor our solutions and engagement models to match your business size, budget, and growth objectives.</p>
             </div>
+          </div>
 
-            <div class="faq-item">
-              <button class="faq-trigger" type="button">
-                <span>What ongoing support do you provide after project completion?</span>
-                <span class="faq-icon-wrap">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                  </svg>
-                </span>
-              </button>
-              <div class="faq-content">
-                <p>We offer comprehensive post-launch support including maintenance, updates, performance monitoring, and technical assistance. Our support packages range from basic maintenance to full managed services with dedicated support teams. We also provide training for your team and can scale our support based on your evolving needs as your business grows.</p>
-              </div>
+          <div class="cognira-faq-item">
+            <button class="cognira-faq-trigger" type="button" aria-expanded="false">
+              <span>What ongoing support do you provide after project completion?</span>
+              <span class="cognira-faq-chevron">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="cognira-faq-content">
+              <p>We offer comprehensive post-launch support including maintenance, updates, performance monitoring, and technical assistance. Our support packages range from basic maintenance to full managed services with dedicated support teams. We also provide training for your team and can scale our support based on your evolving needs as your business grows.</p>
             </div>
+          </div>
 
-            <div class="faq-item">
-              <button class="faq-trigger" type="button">
-                <span>How do you ensure the security and confidentiality of our project?</span>
-                <span class="faq-icon-wrap">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                  </svg>
-                </span>
-              </button>
-              <div class="faq-content">
-                <p>Security and confidentiality are paramount in everything we do. We implement industry-standard security protocols, sign comprehensive NDAs before any project discussion, follow secure development practices, and ensure data protection compliance (GDPR, CCPA, etc.). All our team members are bound by strict confidentiality agreements, and we use secure development environments and encrypted communication channels.</p>
-              </div>
+          <div class="cognira-faq-item">
+            <button class="cognira-faq-trigger" type="button" aria-expanded="false">
+              <span>How do you ensure the security and confidentiality of our project?</span>
+              <span class="cognira-faq-chevron">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <div class="cognira-faq-content">
+              <p>Security and confidentiality are paramount in everything we do. We implement industry-standard security protocols, sign comprehensive NDAs before any project discussion, follow secure development practices, and ensure data protection compliance (GDPR, CCPA, etc.). All our team members are bound by strict confidentiality agreements, and we use secure development environments and encrypted communication channels.</p>
             </div>
           </div>
         </div>
@@ -1559,16 +1660,20 @@
     </section>
 
     <!-- ==========================================================================
-         13. Final CTA (Official Demaze Closing Moment)
+         13. Final CTA (Cognira Minimal Dark Luxury Banner)
          ========================================================================== -->
-    <section class="cta-banner-section">
+    <section class="cognira-cta-section">
       <div class="container">
-        <div class="cta-banner-card">
+        <div class="cognira-cta-card">
+          <span class="cognira-pill"><span class="cognira-pill-dot"></span>Start Building Today</span>
           <h2>Have an idea worth building?<br><span class="text-coral">Let's build something real.</span></h2>
-          <p>We combine AI, software engineering, and automation with deep industry expertise to build scalable, sustainable solutions, working alongside you as a trusted, long-term partner.</p>
-          <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-            <a href="/contact-us.html" class="btn btn-olive">Book A Call</a>
-            <a href="/projects.html" class="btn btn-secondary">Explore Our Work</a>
+          <p>We combine AI, software engineering, and automation with deep industry expertise to turn ambitious concepts into resilient production systems.</p>
+          <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+            <a href="/contact-us.html" class="btn-cognira-white">
+              Book A Call
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="/projects.html" class="btn-cognira-dark">Explore Our Work</a>
           </div>
         </div>
       </div>

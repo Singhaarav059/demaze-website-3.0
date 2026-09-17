@@ -1,5 +1,5 @@
-import { initIndustryHoverSlider } from './interactive-hover-slider.js';
 import * as THREE from 'three';
+import { initIndustryHoverSlider } from './interactive-hover-slider.js';
 
 /**
  * Demaze Technologies - Interactive Logic & Animations
@@ -9,15 +9,16 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeader();
   initHeroParticleSphere();
   initHeroInteractiveGlow();
-  initIndustryHoverSlider();
   initScrollTextReveal();
   initTestimonialsSlider();
   initFaqAccordion();
+  initCogniraUseCasesTabs();
   initBackToTop();
   highlightActiveNavLink();
   initFilterTabs();
   initTechFilterTabs();
   initIndustriesTabs();
+  initIndustryHoverSlider();
   initDroneCurtainTransition();
   initScrollRevealStorytelling();
   initAnimatedCounters();
@@ -166,10 +167,10 @@ function initTestimonialsSlider() {
    4. FAQ Accordion
    ========================================================================== */
 function initFaqAccordion() {
-  const items = document.querySelectorAll('.faq-item');
+  const items = document.querySelectorAll('.faq-item, .cognira-faq-item');
 
   items.forEach(item => {
-    const trigger = item.querySelector('.faq-trigger');
+    const trigger = item.querySelector('.faq-trigger, .cognira-faq-trigger');
     if (!trigger) return;
 
     trigger.addEventListener('click', () => {
@@ -177,13 +178,53 @@ function initFaqAccordion() {
 
       items.forEach(otherItem => {
         otherItem.classList.remove('active');
+        const otherTrigger = otherItem.querySelector('.faq-trigger, .cognira-faq-trigger');
+        if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
       });
 
       if (!isOpen) {
         item.classList.add('active');
+        trigger.setAttribute('aria-expanded', 'true');
       }
     });
   });
+}
+
+function initCogniraUseCasesTabs() {
+  const tabs = document.querySelectorAll('.cognira-usecase-tab');
+  const cards = document.querySelectorAll('.cognira-project-card');
+  if (!tabs.length || !cards.length) return;
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetId = tab.getAttribute('data-target');
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          tabs.forEach(tab => {
+            if (tab.getAttribute('data-target') === id) {
+              tabs.forEach(t => t.classList.remove('active'));
+              tab.classList.add('active');
+            }
+          });
+        }
+      });
+    }, { threshold: 0.45 });
+
+    cards.forEach(card => observer.observe(card));
+  }
 }
 
 /* ==========================================================================
@@ -822,96 +863,27 @@ function initNeuralNervousSystem() {
   const badges = Array.from(wrapper.querySelectorAll('.sphere-badge[data-service]'));
   if (badges.length === 0) return;
 
-  // Architectural chamber alignment: centers sphere and rock pedestal directly on the background oculus & stone
+  // Hero 3D Experience alignment: centers sphere in right column on desktop and centered on mobile
   function alignHeroArchitecture() {
     if (!heroCard || !wrapper || !sphereContainer) return;
-    const cardRect = heroCard.getBoundingClientRect();
-    const split = document.querySelector('.hero-content-split');
-    const splitRect = split ? split.getBoundingClientRect() : cardRect;
-
-    const imgAspect = 16 / 9;
-    const cardAspect = cardRect.width / cardRect.height;
-    let renderedW, renderedH, offsetX, offsetY;
-    if (cardAspect >= imgAspect) {
-      renderedW = cardRect.width;
-      renderedH = cardRect.width / imgAspect;
-      offsetX = 0;
-      offsetY = cardRect.height - renderedH;
-    } else {
-      renderedH = cardRect.height;
-      renderedW = cardRect.height * imgAspect;
-      offsetX = (cardRect.width - renderedW) / 2;
-      offsetY = 0;
-    }
-
-    // In the architectural background render:
-    // The ceiling oculus, stone pedestal, and glowing ring center is at X = 68.8%
-    const rockCenterX = offsetX + renderedW * 0.688;
-    // The top surface center of the stone pedestal is at Y = 74.5%
-    const rockTopY = offsetY + renderedH * 0.745;
 
     if (window.innerWidth > 991) {
-      const wrapperW = wrapper.offsetWidth;
-      const rightMargin = (cardRect.right - rockCenterX) - (wrapperW / 2) - (cardRect.right - splitRect.right);
-      wrapper.style.marginRight = `${Math.max(0, rightMargin).toFixed(1)}px`;
-
-      if (rockPedestal) {
-        rockPedestal.style.left = `${rockCenterX.toFixed(1)}px`;
-        rockPedestal.style.top = `${rockTopY.toFixed(1)}px`;
-        rockPedestal.style.bottom = 'auto';
-        rockPedestal.style.transform = 'translate(-50%, -50%)';
-      }
-
-      // Exact vertical elevation calibration:
-      // Guarantee an elegant, distinct gap between sphere bottom and rock top so the branch is fully visible
-      const targetGap = Math.round(Math.max(62, Math.min(90, renderedH * 0.092)));
-
-      // Reset margin-top to measure baseline flex layout position
+      wrapper.style.marginRight = '0px';
+      wrapper.style.marginLeft = '0px';
       wrapper.style.marginTop = '0px';
-      const baselineWrapRect = wrapper.getBoundingClientRect();
-      const sphereRect = sphereContainer.getBoundingClientRect();
-      const currentSphereRadius = (sphereRect.width / 2) * 0.90;
-
-      // Calculate where sphere bottom currently lands relative to card top
-      const currentSphereBottom = (sphereRect.top - cardRect.top) + (sphereRect.height / 2) + currentSphereRadius * 1.04;
-      const desiredSphereBottom = rockTopY - targetGap;
-      const shiftY = desiredSphereBottom - currentSphereBottom;
-
-      wrapper.style.marginTop = `${shiftY.toFixed(1)}px`;
     } else {
       wrapper.style.marginRight = 'auto';
       wrapper.style.marginLeft = 'auto';
       wrapper.style.marginTop = '16px';
-      if (rockPedestal) {
-        rockPedestal.style.left = '50%';
-        rockPedestal.style.top = 'auto';
-        rockPedestal.style.bottom = window.innerWidth <= 810 ? 'clamp(140px, 20vh, 180px)' : 'clamp(55px, 8vh, 75px)';
-        rockPedestal.style.transform = 'translate(-50%, 0)';
-      }
     }
 
-    // Position outer floor ring directly over the outer ring in the architectural background
+    if (rockPedestal) {
+      rockPedestal.style.display = 'none';
+    }
+
     const outerRing = document.getElementById('hero-floor-outer-ring');
     if (outerRing) {
-      if (window.innerWidth > 991) {
-        const floorRingY = offsetY + renderedH * 0.835;
-        const ringW = renderedW * 0.43;
-        const ringH = renderedH * 0.13;
-        outerRing.style.left = `${rockCenterX.toFixed(1)}px`;
-        outerRing.style.top = `${floorRingY.toFixed(1)}px`;
-        outerRing.style.width = `${ringW.toFixed(1)}px`;
-        outerRing.style.height = `${ringH.toFixed(1)}px`;
-        outerRing.style.transform = 'translate(-50%, -50%)';
-        outerRing.style.display = 'block';
-      } else {
-        outerRing.style.left = '50%';
-        outerRing.style.bottom = 'clamp(20px, 4vh, 40px)';
-        outerRing.style.top = 'auto';
-        outerRing.style.width = 'clamp(240px, 75vw, 320px)';
-        outerRing.style.height = 'clamp(50px, 15vw, 75px)';
-        outerRing.style.transform = 'translate(-50%, 0)';
-        outerRing.style.display = 'block';
-      }
+      outerRing.style.display = 'none';
     }
   }
 
@@ -1725,8 +1697,8 @@ function initScrollRevealStorytelling() {
       }
     });
   }, {
-    threshold: 0.12,
-    rootMargin: '0px 0px -30px 0px'
+    threshold: 0.01,
+    rootMargin: '100px 0px 100px 0px'
   });
 
   elements.forEach(el => {
@@ -1925,9 +1897,6 @@ function initBentoTerminalSimulation() {
   // Start after small initial delay
   setTimeout(typeStep, 1200);
 }
-
-
-
 
 /* ==========================================================================
    Interactive Hero Cursor Ambient Glow
