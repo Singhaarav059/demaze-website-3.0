@@ -1,460 +1,146 @@
-import * as THREE from 'three';
-import gsap from 'gsap';
+/**
+ * Industry verticals directory.
+ *
+ * Renders all 19 sectors from a single dataset and reveals the selected
+ * sector's capabilities on hover, focus or click.
+ *
+ * Icons are 24x24 stroke glyphs using currentColor, matching the icon system
+ * already used across the rest of the site. The previous emoji labels and the
+ * six full-colour 3D illustrations were removed: emoji render differently per
+ * OS, and the illustrations were ~4.4MB and tonally unrelated to the brand.
+ */
 
-export const industrySectors = [
-  {
-    id: "01",
-    key: "fintech",
-    icon: "🪙",
-    title: "FinTech, Banking & BFSI",
-    focus: "Decentralized Ledger, Fraud AI & WealthTech",
-    metric: "Ledger & Fraud AI",
-    doodleBadge: "Ledger Architecture & Fraud AI",
-    img: "/assets/images/industry-fintech-3d.jpg",
-    subsectors: ["Banking", "BFSI Solutions", "Insurance", "Crypto & Web3", "Fintech"],
-    capabilities: ["Real-Time Fraud Engine", "Automated KYC/AML", "Algorithmic Underwriting", "High-Speed Ledger"]
-  },
-  {
-    id: "02",
-    key: "healthcare",
-    icon: "🧬",
-    title: "HealthTech & Life Sciences",
-    focus: "Clinical AI, EHR Telemetry & HIPAA Vaults",
-    metric: "Clinical NLP & Telemetry",
-    doodleBadge: "HIPAA Cloud & Clinical Telemetry",
-    img: "/assets/images/industry-healthcare-3d.jpg",
-    subsectors: ["Healthcare", "Pharma", "Life Sciences", "Telehealth", "Clinical AI"],
-    capabilities: ["AI Triage Assistant", "Clinical NLP Extraction", "HIPAA Secure Cloud", "Vital Telemetry"]
-  },
-  {
-    id: "03",
-    key: "ecommerce",
-    icon: "🛍️",
-    title: "E-Commerce & Digital Retail",
-    focus: "Headless Storefronts, Cart AI & Dynamic Pricing",
-    metric: "Headless & Dynamic Cart",
-    doodleBadge: "Headless Commerce & Cart AI",
-    img: "/assets/images/industry-ecommerce-3d.jpg",
-    subsectors: ["Retail", "Ecommerce", "Food & Beverage", "Social Commerce"],
-    capabilities: ["Omnichannel Sync", "Real-Time Stock AI", "Checkout Optimization", "Dynamic Pricing Engine"]
-  },
-  {
-    id: "04",
-    key: "logistics",
-    icon: "🚁",
-    title: "Logistics, Fleet & Supply Chain",
-    focus: "Autonomous Fleet, Route Telemetry & IoT",
-    metric: "Fleet Routing & IoT",
-    doodleBadge: "Fleet Telematics & Route Engine",
-    img: "/assets/images/industry-logistics-3d.jpg",
-    subsectors: ["Logistics", "Automotive", "Energy & Utility", "Manufacturing"],
-    capabilities: ["Route Optimization", "Fleet Telematics", "Predictive Restocking", "Warehouse Robotics"]
-  },
-  {
-    id: "05",
-    key: "saas",
-    icon: "🧠",
-    title: "SaaS Products & Enterprise AI",
-    focus: "Autonomous AI Agents, Multi-tenant Core",
-    metric: "Autonomous Agents & RAG",
-    doodleBadge: "Multi-Tenant Agentic Systems",
-    img: "/assets/images/industry-saas-3d.jpg",
-    subsectors: ["SaaS Products", "HR Tech", "Legal & Professional", "Education"],
-    capabilities: ["Multi-Tenant Core", "Autonomous Agent Workflows", "Usage-Based Billing", "RAG Knowledge Index"]
-  },
-  {
-    id: "06",
-    key: "gaming",
-    icon: "🎮",
-    title: "Media, Sports & WebGL Gaming",
-    focus: "Real-time 3D, WebRTC Video & Fan Engagement",
-    metric: "Real-time 3D & WebRTC",
-    doodleBadge: "Interactive 3D WebGL Engine",
-    img: "/assets/images/industry-gaming-3d.jpg",
-    subsectors: ["Sports & Gaming", "Media & Entertainment", "Creative AI"],
-    capabilities: ["Interactive 3D WebGL", "Sub-Second Live Streaming", "Fan Engagement Hubs", "Generative Storyboards"]
-  }
+// Lucide-style 24x24 stroke paths, drawn with currentColor.
+const ICONS = {
+  card: '<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>',
+  pulse: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+  bag: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+  truck: '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+  layers: '<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>',
+  gamepad: '<line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><rect width="20" height="12" x="2" y="6" rx="5"/>',
+  trend: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+  car: '<path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/>',
+  zap: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+  building: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/>',
+  film: '<rect width="20" height="20" x="2" y="2" rx="2.18"/><line x1="7" x2="7" y1="2" y2="22"/><line x1="17" x2="17" y1="2" y2="22"/><line x1="2" x2="22" y1="12" y2="12"/>',
+  cap: '<path d="M22 10v6"/><path d="m2 10 10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+  utensils: '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
+  scale: '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+  phone: '<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>',
+  factory: '<path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/>',
+  trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+};
+
+const svg = (key) =>
+  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[key] || ICONS.layers}</svg>`;
+
+// Single source of truth for the section, the detail panel and the modal.
+export const industries = [
+  { id: '01', icon: 'card', name: 'FinTech, Banking & BFSI', metric: 'Ledger & Fraud AI', desc: 'High-throughput transaction processing, AI fraud prevention, regulatory compliance automation and algorithmic underwriting.', caps: ['Real-Time Fraud Engine', 'Automated KYC/AML', 'Algorithmic Underwriting', 'High-Speed Ledger'], subsectors: ['Banking', 'BFSI Solutions', 'Insurance', 'Crypto & Web3'] },
+  { id: '02', icon: 'pulse', name: 'HealthTech & Life Sciences', metric: 'Clinical Telemetry', desc: 'HIPAA-compliant clinical platforms, AI patient triage, diagnostic intelligence models and practice workflow automation.', caps: ['AI Triage Assistant', 'Clinical NLP Extraction', 'HIPAA Secure Cloud', 'Vital Telemetry'], subsectors: ['Healthcare', 'Pharma', 'Telehealth', 'Clinical AI'] },
+  { id: '03', icon: 'bag', name: 'E-Commerce & Retail', metric: 'Headless Commerce', desc: 'Headless commerce, AI cart optimisation, live streaming shopping, multi-vendor marketplaces and dynamic pricing engines.', caps: ['Omnichannel Sync', 'Real-Time Stock AI', 'Checkout Optimisation', 'Dynamic Pricing'], subsectors: ['Retail', 'Ecommerce', 'Social Commerce'] },
+  { id: '04', icon: 'truck', name: 'Logistics & Fleet', metric: 'Fleet & Route IoT', desc: 'Autonomous dispatch algorithms, route optimisation engines, cold-chain telemetry and multi-hub inventory reconciliation.', caps: ['Route Optimisation', 'Fleet Telematics', 'Predictive Restocking', 'Warehouse Robotics'], subsectors: ['Logistics', 'Supply Chain', 'Last-Mile'] },
+  { id: '05', icon: 'layers', name: 'SaaS & Enterprise AI', metric: 'Autonomous Agents', desc: 'Cloud-native multi-tenant SaaS platforms with autonomous AI agents, usage-based billing and extensible APIs.', caps: ['Multi-Tenant Core', 'Agent Workflows', 'Usage-Based Billing', 'RAG Knowledge Index'], subsectors: ['SaaS Products', 'Enterprise AI', 'APIs'] },
+  { id: '06', icon: 'gamepad', name: 'Gaming & WebGL 3D', metric: 'Real-Time 3D Engine', desc: 'Ultra-low latency streaming architectures, real-time player telemetry, interactive 3D WebGL engines and community hubs.', caps: ['Interactive 3D WebGL', 'Sub-Second Streaming', 'Fan Engagement Hubs', 'Player Telemetry'], subsectors: ['Gaming', 'Esports', 'Interactive Media'] },
+  { id: '07', icon: 'trend', name: 'BFSI & WealthTech', metric: 'Institutional Core', desc: 'Enterprise financial software with institutional security, automated wealth advisory engines, audit trails and regulatory reporting.', caps: ['Wealth Portals', 'Audit Trails', 'Risk Models', 'Regulatory Reporting'], subsectors: ['Wealth', 'Investments', 'Compliance'] },
+  { id: '08', icon: 'car', name: 'Automotive & Dealership OS', metric: 'Dealership OS', desc: 'Operating systems for dealerships, automating vehicle appraisal, instant EMI financing and workshop refurbishment.', caps: ['Valuation AI', 'EMI Calculator', 'DMS Sync', 'Service Scheduling'], subsectors: ['Automotive', 'Dealerships', 'Aftermarket'] },
+  { id: '09', icon: 'zap', name: 'Energy & Utilities', metric: 'Smart Grid IoT', desc: 'Smart grid IoT sensor ingestion, equipment failure prediction, consumption forecasting and enterprise billing synchronisation.', caps: ['Grid Telemetry', 'Predictive Maintenance', 'IoT Ingestion', 'Utility Billing'], subsectors: ['Energy', 'Utilities', 'Renewables'] },
+  { id: '10', icon: 'building', name: 'Real Estate & PropTech', metric: 'PropTech & Staging', desc: 'AI property valuation, virtual staging pipelines, tenant management portals and automated digital lease execution.', caps: ['Valuation AI', 'Virtual Staging', 'Lease Workflows', 'Tenant Portals'], subsectors: ['Real Estate', 'PropTech', 'Facilities'] },
+  { id: '11', icon: 'film', name: 'Media & Entertainment', metric: 'GenAI & Asset DRM', desc: 'Generative AI script-to-storyboard pipelines, automated transcription, digital asset management and adaptive video delivery.', caps: ['GenAI Storyboard', 'Speech-to-Text', 'DRM Cloud', 'Adaptive Delivery'], subsectors: ['Media', 'Streaming', 'Publishing'] },
+  { id: '12', icon: 'cap', name: 'Education & EdTech', metric: 'Adaptive Learning', desc: 'Adaptive learning platforms, automated grading assistants, interactive virtual classrooms and predictive progress analytics.', caps: ['Adaptive Learning', 'Virtual Classroom', 'Grading AI', 'Certification'], subsectors: ['Education', 'EdTech', 'Corporate L&D'] },
+  { id: '13', icon: 'utensils', name: 'Food, Beverage & Hospitality', metric: 'Kitchen & Cold-Chain', desc: 'Kitchen display systems, cold-chain temperature telemetry, loyalty applications and automated restaurant reservations.', caps: ['Kitchen OS', 'Cold-Chain IoT', 'Table Booking', 'Loyalty Programs'], subsectors: ['Food & Beverage', 'Hospitality', 'Delivery'] },
+  { id: '14', icon: 'scale', name: 'LegalTech & Professional', metric: 'Zero-Trust Vaults', desc: 'Secure case management for legal teams with AI transcription, document indexing and automated deposit handling.', caps: ['Case Vault', 'Audio NLP', 'Evidence Chain', 'Contract Management'], subsectors: ['Legal', 'Professional Services', 'Compliance'] },
+  { id: '15', icon: 'users', name: 'Human Resources & Talent', metric: 'Talent & Matching', desc: 'Intelligent candidate matching, resume parsing pipelines, onboarding automation and organisational retention analytics.', caps: ['Resume Parser', 'Matching AI', 'Onboarding Flows', 'Retention Analytics'], subsectors: ['HR Tech', 'Recruitment', 'Payroll'] },
+  { id: '16', icon: 'shield', name: 'Insurance & InsurTech', metric: 'Claims Automation', desc: 'Automated claim adjudication pipelines, digital policy administration, risk scoring engines and instant payouts.', caps: ['Claims AI', 'Policy Admin', 'Fraud Scoring', 'Underwriting'], subsectors: ['Insurance', 'InsurTech', 'Risk'] },
+  { id: '17', icon: 'phone', name: 'Social Commerce & Creators', metric: 'Live Commerce', desc: 'Social discovery merged with instant commerce: live streaming shopping, creator affiliate tracking and social checkout.', caps: ['Live Shopping', 'Creator Sync', 'One-Click Buy', 'UGC Systems'], subsectors: ['Social Commerce', 'Creator Economy', 'Marketplaces'] },
+  { id: '18', icon: 'factory', name: 'Manufacturing & B2B', metric: 'Industrial IoT', desc: 'Industrial IoT predictive maintenance, procurement automation, factory floor visualisation and legacy ERP modernisation.', caps: ['Factory IoT', 'Predictive Maintenance', 'ERP Modernisation', 'Procurement'], subsectors: ['Manufacturing', 'B2B', 'Industrial'] },
+  { id: '19', icon: 'trophy', name: 'Sports & Esports', metric: 'Low-Latency Stream', desc: 'Live match telemetry overlays, interactive fantasy backends, low-latency WebRTC streams and global leaderboard scalability.', caps: ['Live Overlays', 'Fantasy Core', 'WebRTC Streams', 'Leaderboards'], subsectors: ['Sports', 'Esports', 'Fan Platforms'] },
 ];
-
-export const all19Industries = [
-  { id: "01", name: "FinTech & Banking", category: "Finance", icon: "🪙", metric: "Ledger & Fraud AI", desc: "High-throughput transaction processing, AI fraud prevention, regulatory compliance automation, and algorithmic underwriting.", tags: ["Fraud Engine", "KYC/AML", "Ledgers"] },
-  { id: "02", name: "Healthcare & Life Sciences", category: "Health", icon: "🧬", metric: "Clinical Telemetry", desc: "HIPAA-compliant clinical platforms, AI patient triage assistants, diagnostic intelligence models, and medical practice workflow automation.", tags: ["Clinical AI", "EHR Sync", "HIPAA Vault"] },
-  { id: "03", name: "E-Commerce & Retail", category: "Commerce", icon: "🛍️", metric: "Headless Commerce", desc: "Headless commerce, AI cart optimization, live streaming shopping, multi-vendor marketplaces, and dynamic pricing engines.", tags: ["Smart Cart", "Headless", "Pricing AI"] },
-  { id: "04", name: "Logistics & Fleet", category: "Operations", icon: "🚁", metric: "Fleet & Route IoT", desc: "Autonomous dispatch algorithms, route optimization engines, cold-chain telemetry monitoring, and multi-hub inventory reconciliation.", tags: ["Route AI", "Fleet IoT", "Warehouse OS"] },
-  { id: "05", name: "SaaS & Enterprise AI", category: "Cloud", icon: "🧠", metric: "Autonomous Agents", desc: "Cloud-native multi-tenant SaaS platforms featuring autonomous AI agents, usage-based billing, role-based security, and extensible APIs.", tags: ["Multi-Tenant", "Agent Core", "RAG Index"] },
-  { id: "06", name: "Gaming & WebGL 3D", category: "Media", icon: "🎮", metric: "Real-Time 3D Engine", desc: "Ultra-low latency streaming architectures, real-time player telemetry, interactive 3D WebGL engines, and community engagement hubs.", tags: ["3D WebGL", "Sub-Sec Stream", "Telemetry"] },
-  { id: "07", name: "BFSI & WealthTech", category: "Finance", icon: "📈", metric: "Institutional Core", desc: "Enterprise financial software with institutional security, automated wealth advisory engines, audit trails, and automated regulatory reporting.", tags: ["Wealth Portals", "Audit Trails", "Risk Models"] },
-  { id: "08", name: "Automotive & Dealership OS", category: "Operations", icon: "🏎️", metric: "Dealership OS", desc: "Enterprise operating systems for luxury dealerships, automating vehicle appraisal, instant EMI financing, and workshop refurbishment.", tags: ["Valuation AI", "EMI Calculator", "DMS Sync"] },
-  { id: "09", name: "Energy & Utilities", category: "Operations", icon: "⚡", metric: "Smart Grid IoT", desc: "Smart grid IoT sensor ingestion, equipment failure prediction, utility consumption forecasting, and enterprise billing synchronization.", tags: ["Grid Telemetry", "Predictive Maint.", "IoT Ingestion"] },
-  { id: "10", name: "Real Estate & PropTech", category: "Commerce", icon: "🏢", metric: "PropTech & Staging", desc: "AI property valuation algorithms, virtual staging pipelines, tenant management portals, and automated digital lease execution workflows.", tags: ["Valuation AI", "Virtual Staging", "Lease Workflows"] },
-  { id: "11", name: "Media & Entertainment", category: "Media", icon: "🎬", metric: "GenAI & Asset DRM", desc: "Generative AI script-to-storyboard pipelines, automated multi-language transcription, digital asset management, and adaptive video delivery.", tags: ["GenAI Storyboard", "Speech-to-Text", "DRM Cloud"] },
-  { id: "12", name: "Education & EdTech", category: "Cloud", icon: "🎓", metric: "Adaptive Learning", desc: "Adaptive learning platforms, automated grading assistants, interactive virtual classrooms, and predictive student progress analytics.", tags: ["Adaptive AI", "Virtual Classroom", "Grading AI"] },
-  { id: "13", name: "Food, Beverage & Hospitality", category: "Commerce", icon: "🍔", metric: "Kitchen & Cold-Chain", desc: "Kitchen display systems, cold-chain temperature telemetry, customer loyalty mobile applications, and automated restaurant reservations.", tags: ["Kitchen OS", "Cold-Chain IoT", "Table Booking"] },
-  { id: "14", name: "LegalTech & Professional", category: "Cloud", icon: "⚖️", metric: "Zero-Trust Vaults", desc: "Secure case management platforms for legal teams, featuring AI speech transcription, document indexing, and automated deposits.", tags: ["Case Vault", "Audio NLP", "Evidence Chain"] },
-  { id: "15", name: "Human Resources & Talent", category: "Cloud", icon: "👥", metric: "Talent & Matching", desc: "Intelligent candidate matching, resume parsing pipelines, onboarding automation, and organizational retention analytics.", tags: ["Resume Parser", "Matching AI", "Sentiment"] },
-  { id: "16", name: "Insurance & InsurTech", category: "Finance", icon: "🛡️", metric: "Claims Automation", desc: "Automated claim adjudication pipelines, digital policy administration, risk scoring engines, and instant automated payouts.", tags: ["Claims AI", "Policy Admin", "Fraud Scoring"] },
-  { id: "17", name: "Social Commerce & Creators", category: "Commerce", icon: "📱", metric: "Live Commerce", desc: "Merging social discovery with instant commerce, enabling live streaming shopping, creator affiliate tracking, and friction-free social checkout.", tags: ["Live Shopping", "Creator Sync", "1-Click Buy"] },
-  { id: "18", name: "Manufacturing & B2B Industry", category: "Operations", icon: "🏭", metric: "Industrial IoT", desc: "Industrial IoT predictive maintenance, supply chain procurement automation, factory floor visualization, and legacy ERP modernization.", tags: ["Factory IoT", "Predictive AI", "ERP Modern"] },
-  { id: "19", name: "Sports & Esports Streaming", category: "Media", icon: "🏆", metric: "Low-Latency Stream", desc: "Live match telemetry overlays, interactive fantasy backends, low-latency WebRTC streams, and global leaderboard scalability.", tags: ["Live Overlays", "Fantasy Core", "WebRTC"] }
-];
-
-const vertexShader = /* glsl */`
-uniform vec2 uVelocity;
-uniform vec2 uViewport;
-uniform float uCurvature;
-
-varying vec2 vUv;
-
-float circularArc(float d) {
-  float maxAngle = 1.15;
-  float theta = clamp(d, 0.0, 1.0) * maxAngle;
-  return (1.0 - cos(theta)) / (1.0 - cos(maxAngle));
-}
-
-void main() {
-  vUv = uv;
-
-  vec4 worldPos = modelMatrix * vec4(position, 1.0);
-
-  float nx = worldPos.x / uViewport.x;
-  float ny = worldPos.y / uViewport.y;
-
-  float cx = clamp(nx, -1.0, 1.0);
-  float cy = clamp(ny, -1.0, 1.0);
-
-  float distY = abs(cy);
-  float distX = abs(cx);
-
-  float curveY = circularArc(distY);
-  float curveX = circularArc(distX);
-
-  float edgeLift = curveY * uCurvature + curveX * (uCurvature * 0.1);
-  float finalZOffset = edgeLift;
-
-  float focalLength = max(uViewport.y * 2.2, 900.0);
-  float perspective = focalLength / (focalLength - finalZOffset);
-
-  vec3 finalPos = worldPos.xyz;
-  finalPos.xy *= perspective;
-  finalPos.z += finalZOffset;
-
-  gl_Position = projectionMatrix * viewMatrix * vec4(finalPos, 1.0);
-}
-`;
-
-const fragmentShader = /* glsl */`
-uniform sampler2D uTexture;
-uniform vec2 uPlaneSize;
-uniform vec2 uImageSize;
-uniform float uAlpha;
-uniform float uZoom;
-varying vec2 vUv;
-
-vec2 coverUv(vec2 uv, vec2 planeSize, vec2 imageSize) {
-  float planeRatio = planeSize.x / planeSize.y;
-  float imageRatio = imageSize.x / imageSize.y;
-  vec2 scale = vec2(1.0);
-  if (planeRatio > imageRatio) {
-    scale.y = imageRatio / planeRatio;
-  } else {
-    scale.x = planeRatio / imageRatio;
-  }
-  uv = (uv - 0.5) * scale + 0.5;
-  return (uv - 0.5) / uZoom + 0.5;
-}
-
-void main() {
-  vec2 uv = coverUv(vUv, uPlaneSize, uImageSize);
-  if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) discard;
-  vec4 tex = texture2D(uTexture, uv);
-  gl_FragColor = vec4(tex.rgb, tex.a * uAlpha);
-}
-`;
-
-const clamp = (v, mn, mx) => Math.min(Math.max(v, mn), mx);
-const lerp = (a, b, t) => a + (b - a) * t;
 
 export function initIndustryHoverSlider() {
   const container = document.getElementById('industry-hover-slider');
   if (!container) return;
 
-  const canvasMount = container.querySelector('.slider-webgl-mount');
-  const rowButtons = container.querySelectorAll('.industry-slider-row');
-  const badgeTitle = container.querySelector('.industry-active-doodle-badge .badge-text');
-  const subsectorsWrap = container.querySelector('.industry-active-subsectors');
-  const capabilitiesWrap = container.querySelector('.industry-active-caps');
-  if (!canvasMount || !rowButtons.length) return;
+  const list = container.querySelector('.industry-rows-list');
+  const detail = container.querySelector('.industry-detail-panel');
+  if (!list || !detail) return;
 
-  // Cleanup any old canvas child if present to avoid duplicate renderers
-  const oldCanvases = canvasMount.querySelectorAll('canvas');
-  oldCanvases.forEach(c => c.remove());
+  // --- Render all 19 rows -----------------------------------------------
+  list.innerHTML = industries.map((item, i) => `
+    <button type="button" class="industry-row${i === 0 ? ' active' : ''}" role="tab"
+            id="industry-tab-${item.id}" data-index="${i}"
+            aria-selected="${i === 0}" tabindex="${i === 0 ? '0' : '-1'}">
+      <span class="row-id">${item.id}</span>
+      <span class="row-icon">${svg(item.icon)}</span>
+      <span class="row-name">${item.name}</span>
+    </button>`).join('');
 
-  let W = Math.max(1, canvasMount.clientWidth);
-  let H = Math.max(1, canvasMount.clientHeight);
+  const rows = [...list.querySelectorAll('.industry-row')];
 
-  const CARD_ASPECT = 1.7;
-  const GAP = 12;
-  const VISIBLE = Math.min(industrySectors.length, 6);
-  const HALF = Math.floor(VISIBLE / 2);
-
-  // Compact 400px calibrated card heights
-  const getCardH = () => Math.round(H * (W < 768 ? 0.42 : 0.48));
-  const getCardW = () => {
-    const cardW = getCardH() * CARD_ASPECT;
-    return Math.round(W < 768 ? Math.min(cardW, W * 0.90) : Math.min(cardW, W * 0.88));
+  // --- Detail panel ------------------------------------------------------
+  const render = (i) => {
+    const item = industries[i];
+    detail.innerHTML = `
+      <div class="detail-head">
+        <span class="detail-icon">${svg(item.icon)}</span>
+        <div>
+          <span class="detail-eyebrow">Vertical ${item.id} · ${item.metric}</span>
+          <h3 class="detail-title">${item.name}</h3>
+        </div>
+      </div>
+      <p class="detail-desc">${item.desc}</p>
+      <div class="detail-block">
+        <span class="detail-label">Capabilities</span>
+        <div class="detail-chips">${item.caps.map(c => `<span class="detail-chip">${c}</span>`).join('')}</div>
+      </div>
+      <div class="detail-block">
+        <span class="detail-label">Sub-sectors</span>
+        <div class="detail-chips subtle">${item.subsectors.map(s => `<span class="detail-chip">${s}</span>`).join('')}</div>
+      </div>
+      <a href="/contact-us.html" class="detail-cta">
+        Discuss this sector
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.33 8h9.34M8 3.33 12.67 8 8 12.67" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>`;
   };
 
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setClearColor(0x000000, 0);
-  Object.assign(renderer.domElement.style, {
-    position: "absolute",
-    top: "0",
-    left: "0",
-    width: "100%",
-    height: "100%",
-    zIndex: "2",
-    pointerEvents: "none"
-  });
-  canvasMount.appendChild(renderer.domElement);
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.OrthographicCamera();
-  const updateCamera = () => {
-    camera.left = -W / 2;
-    camera.right = W / 2;
-    camera.top = H / 2;
-    camera.bottom = -H / 2;
-    camera.near = -2000;
-    camera.far = 2000;
-    camera.updateProjectionMatrix();
-  };
-  camera.position.z = 1000;
-  updateCamera();
-  renderer.setSize(W, H, false);
-
-  const loader = new THREE.TextureLoader();
-  const texCache = {};
-  const getTexture = (src) => {
-    if (texCache[src]) return texCache[src];
-    const tex = loader.load(src, (t) => {
-      t.colorSpace = THREE.SRGBColorSpace;
-      t.minFilter = THREE.LinearFilter;
-      t.magFilter = THREE.LinearFilter;
-      t.userData.iw = t.image?.width || 1600;
-      t.userData.ih = t.image?.height || 900;
+  let active = 0;
+  const select = (i, focus = false) => {
+    if (i === active && !focus) return;
+    active = i;
+    rows.forEach((r, n) => {
+      const on = n === i;
+      r.classList.toggle('active', on);
+      r.setAttribute('aria-selected', String(on));
+      r.tabIndex = on ? 0 : -1;
     });
-    tex.userData.iw = 1600;
-    tex.userData.ih = 900;
-    texCache[src] = tex;
-    return tex;
-  };
-  industrySectors.forEach(item => getTexture(item.img));
-
-  const syncImageSize = (mesh) => {
-    const t = mesh.material.uniforms.uTexture.value;
-    if (!t?.image) return;
-    mesh.material.uniforms.uImageSize.value.set(
-      t.image.width || t.userData.iw || 1600,
-      t.image.height || t.userData.ih || 900
-    );
+    render(i);
+    if (focus) rows[i].focus();
   };
 
-  const geo = new THREE.PlaneGeometry(1, 1, 64, 64);
-  let CW = getCardW(), CH = getCardH();
-
-  const makeMat = (tex) => new THREE.ShaderMaterial({
-    uniforms: {
-      uTexture: { value: tex },
-      uPlaneSize: { value: new THREE.Vector2(CW, CH) },
-      uImageSize: { value: new THREE.Vector2(tex.userData.iw || 1600, tex.userData.ih || 900) },
-      uVelocity: { value: new THREE.Vector2(0, 0) },
-      uAlpha: { value: 0 },
-      uZoom: { value: 1.05 },
-      uViewport: { value: new THREE.Vector2(W / 2, H / 2) },
-      uCurvature: { value: 0 }
-    },
-    vertexShader,
-    fragmentShader,
-    transparent: true,
-    depthWrite: false,
-    side: THREE.DoubleSide
+  rows.forEach((row, i) => {
+    row.addEventListener('mouseenter', () => select(i));
+    row.addEventListener('click', () => select(i));
+    row.addEventListener('focus', () => select(i));
   });
 
-  const firstTex = getTexture(industrySectors[0].img);
-  const meshes = Array.from({ length: VISIBLE }, (_, i) => {
-    const mesh = new THREE.Mesh(geo, makeMat(firstTex));
-    mesh.renderOrder = i;
-    scene.add(mesh);
-    return mesh;
-  });
-
-  const curveAnim = { value: 0, zoom: 1.05 };
-  const anim = { alpha: 1 };
-  const ACTIVE_CURVE = 300;
-  const SOFT_CURVE = 60;
-  let activeIndex = 0;
-  let floatIdx = 0;
-  let prevFloat = 0;
-  const vel = new THREE.Vector2(0, 0);
-
-  // Mouse Parallax & 3D Tilt for tactile doodle feel
-  const mouseNorm = { x: 0, y: 0 };
-  const targetMouse = { x: 0, y: 0 };
-  container.addEventListener('mousemove', (e) => {
-    const rect = canvasMount.getBoundingClientRect();
-    const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    const ny = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-    targetMouse.x = clamp(nx, -1, 1);
-    targetMouse.y = clamp(ny, -1, 1);
-  });
-  container.addEventListener('mouseleave', () => {
-    targetMouse.x = 0;
-    targetMouse.y = 0;
-  });
-
-  const getCurveForTravel = (targetIdx) => {
-    const travel = Math.abs(targetIdx - floatIdx);
-    const p = clamp((travel - 0.35) / 3.5, 0, 1);
-    const eased = p * p * (3 - 2 * p);
-    return lerp(SOFT_CURVE, ACTIVE_CURVE, eased);
-  };
-
-  const releaseCurve = (targetIdx = activeIndex) => {
-    const peakCurve = getCurveForTravel(targetIdx);
-    gsap.killTweensOf(curveAnim);
-    curveAnim.zoom = 1.05;
-    gsap
-      .timeline()
-      .to(curveAnim, {
-        value: peakCurve,
-        zoom: 1.05,
-        duration: 0.12,
-        ease: "power2.out"
-      })
-      .to(curveAnim, {
-        value: 0,
-        zoom: 1.05,
-        duration: 1.15,
-        ease: "power2.inOut"
-      });
-  };
-
-  const updateActiveUI = (idx) => {
-    activeIndex = idx;
-    rowButtons.forEach((btn, i) => {
-      if (i === idx) {
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-      } else {
-        btn.classList.remove('active');
-        btn.setAttribute('aria-selected', 'false');
-      }
-    });
-
-    const item = industrySectors[idx];
-    if (!item) return;
-
-    if (badgeTitle) {
-      badgeTitle.textContent = item.doodleBadge;
+  // Roving-tabindex keyboard support for the tablist
+  list.addEventListener('keydown', (e) => {
+    const keys = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+    if (keys[e.key]) {
+      e.preventDefault();
+      select((active + keys[e.key] + rows.length) % rows.length, true);
+    } else if (e.key === 'Home') {
+      e.preventDefault(); select(0, true);
+    } else if (e.key === 'End') {
+      e.preventDefault(); select(rows.length - 1, true);
     }
-
-    if (subsectorsWrap) {
-      subsectorsWrap.innerHTML = item.subsectors.map(s => `<span class="subsector-pill">${s}</span>`).join('');
-    }
-
-    if (capabilitiesWrap) {
-      capabilitiesWrap.innerHTML = item.capabilities.slice(0, 3).map(c => `<span class="industry-cap-chip">${c}</span>`).join('');
-    }
-
-    releaseCurve(idx);
-  };
-
-  rowButtons.forEach((btn, i) => {
-    btn.addEventListener('mouseenter', () => updateActiveUI(i));
-    btn.addEventListener('click', () => updateActiveUI(i));
-    btn.addEventListener('focus', () => updateActiveUI(i));
   });
 
-  const onResize = () => {
-    W = Math.max(1, canvasMount.clientWidth);
-    H = Math.max(1, canvasMount.clientHeight);
-    renderer.setSize(W, H, false);
-    updateCamera();
-    CW = getCardW();
-    CH = getCardH();
-    meshes.forEach(m => {
-      m.material.uniforms.uPlaneSize.value.set(CW, CH);
-      m.material.uniforms.uViewport.value.set(W / 2, H / 2);
-    });
-  };
-
-  const observer = new ResizeObserver(onResize);
-  observer.observe(canvasMount);
-  onResize();
-  updateActiveUI(0);
-
-  let raf = 0;
-  const tick = () => {
-    raf = requestAnimationFrame(tick);
-    const targetIdx = activeIndex;
-    const diff = targetIdx - floatIdx;
-    const dist = Math.abs(diff);
-    const t = clamp(0.18 - dist * 0.06, 0.05, 0.18);
-
-    floatIdx = floatIdx + diff * t;
-    const delta = floatIdx - prevFloat;
-    vel.y = lerp(vel.y, delta * 60, 0.16);
-    vel.x = lerp(vel.x, 0, 0.14);
-    prevFloat = floatIdx;
-
-    mouseNorm.x = lerp(mouseNorm.x, targetMouse.x, 0.08);
-    mouseNorm.y = lerp(mouseNorm.y, targetMouse.y, 0.08);
-
-    const centreInt = Math.round(floatIdx);
-    const drift = floatIdx - centreInt;
-
-    for (let i = 0; i < VISIBLE; i++) {
-      const offset = i - HALF;
-      const itemIdx = ((centreInt + offset) % industrySectors.length + industrySectors.length) % industrySectors.length;
-      const posY = (-offset + drift) * (CH + GAP);
-      const d = Math.abs(offset - drift);
-
-      const scaleH = Math.max(0.80, 1.0 - d * 0.06);
-      const sw = CW;
-      const sh = CH * scaleH;
-      const baseOpacity = 0.98;
-      const opacity = Math.max(0, baseOpacity - d * 0.24) * anim.alpha;
-
-      const wantTex = getTexture(industrySectors[itemIdx].img);
-      if (meshes[i].material.uniforms.uTexture.value !== wantTex) {
-        meshes[i].material.uniforms.uTexture.value = wantTex;
-      }
-      syncImageSize(meshes[i]);
-
-      // Subtle 3D mouse parallax response
-      const posX = mouseNorm.x * 10;
-      meshes[i].position.set(posX, posY, i);
-      meshes[i].rotation.y = mouseNorm.x * 0.12;
-      meshes[i].rotation.x = -mouseNorm.y * 0.10;
-      meshes[i].scale.set(sw, sh, 1);
-
-      meshes[i].material.uniforms.uVelocity.value.set(vel.x, vel.y * 0.28);
-      meshes[i].material.uniforms.uAlpha.value = opacity;
-      meshes[i].material.uniforms.uZoom.value = curveAnim.zoom - clamp(1.0 - d, 0, 1) * 0.04;
-      meshes[i].material.uniforms.uPlaneSize.value.set(sw, sh);
-      meshes[i].material.uniforms.uCurvature.value = curveAnim.value;
-      meshes[i].material.uniforms.uViewport.value.set(W / 2, H / 2);
-    }
-
-    renderer.render(scene, camera);
-  };
-
-  tick();
-
-  // Initialize Related Component: All 19 Verticals Directory Drawer
+  render(0);
   initAllIndustriesModal();
-  initDoodleTelemetryCards();
+  initTelemetryCards();
 }
 
 function initAllIndustriesModal() {
@@ -462,41 +148,50 @@ function initAllIndustriesModal() {
   const modal = document.getElementById('industry-all-modal');
   if (!openBtn || !modal) return;
 
+  const grid = modal.querySelector('.modal-grid-body');
+  if (grid) {
+    grid.innerHTML = industries.map(item => `
+      <div class="modal-industry-card">
+        <div class="card-head"><span class="modal-icon">${svg(item.icon)}</span><span class="card-id">${item.id}</span></div>
+        <h4>${item.name}</h4>
+        <p>${item.desc}</p>
+        <div class="modal-tags">${item.caps.slice(0, 3).map(c => `<span>${c}</span>`).join('')}</div>
+      </div>`).join('');
+  }
+
   const closeBtn = modal.querySelector('.modal-close-btn');
   const backdrop = modal.querySelector('.modal-backdrop-blur');
+  let lastFocused = null;
 
-  const openModal = () => {
+  const open = () => {
+    lastFocused = document.activeElement;
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+    (closeBtn || modal).focus();
   };
-
-  const closeModal = () => {
+  const close = () => {
     modal.classList.remove('active');
     document.body.style.overflow = '';
+    lastFocused?.focus();
   };
 
-  openBtn.addEventListener('click', openModal);
-  if (closeBtn) closeBtn.addEventListener('click', closeModal);
-  if (backdrop) backdrop.addEventListener('click', closeModal);
-
+  openBtn.addEventListener('click', open);
+  closeBtn?.addEventListener('click', close);
+  backdrop?.addEventListener('click', close);
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
-      closeModal();
-    }
+    if (e.key === 'Escape' && modal.classList.contains('active')) close();
   });
 }
 
-function initDoodleTelemetryCards() {
-  const cards = document.querySelectorAll('.doodle-telemetry-card');
-  cards.forEach(card => {
+function initTelemetryCards() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.doodle-telemetry-card').forEach(card => {
     card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-2px)`;
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = `perspective(800px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateY(-2px)`;
     });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) translateY(0)';
-    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
   });
 }

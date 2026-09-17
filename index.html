@@ -640,7 +640,7 @@
           </div>
           <div class="header-actions">
             <button type="button" class="industry-directory-trigger" id="open-all-industries-btn" aria-haspopup="dialog">
-              <span class="trigger-icon">🗂️</span>
+              <span class="trigger-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/></svg></span>
               <span class="trigger-text">All 19 Industries Directory</span>
               <span class="trigger-badge">19</span>
             </button>
@@ -648,148 +648,21 @@
         </div>
 
         <!-- Compact Interactive Hover Slider Stage -->
+        <!-- All 19 verticals: compact directory + capability detail panel.
+             Selecting a row (hover, click or keyboard) reveals its capabilities. -->
         <div class="industry-hover-slider-stage" id="industry-hover-slider">
-          <!-- Left Column: Editorial Sector Directory -->
-          <div class="slider-editorial-panel">
-            <div class="slider-panel-header">
-              <span class="panel-tag">DEMAZe DOMAIN VERTICALS</span>
-              <span class="panel-status"><span class="live-dot"></span>ALL 19 COVERED</span>
-            </div>
-
-            <div class="slider-table-headers">
-              <span class="col-id">ID</span>
-              <span class="col-title">INDUSTRY SECTOR</span>
-              <span class="col-metric">CORE CAPABILITY</span>
-            </div>
-
-            <div class="slider-rows-list" role="tablist" aria-label="Demaze Industry Verticals">
-              <!-- 01. FinTech -->
-              <button type="button" class="industry-slider-row active" data-index="0" role="tab" aria-selected="true">
-                <span class="row-id">01</span>
-                <div class="row-info">
-                  <div class="row-title-wrap">
-                    <span class="row-doodle-icon">🪙</span>
-                    <span class="row-title">FinTech, Banking & BFSI</span>
-                  </div>
-                  <span class="row-sub">Decentralized Ledger, Fraud AI & WealthTech</span>
-                </div>
-                <span class="row-metric">Ledger & Fraud AI</span>
-              </button>
-
-              <!-- 02. HealthTech -->
-              <button type="button" class="industry-slider-row" data-index="1" role="tab" aria-selected="false">
-                <span class="row-id">02</span>
-                <div class="row-info">
-                  <div class="row-title-wrap">
-                    <span class="row-doodle-icon">🧬</span>
-                    <span class="row-title">HealthTech & Life Sciences</span>
-                  </div>
-                  <span class="row-sub">Clinical AI, EHR Telemetry & HIPAA Vaults</span>
-                </div>
-                <span class="row-metric">Clinical AI & Telemetry</span>
-              </button>
-
-              <!-- 03. E-Commerce -->
-              <button type="button" class="industry-slider-row" data-index="2" role="tab" aria-selected="false">
-                <span class="row-id">03</span>
-                <div class="row-info">
-                  <div class="row-title-wrap">
-                    <span class="row-doodle-icon">🛍️</span>
-                    <span class="row-title">E-Commerce & Digital Retail</span>
-                  </div>
-                  <span class="row-sub">Headless Storefronts, Cart AI & Dynamic Pricing</span>
-                </div>
-                <span class="row-metric">Headless & Dynamic Cart</span>
-              </button>
-
-              <!-- 04. Logistics -->
-              <button type="button" class="industry-slider-row" data-index="3" role="tab" aria-selected="false">
-                <span class="row-id">04</span>
-                <div class="row-info">
-                  <div class="row-title-wrap">
-                    <span class="row-doodle-icon">🚁</span>
-                    <span class="row-title">Logistics, Fleet & Supply Chain</span>
-                  </div>
-                  <span class="row-sub">Autonomous Fleet, Route Telemetry & IoT</span>
-                </div>
-                <span class="row-metric">Fleet Routing & IoT</span>
-              </button>
-
-              <!-- 05. SaaS & AI -->
-              <button type="button" class="industry-slider-row" data-index="4" role="tab" aria-selected="false">
-                <span class="row-id">05</span>
-                <div class="row-info">
-                  <div class="row-title-wrap">
-                    <span class="row-doodle-icon">🧠</span>
-                    <span class="row-title">SaaS Products & Enterprise AI</span>
-                  </div>
-                  <span class="row-sub">Autonomous AI Agents, Multi-tenant Core</span>
-                </div>
-                <span class="row-metric">Autonomous Agents & RAG</span>
-              </button>
-
-              <!-- 06. Gaming & Media -->
-              <button type="button" class="industry-slider-row" data-index="5" role="tab" aria-selected="false">
-                <span class="row-id">06</span>
-                <div class="row-info">
-                  <div class="row-title-wrap">
-                    <span class="row-doodle-icon">🎮</span>
-                    <span class="row-title">Media, Sports & WebGL Gaming</span>
-                  </div>
-                  <span class="row-sub">Real-time 3D, WebRTC Video & Fan Engagement</span>
-                </div>
-                <span class="row-metric">Real-time 3D & WebRTC</span>
-              </button>
-            </div>
-
-            <!-- Footer: Sub-sectors preview -->
-            <div class="slider-panel-footer">
-              <span class="footer-label">Sub-Sectors:</span>
-              <div class="industry-active-subsectors">
-                <span class="subsector-pill">Banking</span>
-                <span class="subsector-pill">BFSI Solutions</span>
-                <span class="subsector-pill">Insurance</span>
-                <span class="subsector-pill">Crypto & Web3</span>
-                <span class="subsector-pill">Fintech</span>
-              </div>
-            </div>
+          <div class="industry-rows-list" role="tablist" aria-label="Demaze industry verticals">
+            <!-- 19 rows rendered from js/interactive-hover-slider.js -->
           </div>
-
-          <!-- Right Column: WebGL Interactive Sector Stage -->
-          <div class="slider-webgl-mount">
-            <!-- 3D Sector Floating Badges Overlay -->
-            <div class="live-doodle-hud">
-              <div class="industry-active-doodle-badge">
-                <span class="badge-spark">✦</span>
-                <span class="badge-text">Ledger Architecture & Fraud AI</span>
-              </div>
-              <div class="slider-3d-hint">
-                <span class="hint-pulse"></span>
-                <span>3D Interactive Preview</span>
-                <span class="hint-fps">Interactive</span>
-              </div>
-            </div>
-
-            <!-- Dynamic Solution Capabilities Floating Bar -->
-            <div class="live-doodle-caps-bar">
-              <div class="industry-active-caps">
-                <span class="industry-cap-chip">Real-Time Fraud Engine</span>
-                <span class="industry-cap-chip">Automated KYC/AML</span>
-                <span class="industry-cap-chip">High-Speed Ledger</span>
-              </div>
-              <a href="/contact-us.html" class="btn-doodle-cta">
-                <span>Discuss Sector</span>
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3.33337 8H12.6667M8 3.33334L12.6667 8.00001L8 12.6667" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </a>
-            </div>
+          <div class="industry-detail-panel" role="tabpanel" aria-live="polite">
+            <!-- detail for the selected vertical -->
           </div>
         </div>
-
         <!-- Telemetry Cards -->
         <div class="industry-telemetry-grid">
           <div class="doodle-telemetry-card">
             <div class="card-telemetry-top">
-              <span class="telemetry-doodle-icon">⚡</span>
+              <span class="telemetry-doodle-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
               <span class="telemetry-badge">Real-Time Event Mesh</span>
             </div>
             <div class="telemetry-stat">Event-Driven Routing Engine</div>
@@ -802,7 +675,7 @@
 
           <div class="doodle-telemetry-card">
             <div class="card-telemetry-top">
-              <span class="telemetry-doodle-icon">🛡️</span>
+              <span class="telemetry-doodle-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>
               <span class="telemetry-badge">SOC2 & HIPAA Compliant</span>
             </div>
             <div class="telemetry-stat">Zero-Trust Clinical Vaults</div>
@@ -815,7 +688,7 @@
 
           <div class="doodle-telemetry-card">
             <div class="card-telemetry-top">
-              <span class="telemetry-doodle-icon">🧠</span>
+              <span class="telemetry-doodle-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/></svg></span>
               <span class="telemetry-badge">Autonomous Systems</span>
             </div>
             <div class="telemetry-stat">Autonomous Agent Workflows</div>
@@ -841,120 +714,7 @@
             <button type="button" class="modal-close-btn" aria-label="Close directory">&times;</button>
           </div>
           <div class="modal-grid-body">
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🪙</span><span class="card-id">01</span></div>
-              <h4>FinTech, Banking & BFSI</h4>
-              <p>Real-time fraud prevention engines, algorithmic underwriting, and decentralized ledgers.</p>
-              <div class="modal-tags"><span>Fraud AI</span><span>KYC/AML</span><span>Ledger Core</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🧬</span><span class="card-id">02</span></div>
-              <h4>HealthTech & Life Sciences</h4>
-              <p>HIPAA clinical platforms, triage assistants, and patient telemetry synchronization.</p>
-              <div class="modal-tags"><span>Clinical AI</span><span>EHR Sync</span><span>HIPAA Vault</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🛍️</span><span class="card-id">03</span></div>
-              <h4>E-Commerce & Retail</h4>
-              <p>Headless storefronts, dynamic pricing engines, and AI shopping assistants.</p>
-              <div class="modal-tags"><span>Smart Cart</span><span>Headless</span><span>Pricing AI</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🚁</span><span class="card-id">04</span></div>
-              <h4>Logistics & Fleet</h4>
-              <p>Autonomous dispatch routing, IoT telematics, and predictive warehouse replenishment.</p>
-              <div class="modal-tags"><span>Route AI</span><span>Fleet IoT</span><span>Routing OS</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🧠</span><span class="card-id">05</span></div>
-              <h4>SaaS & Enterprise AI</h4>
-              <p>Multi-tenant microservices, autonomous agent workflows, and RAG knowledge indexes.</p>
-              <div class="modal-tags"><span>Multi-Tenant</span><span>Agents</span><span>RAG Core</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🎮</span><span class="card-id">06</span></div>
-              <h4>Media, Gaming & WebGL</h4>
-              <p>Real-time 3D environments, sub-second live streaming, and fan engagement telemetry.</p>
-              <div class="modal-tags"><span>3D WebGL</span><span>WebRTC</span><span>Real-time</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">📈</span><span class="card-id">07</span></div>
-              <h4>BFSI & WealthTech</h4>
-              <p>Automated wealth advisory portals, institutional compliance, and auditing pipelines.</p>
-              <div class="modal-tags"><span>WealthTech</span><span>Auditing</span><span>Institutional</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🏎️</span><span class="card-id">08</span></div>
-              <h4>Automotive & Mobility</h4>
-              <p>Dealership OS, automated used car valuation AI, and workshop bay scheduling.</p>
-              <div class="modal-tags"><span>Valuation AI</span><span>EMI Engine</span><span>DMS Sync</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">⚡</span><span class="card-id">09</span></div>
-              <h4>Energy & Smart Utilities</h4>
-              <p>Smart grid IoT sensor ingestion, consumption forecasting, and predictive equipment maintenance.</p>
-              <div class="modal-tags"><span>Smart Grid</span><span>IoT Telemetry</span><span>Forecast AI</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🏢</span><span class="card-id">10</span></div>
-              <h4>Real Estate & PropTech</h4>
-              <p>AI property valuation algorithms, virtual staging 3D pipelines, and automated digital lease signing.</p>
-              <div class="modal-tags"><span>PropTech</span><span>Virtual 3D</span><span>Lease OS</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🎬</span><span class="card-id">11</span></div>
-              <h4>Media & Entertainment</h4>
-              <p>Generative script-to-storyboard pipelines, DRM asset management, and adaptive CDN delivery.</p>
-              <div class="modal-tags"><span>GenAI Studio</span><span>DRM Cloud</span><span>Adaptive</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🎓</span><span class="card-id">12</span></div>
-              <h4>Education & EdTech</h4>
-              <p>Adaptive learning paths, automated grading assistants, and student engagement telemetry.</p>
-              <div class="modal-tags"><span>Adaptive AI</span><span>Grading</span><span>Classroom</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🍔</span><span class="card-id">13</span></div>
-              <h4>Food, Beverage & Hospitality</h4>
-              <p>Kitchen display operating systems, cold-chain temperature telemetry, and table reservations.</p>
-              <div class="modal-tags"><span>Kitchen OS</span><span>Cold-Chain</span><span>Loyalty</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">⚖️</span><span class="card-id">14</span></div>
-              <h4>LegalTech & Professional</h4>
-              <p>Zero-trust legal case vaults, AI speech transcription, and automated retainer deposits.</p>
-              <div class="modal-tags"><span>Case Vault</span><span>Audio NLP</span><span>Evidence</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">👥</span><span class="card-id">15</span></div>
-              <h4>Human Resources & Talent</h4>
-              <p>Intelligent resume parsing, candidate matching algorithms, and organizational sentiment tracking.</p>
-              <div class="modal-tags"><span>Resume AI</span><span>Matching</span><span>Sentiment</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🛡️</span><span class="card-id">16</span></div>
-              <h4>Insurance & InsurTech</h4>
-              <p>Automated claim adjudication pipelines, digital policy administration, and risk scoring models.</p>
-              <div class="modal-tags"><span>Claims AI</span><span>Risk Models</span><span>Parametric</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">📱</span><span class="card-id">17</span></div>
-              <h4>Social Commerce & Creators</h4>
-              <p>Live streaming shopping, creator attribution tracking, and frictionless in-app 1-click buy.</p>
-              <div class="modal-tags"><span>Live Shopping</span><span>Affiliate AI</span><span>1-Click</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🏭</span><span class="card-id">18</span></div>
-              <h4>Manufacturing & Industry 4.0</h4>
-              <p>Industrial IoT predictive maintenance, legacy ERP modernization, and factory floor visualization.</p>
-              <div class="modal-tags"><span>Factory IoT</span><span>Predictive</span><span>ERP Modern</span></div>
-            </div>
-            <div class="modal-industry-card">
-              <div class="card-head"><span class="modal-icon">🏆</span><span class="card-id">19</span></div>
-              <h4>Sports & Tournament Tech</h4>
-              <p>Ultra-low latency match telemetry overlays, fantasy tournament backends, and community hubs.</p>
-              <div class="modal-tags"><span>Live Overlay</span><span>Fantasy Core</span><span>WebRTC</span></div>
-            </div>
+            <!-- 19 cards rendered from js/interactive-hover-slider.js -->
           </div>
           <div class="modal-footer-cta">
             <span>Need a custom architecture for your industry?</span>
