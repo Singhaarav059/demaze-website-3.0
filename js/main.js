@@ -232,58 +232,76 @@ function initCogniraUseCasesTabs() {
   const cards = [...document.querySelectorAll('.cognira-project-card')];
   if (!tabs.length || !cards.length) return;
 
-  // Real tab panels rather than a scroll-to list: showing one project at a
-  // time keeps the section inside a single viewport instead of running 2.7
-  // screens long, and gives the existing tab rail an actual job.
-  const list = tabs[0].parentElement;
-  if (list) list.setAttribute('role', 'tablist');
+  // Scroll-through feed: all five projects are stacked and you scroll past
+  // them while the sticky rail highlights whichever one you are looking at.
+  // Clicking a pill scrolls to that project.
+  //
+  // These are navigation controls, not tabs — nothing is shown or hidden — so
+  // they use aria-current rather than tab/tabpanel semantics, which would tell
+  // a screen reader the other projects were hidden when they are not.
+  const rail = tabs[0].parentElement;
 
-  const select = (idx, focus = false) => {
+  const setActive = (idx) => {
     tabs.forEach((tab, i) => {
       const on = i === idx;
       tab.classList.toggle('active', on);
-      tab.setAttribute('aria-selected', String(on));
-      tab.tabIndex = on ? 0 : -1;
+      if (on) tab.setAttribute('aria-current', 'true');
+      else tab.removeAttribute('aria-current');
     });
-    cards.forEach((card, i) => {
-      const on = i === idx;
-      card.hidden = !on;
-      card.classList.toggle('is-active-panel', on);
-    });
-    if (focus) tabs[idx].focus();
+  };
+
+  const scrollToCard = (idx) => {
+    const target = document.getElementById(tabs[idx].getAttribute('data-target')) || cards[idx];
+    if (!target) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    setActive(idx);
   };
 
   tabs.forEach((tab, i) => {
-    const card = cards[i];
-    tab.setAttribute('role', 'tab');
-    tab.setAttribute('aria-selected', String(i === 0));
-    tab.tabIndex = i === 0 ? 0 : -1;
-    if (card) {
-      if (!card.id) card.id = 'usecase-panel-' + i;
-      if (!tab.id) tab.id = 'usecase-tab-' + i;
-      tab.setAttribute('aria-controls', card.id);
-      card.setAttribute('role', 'tabpanel');
-      card.setAttribute('aria-labelledby', tab.id);
-    }
-    tab.addEventListener('click', () => select(i));
+    tab.addEventListener('click', () => scrollToCard(i));
   });
 
-  if (list) {
-    list.addEventListener('keydown', (e) => {
+  if (rail) {
+    rail.addEventListener('keydown', (e) => {
       const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
-      const current = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
-      if (step) {
-        e.preventDefault();
-        select((current + step + tabs.length) % tabs.length, true);
-      } else if (e.key === 'Home') {
-        e.preventDefault(); select(0, true);
-      } else if (e.key === 'End') {
-        e.preventDefault(); select(tabs.length - 1, true);
-      }
+      const cur = tabs.findIndex(t => t.classList.contains('active'));
+      let next = null;
+      if (step) next = (cur + step + tabs.length) % tabs.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = tabs.length - 1;
+      if (next === null) return;
+      e.preventDefault();
+      tabs[next].focus();
+      scrollToCard(next);
     });
   }
 
-  select(0);
+  // Active pill follows scroll: whichever card sits nearest the viewport
+  // centre wins. Measured from rects rather than IntersectionObserver so it
+  // still resolves when a card is taller than the viewport (no threshold can
+  // fire in that case) and when the page has been backgrounded.
+  let ticking = false;
+  const sync = () => {
+    const mid = window.innerHeight / 2;
+    let best = 0, bestDist = Infinity;
+    cards.forEach((card, i) => {
+      const r = card.getBoundingClientRect();
+      const dist = Math.abs(r.top + r.height / 2 - mid);
+      if (dist < bestDist) { bestDist = dist; best = i; }
+    });
+    setActive(best);
+    ticking = false;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(sync); }
+  }, { passive: true });
+  window.addEventListener('resize', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(sync); }
+  }, { passive: true });
+
+  sync();
 }
 
 /* ==========================================================================

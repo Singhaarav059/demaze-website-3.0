@@ -6272,6 +6272,3 @@ textarea.form-control {
 .bento-value-num {
   color: rgba(28, 24, 20, 0.11) !important;
 }
-
-/* Use-case tab panels: only the selected project occupies the section */
-.cognira-project-card[hidden] { display: none; }
