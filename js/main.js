@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { initIndustryHoverSlider } from './interactive-hover-slider.js';
 
 /**
@@ -153,505 +154,9 @@ function initHeader() {
   }
 }
 
-/* ==========================================================================
-   Hero Neural Nervous System: Living Sphere Connections & Organic Downward Roots
-   ========================================================================== */
-function initNeuralNervousSystem() {
-  const svg = document.getElementById('hero-neural-svg');
-  const pathsGroup = document.getElementById('neural-paths-group');
-  const signalsGroup = document.getElementById('neural-signals-group');
-  const rootsGroup = document.getElementById('neural-roots-group');
-  const rootSignalsGroup = document.getElementById('root-signals-group');
-  const wrapper = document.querySelector('.hero-3d-experience-wrapper');
-  const sphereContainer = document.getElementById('hero-sphere-container');
-  const groundingBase = document.getElementById('hero-roots-grounding');
-
-  if (!svg || !pathsGroup || !signalsGroup || !wrapper || !sphereContainer) return;
-
-  const badges = Array.from(wrapper.querySelectorAll('.sphere-badge[data-service]'));
-  if (badges.length === 0) return;
-
-  const pathways = [];
-  const rootPathways = [];
-
-  const serviceConfigs = [
-    { startProgress: 0.12, speed: 0.0032 }, // AI & ML
-    { startProgress: 0.48, speed: 0.0028 }, // Product Engineering
-    { startProgress: 0.78, speed: 0.0030 }, // Cloud
-    { startProgress: 0.26, speed: 0.0026 }, // Automation
-    { startProgress: 0.64, speed: 0.0034 }  // E-commerce
-  ];
-
-  // 5 Organic downward roots anchoring the sphere
-  const rootConfigs = [
-    { startProgress: 0.10, speed: 0.0038, dxStart: 0,   dxEnd: 0,   cpX1: -6,  cpX2: 6,   tailLen: 12 }, // Central taproot
-    { startProgress: 0.44, speed: 0.0034, dxStart: -16, dxEnd: -28, cpX1: -22, cpX2: -14, tailLen: 10 }, // Left inner root
-    { startProgress: 0.80, speed: 0.0036, dxStart: 16,  dxEnd: 28,  cpX1: 22,  cpX2: 14,  tailLen: 10 }, // Right inner root
-    { startProgress: 0.26, speed: 0.0030, dxStart: -32, dxEnd: -50, cpX1: -42, cpX2: -36, tailLen: 9 },  // Left outer tendril
-    { startProgress: 0.62, speed: 0.0032, dxStart: 32,  dxEnd: 50,  cpX1: 42,  cpX2: 36,  tailLen: 9 }   // Right outer tendril
-  ];
-
-  function buildAllNeuralPathways() {
-    pathsGroup.innerHTML = '';
-    signalsGroup.innerHTML = '';
-    if (rootsGroup) rootsGroup.innerHTML = '';
-    if (rootSignalsGroup) rootSignalsGroup.innerHTML = '';
-
-    pathways.length = 0;
-    rootPathways.length = 0;
-
-    const wrapRect = wrapper.getBoundingClientRect();
-    const sphereRect = sphereContainer.getBoundingClientRect();
-
-    if (wrapRect.width === 0 || sphereRect.width === 0) return;
-
-    const sphereCenter = {
-      x: (sphereRect.left + sphereRect.width / 2) - wrapRect.left,
-      y: (sphereRect.top + sphereRect.height / 2) - wrapRect.top
-    };
-    const sphereRadius = (sphereRect.width / 2) * 0.88;
-
-    // 1. Build Service Neural Pathways (Sphere -> Floating Badges)
-    badges.forEach((badge, index) => {
-      const dot = badge.querySelector('.connector-dot') || badge;
-      const dotRect = dot.getBoundingClientRect();
-
-      const targetPoint = {
-        x: (dotRect.left + dotRect.width / 2) - wrapRect.left,
-        y: (dotRect.top + dotRect.height / 2) - wrapRect.top
-      };
-
-      const angle = Math.atan2(targetPoint.y - sphereCenter.y, targetPoint.x - sphereCenter.x);
-      const startPoint = {
-        x: sphereCenter.x + Math.cos(angle) * sphereRadius,
-        y: sphereCenter.y + Math.sin(angle) * sphereRadius
-      };
-
-      const dx = targetPoint.x - startPoint.x;
-      const dy = targetPoint.y - startPoint.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-
-      const isTop = targetPoint.y < sphereCenter.y;
-      const isRight = targetPoint.x > sphereCenter.x;
-
-      let cp1, cp2;
-      if (Math.abs(dx) < 70 && isTop) {
-        cp1 = { x: startPoint.x + 20, y: startPoint.y - dist * 0.45 };
-        cp2 = { x: targetPoint.x + 10, y: targetPoint.y + dist * 0.40 };
-      } else {
-        const curveBias = (isTop ? -1 : 1) * Math.min(32, dist * 0.16);
-        cp1 = {
-          x: startPoint.x + Math.cos(angle) * (dist * 0.40) - (isRight ? 10 : -10),
-          y: startPoint.y + Math.sin(angle) * (dist * 0.40) + curveBias
-        };
-        cp2 = {
-          x: targetPoint.x - (isRight ? dist * 0.32 : -dist * 0.32),
-          y: targetPoint.y - curveBias * 0.35
-        };
-      }
-
-      const d = `M ${startPoint.x.toFixed(1)} ${startPoint.y.toFixed(1)} C ${cp1.x.toFixed(1)} ${cp1.y.toFixed(1)}, ${cp2.x.toFixed(1)} ${cp2.y.toFixed(1)}, ${targetPoint.x.toFixed(1)} ${targetPoint.y.toFixed(1)}`;
-
-      const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      pathEl.setAttribute('d', d);
-      pathEl.setAttribute('class', 'neural-thread-path');
-      pathsGroup.appendChild(pathEl);
-
-      badge.addEventListener('mouseenter', () => pathEl.classList.add('active-pulse'));
-      badge.addEventListener('mouseleave', () => pathEl.classList.remove('active-pulse'));
-
-      const totalLen = pathEl.getTotalLength();
-      const cfg = serviceConfigs[index % serviceConfigs.length];
-
-      pathways.push({
-        pathEl,
-        totalLen,
-        signals: [
-          { progress: cfg.startProgress, speed: cfg.speed, orbEl: null, tailEl: null },
-          { progress: (cfg.startProgress + 0.5) % 1.0, speed: cfg.speed * 1.06, orbEl: null, tailEl: null }
-        ]
-      });
-    });
-
-    // 2. Build Organic Downward Roots (Sphere Bottom -> Grounding Base)
-    if (rootsGroup) {
-      let groundTargetX = sphereCenter.x;
-      let groundTargetY = wrapRect.height - 18;
-
-      if (groundingBase) {
-        const gRect = groundingBase.getBoundingClientRect();
-        groundTargetX = (gRect.left + gRect.width / 2) - wrapRect.left;
-        groundTargetY = (gRect.top + 8) - wrapRect.top;
-      }
-
-      const sphereBottomX = sphereCenter.x;
-      const sphereBottomY = sphereCenter.y + sphereRadius * 0.95;
-      const dy = groundTargetY - sphereBottomY;
-
-      rootConfigs.forEach((cfg) => {
-        const sX = sphereBottomX + cfg.dxStart;
-        const sY = sphereBottomY;
-        const tX = groundTargetX + cfg.dxEnd;
-        const tY = groundTargetY;
-
-        const cp1X = sX + cfg.cpX1;
-        const cp1Y = sY + dy * 0.38;
-        const cp2X = tX + cfg.cpX2;
-        const cp2Y = tY - dy * 0.28;
-
-        const d = `M ${sX.toFixed(1)} ${sY.toFixed(1)} C ${cp1X.toFixed(1)} ${cp1Y.toFixed(1)}, ${cp2X.toFixed(1)} ${cp2Y.toFixed(1)}, ${tX.toFixed(1)} ${tY.toFixed(1)}`;
-
-        const rootPathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        rootPathEl.setAttribute('d', d);
-        rootPathEl.setAttribute('class', 'neural-root-path');
-        rootsGroup.appendChild(rootPathEl);
-
-        const totalLen = rootPathEl.getTotalLength();
-
-        rootPathways.push({
-          pathEl: rootPathEl,
-          totalLen,
-          signals: [
-            { progress: cfg.startProgress, speed: cfg.speed, orbEl: null, tailEl: null }
-          ]
-        });
-      });
-    }
-
-    createAllSignalElements();
-  }
-
-  function createAllSignalElements() {
-    signalsGroup.innerHTML = '';
-    pathways.forEach((pathway) => {
-      pathway.signals.forEach((sig) => {
-        const orb = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        orb.setAttribute('r', '3.6');
-        orb.setAttribute('class', 'signal-pulse-orb');
-        orb.setAttribute('filter', 'url(#sparkGlow)');
-        signalsGroup.appendChild(orb);
-        sig.orbEl = orb;
-
-        const tail = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        tail.setAttribute('r', '2.2');
-        tail.setAttribute('fill', '#ff9944');
-        tail.setAttribute('opacity', '0.6');
-        signalsGroup.appendChild(tail);
-        sig.tailEl = tail;
-      });
-    });
-
-    if (rootSignalsGroup) {
-      rootSignalsGroup.innerHTML = '';
-      rootPathways.forEach((rPath) => {
-        rPath.signals.forEach((sig) => {
-          const orb = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          orb.setAttribute('r', '3.2');
-          orb.setAttribute('class', 'signal-pulse-orb');
-          orb.setAttribute('filter', 'url(#sparkGlow)');
-          rootSignalsGroup.appendChild(orb);
-          sig.orbEl = orb;
-        });
-      });
-    }
-  }
-
-  function updateSignalAnimation() {
-    pathways.forEach((pathway) => {
-      if (!pathway.totalLen) return;
-      pathway.signals.forEach((sig) => {
-        sig.progress = (sig.progress + sig.speed) % 1.0;
-        const pt = pathway.pathEl.getPointAtLength(sig.progress * pathway.totalLen);
-        if (sig.orbEl) {
-          sig.orbEl.setAttribute('cx', pt.x.toFixed(1));
-          sig.orbEl.setAttribute('cy', pt.y.toFixed(1));
-        }
-        if (sig.tailEl) {
-          const tailProg = Math.max(0, sig.progress - 0.035);
-          const tPt = pathway.pathEl.getPointAtLength(tailProg * pathway.totalLen);
-          sig.tailEl.setAttribute('cx', tPt.x.toFixed(1));
-          sig.tailEl.setAttribute('cy', tPt.y.toFixed(1));
-        }
-      });
-    });
-
-    rootPathways.forEach((rPath) => {
-      if (!rPath.totalLen) return;
-      rPath.signals.forEach((sig) => {
-        sig.progress = (sig.progress + sig.speed) % 1.0;
-        const pt = rPath.pathEl.getPointAtLength(sig.progress * rPath.totalLen);
-        if (sig.orbEl) {
-          sig.orbEl.setAttribute('cx', pt.x.toFixed(1));
-          sig.orbEl.setAttribute('cy', pt.y.toFixed(1));
-        }
-      });
-    });
-
-    requestAnimationFrame(updateSignalAnimation);
-  }
-
-  // Build pathways after DOM settles and on resize
-  setTimeout(buildAllNeuralPathways, 250);
-  window.addEventListener('resize', buildAllNeuralPathways, { passive: true });
-  requestAnimationFrame(updateSignalAnimation);
-}
-
-/* ==========================================================================
-   2. Scroll-Linked Text Fill Reveal Animation
-   ========================================================================== */
-function initScrollTextReveal() {
-  const container = document.querySelector('.scroll-reveal-text');
-  if (!container) return;
-
-  // Split text into individual span words if not already split
-  const originalText = container.textContent.trim();
-  const words = originalText.split(/\s+/);
-  container.innerHTML = words.map(w => `<span class="word">${w}</span>`).join(' ');
-
-  const wordSpans = container.querySelectorAll('.word');
-
-  function updateReveal() {
-    const rect = container.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-
-    // Calculate progress through viewport
-    // Starts revealing when top of container hits 75% of viewport, finishes when it reaches 25%
-    const startY = windowHeight * 0.75;
-    const endY = windowHeight * 0.25;
-
-    const progress = Math.min(Math.max((startY - rect.top) / (startY - endY), 0), 1);
-    const wordsToFill = Math.floor(progress * wordSpans.length);
-
-    wordSpans.forEach((span, index) => {
-      if (index <= wordsToFill) {
-        span.classList.add('filled');
-      } else {
-        span.classList.remove('filled');
-      }
-    });
-  }
-
-  window.addEventListener('scroll', updateReveal, { passive: true });
-  window.addEventListener('resize', updateReveal, { passive: true });
-  updateReveal();
-}
-
-/* ==========================================================================
-   3. Testimonials Carousel Slider
-   ========================================================================== */
-function initTestimonialsSlider() {
-  const track = document.querySelector('.testimonials-track');
-  const prevBtn = document.querySelector('.slider-btn.prev');
-  const nextBtn = document.querySelector('.slider-btn.next');
-  const cards = document.querySelectorAll('.testimonial-card');
-
-  if (!track || cards.length === 0 || !prevBtn || !nextBtn) return;
-
-  let currentIndex = 0;
-
-  function getVisibleCardsCount() {
-    return window.innerWidth < 810 ? 1 : 2;
-  }
-
-  function getMaxIndex() {
-    const visible = getVisibleCardsCount();
-    return Math.max(0, cards.length - visible);
-  }
-
-  function updateSlider() {
-    const maxIndex = getMaxIndex();
-    if (currentIndex > maxIndex) currentIndex = maxIndex;
-    if (currentIndex < 0) currentIndex = 0;
-
-    const cardWidth = cards[0].offsetWidth;
-    const gap = 24;
-    const offset = currentIndex * (cardWidth + gap);
-
-    track.style.transform = `translateX(-${offset}px)`;
-
-    prevBtn.disabled = currentIndex === 0;
-    nextBtn.disabled = currentIndex >= maxIndex;
-  }
-
-  prevBtn.addEventListener('click', () => {
-    if (currentIndex > 0) {
-      currentIndex--;
-      updateSlider();
-    }
-  });
-
-  nextBtn.addEventListener('click', () => {
-    if (currentIndex < getMaxIndex()) {
-      currentIndex++;
-      updateSlider();
-    }
-  });
-
-  window.addEventListener('resize', updateSlider, { passive: true });
-  updateSlider();
-}
-
-/* ==========================================================================
-   4. FAQ Accordion
-   ========================================================================== */
-function initFaqAccordion() {
-  const items = document.querySelectorAll('.faq-item, .cognira-faq-item');
-
-  items.forEach(item => {
-    const trigger = item.querySelector('.faq-trigger, .cognira-faq-trigger');
-    if (!trigger) return;
-
-    trigger.addEventListener('click', () => {
-      const isOpen = item.classList.contains('active');
-
-      items.forEach(otherItem => {
-        otherItem.classList.remove('active');
-        const otherTrigger = otherItem.querySelector('.faq-trigger, .cognira-faq-trigger');
-        if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
-      });
-
-      if (!isOpen) {
-        item.classList.add('active');
-        trigger.setAttribute('aria-expanded', 'true');
-      }
-    });
-  });
-}
-
-function initCogniraUseCasesTabs() {
-  const tabs = [...document.querySelectorAll('.cognira-usecase-tab')];
-  const cards = [...document.querySelectorAll('.cognira-project-card')];
-  if (!tabs.length || !cards.length) return;
-
-  // Scroll-through feed: all five projects are stacked and you scroll past
-  // them while the sticky rail highlights whichever one you are looking at.
-  // Clicking a pill scrolls to that project.
-  //
-  // These are navigation controls, not tabs — nothing is shown or hidden — so
-  // they use aria-current rather than tab/tabpanel semantics, which would tell
-  // a screen reader the other projects were hidden when they are not.
-  const rail = tabs[0].parentElement;
-
-  const setActive = (idx) => {
-    tabs.forEach((tab, i) => {
-      const on = i === idx;
-      tab.classList.toggle('active', on);
-      if (on) tab.setAttribute('aria-current', 'true');
-      else tab.removeAttribute('aria-current');
-    });
-  };
-
-  const scrollToCard = (idx) => {
-    const target = document.getElementById(tabs[idx].getAttribute('data-target')) || cards[idx];
-    if (!target) return;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
-    setActive(idx);
-  };
-
-  tabs.forEach((tab, i) => {
-    tab.addEventListener('click', () => scrollToCard(i));
-  });
-
-  if (rail) {
-    rail.addEventListener('keydown', (e) => {
-      const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
-      const cur = tabs.findIndex(t => t.classList.contains('active'));
-      let next = null;
-      if (step) next = (cur + step + tabs.length) % tabs.length;
-      else if (e.key === 'Home') next = 0;
-      else if (e.key === 'End') next = tabs.length - 1;
-      if (next === null) return;
-      e.preventDefault();
-      tabs[next].focus();
-      scrollToCard(next);
-    });
-  }
-
-  // Active pill follows scroll: whichever card sits nearest the viewport
-  // centre wins. Measured from rects rather than IntersectionObserver so it
-  // still resolves when a card is taller than the viewport (no threshold can
-  // fire in that case) and when the page has been backgrounded.
-  let ticking = false;
-  const sync = () => {
-    const mid = window.innerHeight / 2;
-    let best = 0, bestDist = Infinity;
-    cards.forEach((card, i) => {
-      const r = card.getBoundingClientRect();
-      const dist = Math.abs(r.top + r.height / 2 - mid);
-      if (dist < bestDist) { bestDist = dist; best = i; }
-    });
-    setActive(best);
-    ticking = false;
-  };
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) { ticking = true; requestAnimationFrame(sync); }
-  }, { passive: true });
-  window.addEventListener('resize', () => {
-    if (!ticking) { ticking = true; requestAnimationFrame(sync); }
-  }, { passive: true });
-
-  sync();
-}
-
-/* ==========================================================================
-   5. Active Nav Link
-   ========================================================================== */
-function highlightActiveNavLink() {
-  const path = window.location.pathname.toLowerCase();
-  const links = document.querySelectorAll('.nav-link');
-
-  links.forEach(link => {
-    const href = link.getAttribute('href');
-    if (!href) return;
-    const linkPath = href.split('#')[0].toLowerCase();
-    
-    if ((path === '/' || path === '/index.html' || path === '') && (linkPath === '/' || linkPath === './' || linkPath === 'index.html')) {
-      link.classList.add('active');
-    } else if (linkPath && path.includes(linkPath.replace('.html', '')) && linkPath !== '/' && linkPath !== './') {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
-}
-
-/* ==========================================================================
-   6. Back to Top Button
-   ========================================================================== */
-function initBackToTop() {
-  const btn = document.querySelector('.back-to-top');
-  if (!btn) return;
-
-  btn.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  });
-}
-
-/* ==========================================================================
-   7. Authentic Living Brain Hero 3D Particle Sphere & Neural Nervous System
-   - Interactive Three.js WebGL "Central Brain" with Fibonacci particle shell,
-     internal glowing synaptic neural plexus, core ambient luminescence,
-     organic breathing cycle, and mouse inertia/drag physics.
-   - Dynamic Nervous System SVG overlay with curved neural threads connecting
-     from the brain sphere to each of the 5 service cards.
-   - Traveling electrical signal sparks that journey through the threads and
-     trigger synchronized micro-pulse reactions on the service cards.
-   ========================================================================== */
-async function initHeroParticleSphere() {
+function initHeroParticleSphere() {
   const container = document.getElementById('hero-sphere-container');
   if (!container) return;
-
-  // Three.js is ~500KB of the bundle and powers only this decorative sphere,
-  // so it is code-split out of the initial load. Skipped entirely when the
-  // user prefers reduced motion — there is nothing to see in that case.
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const THREE = await import('three');
 
   // Configuration parameters
   const particlesCount = 3200;
@@ -712,14 +217,11 @@ async function initHeroParticleSphere() {
   scene.add(group);
 
   const sphereGeo = new THREE.SphereGeometry(particleSize * 0.15, 8, 8);
-  // Light theme: additive blending is invisible against a near-white page
-  // (adding light to white yields white), so the sphere renders as dark ink
-  // particles with normal blending instead of glowing ones.
   const sphereMat = new THREE.MeshBasicMaterial({
     color: 0xffffff,
-    blending: THREE.NormalBlending,
-    transparent: true,
-    opacity: 0.92
+    blending: THREE.AdditiveBlending,
+    transparent: false,
+    opacity: 1
   });
 
   const instancedMesh = new THREE.InstancedMesh(sphereGeo, sphereMat, particlesCount);
@@ -731,20 +233,15 @@ async function initHeroParticleSphere() {
   }
   instancedMesh.instanceMatrix.needsUpdate = true;
 
-  // Particle color: warm dark ink, varied between deep espresso and brand
-  // orange so the sphere keeps its warmth while reading clearly on light.
-  const particleInk = new THREE.Color(0.20, 0.14, 0.10);
-  const particleWarm = new THREE.Color(0.78, 0.30, 0.08);
+  // Particle color: warm luminous golden pearl
+  const particleColor = new THREE.Color(0.96, 0.94, 0.90);
   const colorsArray = new Float32Array(particlesCount * 3);
-  const mixed = new THREE.Color();
   for (let i = 0; i < particlesCount; i++) {
     const idx = i * 3;
-    // ~28% of particles lean warm, the rest stay near-neutral ink
-    mixed.copy(particleInk).lerp(particleWarm, Math.random() < 0.28 ? 0.55 + Math.random() * 0.45 : 0);
-    const shade = 0.86 + Math.random() * 0.28; // subtle depth variation
-    colorsArray[idx] = Math.min(1, mixed.r * shade);
-    colorsArray[idx + 1] = Math.min(1, mixed.g * shade);
-    colorsArray[idx + 2] = Math.min(1, mixed.b * shade);
+    const brightness = 0.90 + Math.random() * 0.18;
+    colorsArray[idx] = Math.min(1, particleColor.r * brightness);
+    colorsArray[idx + 1] = Math.min(1, particleColor.g * brightness);
+    colorsArray[idx + 2] = Math.min(1, particleColor.b * brightness * 0.95);
   }
   instancedMesh.instanceColor = new THREE.InstancedBufferAttribute(colorsArray, 3);
   instancedMesh.instanceColor.needsUpdate = true;
@@ -785,10 +282,10 @@ async function initHeroParticleSphere() {
   const synapseGeo = new THREE.BufferGeometry();
   synapseGeo.setAttribute('position', new THREE.Float32BufferAttribute(synapseLinePositions, 3));
   const synapseMat = new THREE.LineBasicMaterial({
-    color: 0xc2410c,
+    color: 0xffaa44,
     transparent: true,
-    opacity: 0.34,
-    blending: THREE.NormalBlending
+    opacity: 0.58,
+    blending: THREE.AdditiveBlending
   });
   const synapseMesh = new THREE.LineSegments(synapseGeo, synapseMat);
   group.add(synapseMesh);
@@ -796,10 +293,10 @@ async function initHeroParticleSphere() {
   // Core Luminous Brain Glow & Glass Shell Boundary
   const coreGlowGeo = new THREE.SphereGeometry(sphereRadius * 0.35, 16, 16);
   const coreGlowMat = new THREE.MeshBasicMaterial({
-    color: 0xff8a4c,
+    color: 0xff7722,
     transparent: true,
-    opacity: 0.16,
-    blending: THREE.NormalBlending
+    opacity: 0.28,
+    blending: THREE.AdditiveBlending
   });
   const coreGlow = new THREE.Mesh(coreGlowGeo, coreGlowMat);
   group.add(coreGlow);
@@ -807,10 +304,10 @@ async function initHeroParticleSphere() {
   // Ethereal Glass Shell Rim
   const glassRimGeo = new THREE.SphereGeometry(sphereRadius * 1.025, 32, 32);
   const glassRimMat = new THREE.MeshBasicMaterial({
-    color: 0x8a7361,
+    color: 0xffeedd,
     transparent: true,
-    opacity: 0.07,
-    blending: THREE.NormalBlending
+    opacity: 0.12,
+    blending: THREE.AdditiveBlending
   });
   const glassRim = new THREE.Mesh(glassRimGeo, glassRimMat);
   group.add(glassRim);
@@ -821,10 +318,10 @@ async function initHeroParticleSphere() {
 
   const ringGeo1 = new THREE.TorusGeometry(sphereRadius * 1.08, 0.0028, 16, 120);
   const ringMat1 = new THREE.MeshBasicMaterial({
-    color: 0xe2541b,
-    blending: THREE.NormalBlending,
+    color: 0xffaa44,
+    blending: THREE.AdditiveBlending,
     transparent: true,
-    opacity: 0.5
+    opacity: 0.8
   });
   const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
   ring1.rotation.x = Math.PI * 0.38;
@@ -833,10 +330,10 @@ async function initHeroParticleSphere() {
 
   const ringGeo2 = new THREE.TorusGeometry(sphereRadius * 1.14, 0.0024, 16, 120);
   const ringMat2 = new THREE.MeshBasicMaterial({
-    color: 0x9a3412,
-    blending: THREE.NormalBlending,
+    color: 0xff7722,
+    blending: THREE.AdditiveBlending,
     transparent: true,
-    opacity: 0.38
+    opacity: 0.65
   });
   const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
   ring2.rotation.x = -Math.PI * 0.32;
@@ -848,7 +345,7 @@ async function initHeroParticleSphere() {
     {
       mesh: new THREE.Mesh(
         new THREE.SphereGeometry(0.026, 24, 24),
-        new THREE.MeshBasicMaterial({ color: 0xe2541b })
+        new THREE.MeshBasicMaterial({ color: 0xffdd88 })
       ),
       radius: sphereRadius * 1.08,
       inclination: Math.PI * 0.38,
@@ -859,7 +356,7 @@ async function initHeroParticleSphere() {
     {
       mesh: new THREE.Mesh(
         new THREE.SphereGeometry(0.020, 24, 24),
-        new THREE.MeshBasicMaterial({ color: 0x64748b })
+        new THREE.MeshBasicMaterial({ color: 0xe0e6ed })
       ),
       radius: sphereRadius * 1.08,
       inclination: Math.PI * 0.38,
@@ -870,7 +367,7 @@ async function initHeroParticleSphere() {
     {
       mesh: new THREE.Mesh(
         new THREE.SphereGeometry(0.022, 24, 24),
-        new THREE.MeshBasicMaterial({ color: 0xea7317 })
+        new THREE.MeshBasicMaterial({ color: 0xffaa44 })
       ),
       radius: sphereRadius * 1.14,
       inclination: -Math.PI * 0.32,
@@ -881,7 +378,7 @@ async function initHeroParticleSphere() {
     {
       mesh: new THREE.Mesh(
         new THREE.SphereGeometry(0.016, 24, 24),
-        new THREE.MeshBasicMaterial({ color: 0x1e293b })
+        new THREE.MeshBasicMaterial({ color: 0xffffff })
       ),
       radius: sphereRadius * 1.14,
       inclination: -Math.PI * 0.32,
@@ -1221,7 +718,712 @@ async function initHeroParticleSphere() {
   initNeuralNervousSystem();
 }
 
+/* ==========================================================================
+   8. Neural Nervous System: Curved Threads & Traveling Signals
+   - Draws organic curved neural splines from the central brain sphere
+     to each of the 5 service cards.
+   - Dispatches glowing electrical sparks that travel along the threads.
+   - Triggers synchronized haptic glow/pulse reactions when a signal arrives
+     at each service card endpoint.
+   ========================================================================== */
 
+
+/* ==========================================================================
+   Hero Neural Nervous System: Living Sphere Connections & Organic Downward Roots
+   - Aligns floating sphere, rock pedestal, and floor ring with the dark architectural scene
+   - 7 organic golden roots sprouting from rock center into the sphere
+   - Traveling spark pulses along splines and roots with synchronized glow reactions
+   ========================================================================== */
+function initNeuralNervousSystem() {
+  const svg = document.getElementById('hero-neural-svg');
+  const pathsGroup = document.getElementById('neural-paths-group');
+  const signalsGroup = document.getElementById('neural-signals-group');
+  const rootsGroup = document.getElementById('neural-roots-group');
+  const rootSignalsGroup = document.getElementById('root-signals-group');
+  const wrapper = document.querySelector('.hero-3d-experience-wrapper');
+  const sphereContainer = document.getElementById('hero-sphere-container');
+  const rockPedestal = document.getElementById('hero-rock-pedestal');
+  const heroCard = document.querySelector('.hero-canvas-card');
+
+  if (!svg || !pathsGroup || !signalsGroup || !wrapper || !sphereContainer) return;
+
+  const badges = Array.from(wrapper.querySelectorAll('.sphere-badge[data-service]'));
+  if (badges.length === 0) return;
+
+  // Architectural chamber alignment: centers sphere, rock pedestal, and floor ring directly on background image features
+  function alignHeroArchitecture() {
+    if (!heroCard || !wrapper || !sphereContainer) return;
+    const cardRect = heroCard.getBoundingClientRect();
+    const split = document.querySelector('.hero-content-split');
+    const splitRect = split ? split.getBoundingClientRect() : cardRect;
+
+    const imgAspect = 16 / 9;
+    const cardAspect = cardRect.width / cardRect.height;
+    let renderedW, renderedH, offsetX, offsetY;
+    if (cardAspect >= imgAspect) {
+      renderedW = cardRect.width;
+      renderedH = cardRect.width / imgAspect;
+      offsetX = 0;
+      offsetY = cardRect.height - renderedH;
+    } else {
+      renderedH = cardRect.height;
+      renderedW = cardRect.height * imgAspect;
+      offsetX = (cardRect.width - renderedW) / 2;
+      offsetY = 0;
+    }
+
+    // In the architectural background render:
+    // The ceiling oculus, stone pedestal, and glowing ring center is at X = 68.8%
+    const rockCenterX = offsetX + renderedW * 0.688;
+    // The top surface center of the stone pedestal is at Y = 74.5%
+    const rockTopY = offsetY + renderedH * 0.745;
+
+    if (window.innerWidth > 991) {
+      const wrapperW = wrapper.offsetWidth;
+      const rightMargin = (cardRect.right - rockCenterX) - (wrapperW / 2) - (cardRect.right - splitRect.right);
+      wrapper.style.marginRight = `${Math.max(0, rightMargin).toFixed(1)}px`;
+
+      if (rockPedestal) {
+        rockPedestal.style.left = `${rockCenterX.toFixed(1)}px`;
+        rockPedestal.style.top = `${rockTopY.toFixed(1)}px`;
+        rockPedestal.style.bottom = 'auto';
+        rockPedestal.style.transform = 'translate(-50%, -50%)';
+        rockPedestal.style.display = 'flex';
+      }
+    } else {
+      wrapper.style.marginRight = 'auto';
+      if (rockPedestal) {
+        rockPedestal.style.left = '50%';
+        rockPedestal.style.top = 'auto';
+        rockPedestal.style.bottom = 'clamp(40px, 6vh, 60px)';
+        rockPedestal.style.transform = 'translate(-50%, 0)';
+        rockPedestal.style.display = 'flex';
+      }
+    }
+
+    // Position outer floor ring directly over the outer ring in the architectural background
+    const outerRing = document.getElementById('hero-floor-outer-ring');
+    if (outerRing) {
+      if (window.innerWidth > 991) {
+        const floorRingY = offsetY + renderedH * 0.835;
+        const ringW = renderedW * 0.43;
+        const ringH = renderedH * 0.13;
+        outerRing.style.left = `${rockCenterX.toFixed(1)}px`;
+        outerRing.style.top = `${floorRingY.toFixed(1)}px`;
+        outerRing.style.width = `${ringW.toFixed(1)}px`;
+        outerRing.style.height = `${ringH.toFixed(1)}px`;
+        outerRing.style.transform = 'translate(-50%, -50%)';
+        outerRing.style.display = 'block';
+      } else {
+        outerRing.style.left = '50%';
+        outerRing.style.bottom = 'clamp(20px, 4vh, 40px)';
+        outerRing.style.top = 'auto';
+        outerRing.style.width = 'clamp(240px, 75vw, 320px)';
+        outerRing.style.height = 'clamp(50px, 15vw, 75px)';
+        outerRing.style.transform = 'translate(-50%, 0)';
+        outerRing.style.display = 'block';
+      }
+    }
+  }
+
+  // Active neural pathway data for service endpoints
+  const pathways = [];
+  // Active root pathways connecting sphere to rock
+  const rootPathways = [];
+
+  // Calibrated asynchronous staggered timing configs for service cards
+  const serviceConfigs = [
+    { startProgress: 0.08, speed: 0.0031 }, // AI & ML
+    { startProgress: 0.44, speed: 0.0027 }, // Product Engineering
+    { startProgress: 0.76, speed: 0.0029 }, // Cloud
+    { startProgress: 0.22, speed: 0.0025 }, // Automation
+    { startProgress: 0.62, speed: 0.0033 }  // E-commerce
+  ];
+
+  // 7 Organic root tendril definitions connecting floating sphere to the exact center of the rock
+  const rootConfigs = [
+    { startProgress: 0.10, speed: 0.0042, dxStart: 0,   dyStart: 0,   dxEnd: 0,   cpX1: -4,  cpX2: 2,   tailLen: 14, strokeW: 2.8 }, // Central taproot
+    { startProgress: 0.38, speed: 0.0036, dxStart: -18, dyStart: -3,  dxEnd: -3,  cpX1: -22, cpX2: -5,  tailLen: 12, strokeW: 2.2 }, // Left inner root
+    { startProgress: 0.72, speed: 0.0038, dxStart: 18,  dyStart: -3,  dxEnd: 3,   cpX1: 22,  cpX2: 5,   tailLen: 12, strokeW: 2.2 }, // Right inner root
+    { startProgress: 0.22, speed: 0.0032, dxStart: -38, dyStart: -10, dxEnd: -6,  cpX1: -42, cpX2: -9,  tailLen: 11, strokeW: 2.0 }, // Left mid tendril
+    { startProgress: 0.58, speed: 0.0034, dxStart: 38,  dyStart: -10, dxEnd: 6,   cpX1: 42,  cpX2: 9,   tailLen: 11, strokeW: 2.0 }, // Right mid tendril
+    { startProgress: 0.88, speed: 0.0030, dxStart: -60, dyStart: -24, dxEnd: -10, cpX1: -66, cpX2: -14, tailLen: 10, strokeW: 1.7 }, // Left outer tendril
+    { startProgress: 0.48, speed: 0.0031, dxStart: 60,  dyStart: -24, dxEnd: 10,  cpX1: 66,  cpX2: 14,  tailLen: 10, strokeW: 1.7 }  // Right outer tendril
+  ];
+
+  let sphereCenter = { x: 330, y: 290 };
+  let sphereRadius = 171;
+
+  function buildAllNeuralPathways() {
+    alignHeroArchitecture();
+
+    pathsGroup.innerHTML = '';
+    signalsGroup.innerHTML = '';
+    if (rootsGroup) rootsGroup.innerHTML = '';
+    if (rootSignalsGroup) rootSignalsGroup.innerHTML = '';
+
+    pathways.length = 0;
+    rootPathways.length = 0;
+
+    const wrapRect = wrapper.getBoundingClientRect();
+    const sphereRect = sphereContainer.getBoundingClientRect();
+
+    sphereCenter = {
+      x: (sphereRect.left + sphereRect.width / 2) - wrapRect.left,
+      y: (sphereRect.top + sphereRect.height / 2) - wrapRect.top
+    };
+
+    sphereRadius = (sphereRect.width / 2) * 0.90;
+
+    // 1. Build Service Neural Pathways (Sphere -> Service Cards)
+    badges.forEach((badge, index) => {
+      const dot = badge.querySelector('.connector-dot') || badge;
+      const dotRect = dot.getBoundingClientRect();
+
+      const targetPoint = {
+        x: (dotRect.left + dotRect.width / 2) - wrapRect.left,
+        y: (dotRect.top + dotRect.height / 2) - wrapRect.top
+      };
+
+      const angle = Math.atan2(targetPoint.y - sphereCenter.y, targetPoint.x - sphereCenter.x);
+      const startPoint = {
+        x: sphereCenter.x + Math.cos(angle) * sphereRadius,
+        y: sphereCenter.y + Math.sin(angle) * sphereRadius
+      };
+
+      const dx = targetPoint.x - startPoint.x;
+      const dy = targetPoint.y - startPoint.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      const isTop = targetPoint.y < sphereCenter.y;
+      const isRight = targetPoint.x > sphereCenter.x;
+
+      let cp1, cp2;
+      if (Math.abs(dx) < 70 && isTop) {
+        // Vertical connection for top card (AI & ML)
+        cp1 = {
+          x: startPoint.x + 22,
+          y: startPoint.y - dist * 0.48
+        };
+        cp2 = {
+          x: targetPoint.x + 12,
+          y: targetPoint.y + dist * 0.42
+        };
+      } else {
+        const curveBias = (isTop ? -1 : 1) * Math.min(36, dist * 0.18);
+        cp1 = {
+          x: startPoint.x + Math.cos(angle) * (dist * 0.42) - (isRight ? 12 : -12),
+          y: startPoint.y + Math.sin(angle) * (dist * 0.42) + curveBias
+        };
+        cp2 = {
+          x: targetPoint.x - (isRight ? dist * 0.35 : -dist * 0.35),
+          y: targetPoint.y - curveBias * 0.4
+        };
+      }
+
+      const d = `M ${startPoint.x.toFixed(1)} ${startPoint.y.toFixed(1)} C ${cp1.x.toFixed(1)} ${cp1.y.toFixed(1)}, ${cp2.x.toFixed(1)} ${cp2.y.toFixed(1)}, ${targetPoint.x.toFixed(1)} ${targetPoint.y.toFixed(1)}`;
+
+      const pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      pathEl.setAttribute('d', d);
+      pathEl.setAttribute('class', 'neural-thread-path');
+      pathsGroup.appendChild(pathEl);
+
+      const totalLen = pathEl.getTotalLength();
+      const cfg = serviceConfigs[index % serviceConfigs.length];
+
+      pathways.push({
+        badge,
+        pathEl,
+        totalLen,
+        signals: [
+          {
+            progress: cfg.startProgress,
+            speed: cfg.speed,
+            tailLength: 14,
+            orbEl: null,
+            tailEl: null
+          },
+          {
+            progress: (cfg.startProgress + 0.5) % 1.0,
+            speed: cfg.speed * 1.05,
+            tailLength: 12,
+            orbEl: null,
+            tailEl: null
+          }
+        ]
+      });
+    });
+
+    // 2. Build Neural Roots (Sphere Bottom -> Exactly Centered Rock Foundation)
+    if (rockPedestal && rootsGroup) {
+      const rockRect = rockPedestal.getBoundingClientRect();
+      const rockCenterX = (rockRect.left + rockRect.width / 2) - wrapRect.left;
+      const rockCenterY = (rockRect.top + rockRect.height / 2) - wrapRect.top;
+
+      const sphereBottomX = sphereCenter.x;
+      const sphereBottomY = sphereCenter.y + sphereRadius;
+      const dy = rockCenterY - sphereBottomY;
+
+      rootConfigs.forEach((cfg) => {
+        const sX = sphereBottomX + cfg.dxStart;
+        const sY = sphereBottomY + cfg.dyStart;
+        const tX = rockCenterX + cfg.dxEnd;
+        const tY = rockCenterY;
+
+        const cp1X = sX + cfg.cpX1;
+        const cp1Y = sY + dy * 0.42;
+        const cp2X = tX + cfg.cpX2;
+        const cp2Y = tY - dy * 0.28;
+
+        const d = `M ${sX.toFixed(1)} ${sY.toFixed(1)} C ${cp1X.toFixed(1)} ${cp1Y.toFixed(1)}, ${cp2X.toFixed(1)} ${cp2Y.toFixed(1)}, ${tX.toFixed(1)} ${tY.toFixed(1)}`;
+        const rootPathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        rootPathEl.setAttribute('d', d);
+        rootPathEl.setAttribute('class', 'neural-root-path');
+        if (cfg.strokeW) rootPathEl.style.strokeWidth = `${cfg.strokeW}px`;
+        rootsGroup.appendChild(rootPathEl);
+
+        const totalLen = rootPathEl.getTotalLength();
+
+        rootPathways.push({
+          pathEl: rootPathEl,
+          totalLen,
+          cfg,
+          signals: [
+            {
+              progress: cfg.startProgress,
+              speed: cfg.speed,
+              tailLength: cfg.tailLen,
+              orbEl: null,
+              tailEl: null
+            }
+          ]
+        });
+      });
+    }
+
+    createAllSignalElements();
+  }
+
+  function createAllSignalElements() {
+    // 1. Service Signals
+    signalsGroup.innerHTML = '';
+    pathways.forEach((pathway) => {
+      pathway.signals.forEach((sig) => {
+        const orb = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        orb.setAttribute('r', '3.8');
+        orb.setAttribute('class', 'signal-pulse-orb');
+        orb.setAttribute('filter', 'url(#sparkGlow)');
+        signalsGroup.appendChild(orb);
+        sig.orbEl = orb;
+
+        const tail = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        tail.setAttribute('r', '2.2');
+        tail.setAttribute('fill', '#ff9944');
+        tail.setAttribute('opacity', '0.6');
+        signalsGroup.appendChild(tail);
+        sig.tailEl = tail;
+      });
+    });
+
+    // 2. Root Signals
+    if (rootSignalsGroup) {
+      rootSignalsGroup.innerHTML = '';
+      rootPathways.forEach((rPath) => {
+        rPath.signals.forEach((sig) => {
+          const orb = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          orb.setAttribute('r', '3.4');
+          orb.setAttribute('class', 'root-signal-orb');
+          orb.setAttribute('filter', 'url(#sparkGlow)');
+          rootSignalsGroup.appendChild(orb);
+          sig.orbEl = orb;
+
+          const tail = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          tail.setAttribute('r', '2.0');
+          tail.setAttribute('fill', '#ffaa44');
+          tail.setAttribute('opacity', '0.6');
+          rootSignalsGroup.appendChild(tail);
+          sig.tailEl = tail;
+        });
+      });
+    }
+  }
+
+  buildAllNeuralPathways();
+
+  // Resize and window load listeners to re-anchor threads and rock accurately
+  window.addEventListener('resize', buildAllNeuralPathways, { passive: true });
+  window.addEventListener('load', buildAllNeuralPathways, { passive: true });
+
+  // Nervous System Signal Animation Loop
+  let lastSignalTime = performance.now();
+
+  function animateSignals(now) {
+    const dt = Math.min((now - lastSignalTime) / (1000 / 60), 2.5);
+    lastSignalTime = now;
+
+    // Dynamic flexing of root paths to follow floating sphere while rock is stationary on floor
+    if (rockPedestal && rootPathways.length > 0) {
+      const wrapRect = wrapper.getBoundingClientRect();
+      const rockRect = rockPedestal.getBoundingClientRect();
+      const currentRockCenterX = (rockRect.left + rockRect.width / 2) - wrapRect.left;
+      const currentRockCenterY = (rockRect.top + rockRect.height / 2) - wrapRect.top;
+      const sphereBottomX = sphereCenter.x;
+      const sphereBottomY = sphereCenter.y + sphereRadius;
+      const dy = currentRockCenterY - sphereBottomY;
+
+      rootPathways.forEach((rPath) => {
+        const cfg = rPath.cfg;
+        const sX = sphereBottomX + cfg.dxStart;
+        const sY = sphereBottomY + cfg.dyStart;
+        const tX = currentRockCenterX + cfg.dxEnd;
+        const tY = currentRockCenterY;
+
+        const cp1X = sX + cfg.cpX1;
+        const cp1Y = sY + dy * 0.42;
+        const cp2X = tX + cfg.cpX2;
+        const cp2Y = tY - dy * 0.28;
+
+        const d = `M ${sX.toFixed(1)} ${sY.toFixed(1)} C ${cp1X.toFixed(1)} ${cp1Y.toFixed(1)}, ${cp2X.toFixed(1)} ${cp2Y.toFixed(1)}, ${tX.toFixed(1)} ${tY.toFixed(1)}`;
+        rPath.pathEl.setAttribute('d', d);
+        rPath.totalLen = rPath.pathEl.getTotalLength();
+      });
+    }
+
+    // Animate Service Pathways
+    pathways.forEach((pathway) => {
+      pathway.signals.forEach((sig) => {
+        sig.progress += sig.speed * dt;
+
+        // Signal reaches card endpoint: trigger pulse reaction!
+        if (sig.progress >= 1.0) {
+          sig.progress = 0.0;
+
+          const badge = pathway.badge;
+          badge.classList.remove('synapse-pulse');
+          void badge.offsetWidth;
+          badge.classList.add('synapse-pulse');
+
+          pathway.pathEl.classList.add('active-pulse');
+          setTimeout(() => {
+            pathway.pathEl.classList.remove('active-pulse');
+          }, 350);
+        }
+
+        // Interpolate along curved spline
+        if (pathway.totalLen > 0 && sig.orbEl) {
+          const curDist = sig.progress * pathway.totalLen;
+          const pt = pathway.pathEl.getPointAtLength(curDist);
+          sig.orbEl.setAttribute('cx', pt.x.toFixed(1));
+          sig.orbEl.setAttribute('cy', pt.y.toFixed(1));
+
+          const tailDist = Math.max(0, curDist - sig.tailLength);
+          const tailPt = pathway.pathEl.getPointAtLength(tailDist);
+          if (sig.tailEl) {
+            sig.tailEl.setAttribute('cx', tailPt.x.toFixed(1));
+            sig.tailEl.setAttribute('cy', tailPt.y.toFixed(1));
+            const edgeFade = Math.sin(sig.progress * Math.PI);
+            sig.tailEl.setAttribute('opacity', (0.65 * edgeFade).toFixed(2));
+            sig.orbEl.setAttribute('opacity', (0.2 + 0.8 * edgeFade).toFixed(2));
+          }
+        }
+      });
+    });
+
+    // Animate Neural Roots into Rock Base
+    rootPathways.forEach((rPath) => {
+      rPath.signals.forEach((sig) => {
+        sig.progress += sig.speed * dt;
+
+        // Signal enters rock foundation: trigger subtle rock pulse!
+        if (sig.progress >= 1.0) {
+          sig.progress = 0.0;
+
+          if (rockPedestal) {
+            rockPedestal.classList.remove('root-energy-pulse');
+            void rockPedestal.offsetWidth;
+            rockPedestal.classList.add('root-energy-pulse');
+            setTimeout(() => {
+              rockPedestal.classList.remove('root-energy-pulse');
+            }, 600);
+          }
+
+          const outerRing = document.getElementById('hero-floor-outer-ring');
+          if (outerRing) {
+            outerRing.classList.remove('energy-surge');
+            void outerRing.offsetWidth;
+            outerRing.classList.add('energy-surge');
+            setTimeout(() => {
+              outerRing.classList.remove('energy-surge');
+            }, 600);
+          }
+
+          rPath.pathEl.classList.add('active-pulse');
+          setTimeout(() => {
+            rPath.pathEl.classList.remove('active-pulse');
+          }, 350);
+        }
+
+        if (rPath.totalLen > 0 && sig.orbEl) {
+          const curDist = sig.progress * rPath.totalLen;
+          const pt = rPath.pathEl.getPointAtLength(curDist);
+          sig.orbEl.setAttribute('cx', pt.x.toFixed(1));
+          sig.orbEl.setAttribute('cy', pt.y.toFixed(1));
+
+          const tailDist = Math.max(0, curDist - sig.tailLength);
+          const tailPt = rPath.pathEl.getPointAtLength(tailDist);
+          if (sig.tailEl) {
+            sig.tailEl.setAttribute('cx', tailPt.x.toFixed(1));
+            sig.tailEl.setAttribute('cy', tailPt.y.toFixed(1));
+            const edgeFade = Math.sin(sig.progress * Math.PI);
+            sig.tailEl.setAttribute('opacity', (0.65 * edgeFade).toFixed(2));
+            sig.orbEl.setAttribute('opacity', (0.25 + 0.75 * edgeFade).toFixed(2));
+          }
+        }
+      });
+    });
+
+    requestAnimationFrame(animateSignals);
+  }
+
+  requestAnimationFrame(animateSignals);
+}
+
+/* ==========================================================================
+   2. Scroll-Linked Text Fill Reveal Animation
+   ========================================================================== */
+function initScrollTextReveal() {
+  const container = document.querySelector('.scroll-reveal-text');
+  if (!container) return;
+
+  // Split text into individual span words if not already split
+  const originalText = container.textContent.trim();
+  const words = originalText.split(/\s+/);
+  container.innerHTML = words.map(w => `<span class="word">${w}</span>`).join(' ');
+
+  const wordSpans = container.querySelectorAll('.word');
+
+  function updateReveal() {
+    const rect = container.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    // Calculate progress through viewport
+    // Starts revealing when top of container hits 75% of viewport, finishes when it reaches 25%
+    const startY = windowHeight * 0.75;
+    const endY = windowHeight * 0.25;
+
+    const progress = Math.min(Math.max((startY - rect.top) / (startY - endY), 0), 1);
+    const wordsToFill = Math.floor(progress * wordSpans.length);
+
+    wordSpans.forEach((span, index) => {
+      if (index <= wordsToFill) {
+        span.classList.add('filled');
+      } else {
+        span.classList.remove('filled');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateReveal, { passive: true });
+  window.addEventListener('resize', updateReveal, { passive: true });
+  updateReveal();
+}
+
+/* ==========================================================================
+   3. Testimonials Carousel Slider
+   ========================================================================== */
+function initTestimonialsSlider() {
+  const track = document.querySelector('.testimonials-track');
+  const prevBtn = document.querySelector('.slider-btn.prev');
+  const nextBtn = document.querySelector('.slider-btn.next');
+  const cards = document.querySelectorAll('.testimonial-card');
+
+  if (!track || cards.length === 0 || !prevBtn || !nextBtn) return;
+
+  let currentIndex = 0;
+
+  function getVisibleCardsCount() {
+    return window.innerWidth < 810 ? 1 : 2;
+  }
+
+  function getMaxIndex() {
+    const visible = getVisibleCardsCount();
+    return Math.max(0, cards.length - visible);
+  }
+
+  function updateSlider() {
+    const maxIndex = getMaxIndex();
+    if (currentIndex > maxIndex) currentIndex = maxIndex;
+    if (currentIndex < 0) currentIndex = 0;
+
+    const cardWidth = cards[0].offsetWidth;
+    const gap = 24;
+    const offset = currentIndex * (cardWidth + gap);
+
+    track.style.transform = `translateX(-${offset}px)`;
+
+    prevBtn.disabled = currentIndex === 0;
+    nextBtn.disabled = currentIndex >= maxIndex;
+  }
+
+  prevBtn.addEventListener('click', () => {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updateSlider();
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    if (currentIndex < getMaxIndex()) {
+      currentIndex++;
+      updateSlider();
+    }
+  });
+
+  window.addEventListener('resize', updateSlider, { passive: true });
+  updateSlider();
+}
+
+/* ==========================================================================
+   4. FAQ Accordion
+   ========================================================================== */
+function initFaqAccordion() {
+  const items = document.querySelectorAll('.faq-item, .cognira-faq-item');
+
+  items.forEach(item => {
+    const trigger = item.querySelector('.faq-trigger, .cognira-faq-trigger');
+    if (!trigger) return;
+
+    trigger.addEventListener('click', () => {
+      const isOpen = item.classList.contains('active');
+
+      items.forEach(otherItem => {
+        otherItem.classList.remove('active');
+        const otherTrigger = otherItem.querySelector('.faq-trigger, .cognira-faq-trigger');
+        if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
+      });
+
+      if (!isOpen) {
+        item.classList.add('active');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+}
+
+function initCogniraUseCasesTabs() {
+  const tabs = [...document.querySelectorAll('.cognira-usecase-tab')];
+  const cards = [...document.querySelectorAll('.cognira-project-card')];
+  if (!tabs.length || !cards.length) return;
+
+  // Scroll-through feed: all five projects are stacked and you scroll past
+  // them while the sticky rail highlights whichever one you are looking at.
+  // Clicking a pill scrolls to that project.
+  //
+  // These are navigation controls, not tabs — nothing is shown or hidden — so
+  // they use aria-current rather than tab/tabpanel semantics, which would tell
+  // a screen reader the other projects were hidden when they are not.
+  const rail = tabs[0].parentElement;
+
+  const setActive = (idx) => {
+    tabs.forEach((tab, i) => {
+      const on = i === idx;
+      tab.classList.toggle('active', on);
+      if (on) tab.setAttribute('aria-current', 'true');
+      else tab.removeAttribute('aria-current');
+    });
+  };
+
+  const scrollToCard = (idx) => {
+    const target = document.getElementById(tabs[idx].getAttribute('data-target')) || cards[idx];
+    if (!target) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    setActive(idx);
+  };
+
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => scrollToCard(i));
+  });
+
+  if (rail) {
+    rail.addEventListener('keydown', (e) => {
+      const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      const cur = tabs.findIndex(t => t.classList.contains('active'));
+      let next = null;
+      if (step) next = (cur + step + tabs.length) % tabs.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = tabs.length - 1;
+      if (next === null) return;
+      e.preventDefault();
+      tabs[next].focus();
+      scrollToCard(next);
+    });
+  }
+
+  // Active pill follows scroll: whichever card sits nearest the viewport
+  // centre wins. Measured from rects rather than IntersectionObserver so it
+  // still resolves when a card is taller than the viewport (no threshold can
+  // fire in that case) and when the page has been backgrounded.
+  let ticking = false;
+  const sync = () => {
+    const mid = window.innerHeight / 2;
+    let best = 0, bestDist = Infinity;
+    cards.forEach((card, i) => {
+      const r = card.getBoundingClientRect();
+      const dist = Math.abs(r.top + r.height / 2 - mid);
+      if (dist < bestDist) { bestDist = dist; best = i; }
+    });
+    setActive(best);
+    ticking = false;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(sync); }
+  }, { passive: true });
+  window.addEventListener('resize', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(sync); }
+  }, { passive: true });
+
+  sync();
+}
+
+/* ==========================================================================
+   5. Active Nav Link
+   ========================================================================== */
+function highlightActiveNavLink() {
+  const path = window.location.pathname.toLowerCase();
+  const links = document.querySelectorAll('.nav-link');
+
+  links.forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href) return;
+    const linkPath = href.split('#')[0].toLowerCase();
+    
+    if ((path === '/' || path === '/index.html' || path === '') && (linkPath === '/' || linkPath === './' || linkPath === 'index.html')) {
+      link.classList.add('active');
+    } else if (linkPath && path.includes(linkPath.replace('.html', '')) && linkPath !== '/' && linkPath !== './') {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
+}
+
+/* ==========================================================================
+   6. Back to Top Button
+   ========================================================================== */
+function initBackToTop() {
+  const btn = document.querySelector('.back-to-top');
+  if (!btn) return;
+
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+}
 
 /* ==========================================================================
    Filter Tabs Logic (Blog & Projects)
