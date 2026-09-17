@@ -72,64 +72,9 @@
         <section class="hero-section-wrapper" id="hero-section-inner">
           <div class="container-wide">
         <div class="hero-canvas-card">
-          <!-- Luxury Flowing Orange Glow Live Canvas Backdrop -->
-          <div class="hero-luxury-backdrop" aria-hidden="true">
-            <img src="/assets/images/demaze-hero-luxury-wave.webp" alt="Demaze Luxury Ambient Wave" class="hero-canvas-bg">
-            <div class="hero-soft-glow-ambient"></div>
-            <div class="hero-soft-glow-spot-left"></div>
-            <div class="hero-soft-glow-spot-right"></div>
-            <div class="hero-interactive-glow" id="hero-interactive-glow"></div>
-            
-            <svg class="hero-glow-wave-live" viewBox="0 0 1920 1080" preserveAspectRatio="none" aria-hidden="true">
-              <defs>
-                <!-- Multi-tier soft glow bloom filters -->
-                <filter id="heroBloomAtmosphere" x="-30%" y="-30%" width="160%" height="160%">
-                  <feGaussianBlur stdDeviation="38" result="deepBlur" />
-                  <feMerge>
-                    <feMergeNode in="deepBlur" />
-                  </feMerge>
-                </filter>
-                <filter id="heroBloomRadiance" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="15" result="midBlur" />
-                  <feMerge>
-                    <feMergeNode in="midBlur" />
-                  </feMerge>
-                </filter>
-                <filter id="heroBloomCore" x="-15%" y="-15%" width="130%" height="130%">
-                  <feGaussianBlur stdDeviation="3.2" result="sharpBlur" />
-                  <feMerge>
-                    <feMergeNode in="sharpBlur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-
-                <!-- Radiant Golden-Orange Gradient for wave crest -->
-                <linearGradient id="glowWaveGradLeft" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#ff7b1a" stop-opacity="0.8" />
-                  <stop offset="35%" stop-color="#ffa633" stop-opacity="0.95" />
-                  <stop offset="55%" stop-color="#ffb266" stop-opacity="1" />
-                  <stop offset="75%" stop-color="#ff8724" stop-opacity="0.9" />
-                  <stop offset="100%" stop-color="#e65100" stop-opacity="0.6" />
-                </linearGradient>
-
-                <linearGradient id="glowWaveGradRight" x1="0%" y1="100%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#e65100" stop-opacity="0.5" />
-                  <stop offset="25%" stop-color="#ff7f20" stop-opacity="0.85" />
-                  <stop offset="55%" stop-color="#ffa836" stop-opacity="0.95" />
-                  <stop offset="85%" stop-color="#ffbe7d" stop-opacity="1" />
-                  <stop offset="100%" stop-color="#ffc48c" stop-opacity="0.9" />
-                </linearGradient>
-              </defs>
-
-              <!-- Left Wave Crest (Atmospheric Soft Glow & Radiance) -->
-              <path class="wave-glow-path glow-atmosphere" d="M 0 300 C 130 330, 260 495, 365 536 C 445 540, 520 575, 630 690 C 690 750, 750 800, 840 845" filter="url(#heroBloomAtmosphere)" />
-              <path class="wave-glow-path glow-radiance" d="M 0 300 C 130 330, 260 495, 365 536 C 445 540, 520 575, 630 690 C 690 750, 750 800, 840 845" stroke="url(#glowWaveGradLeft)" filter="url(#heroBloomRadiance)" />
-
-              <!-- Right Wave Crest (Atmospheric Soft Glow & Radiance) -->
-              <path class="wave-glow-path glow-atmosphere" d="M 1080 680 C 1240 560, 1380 460, 1530 395 C 1660 365, 1750 300, 1800 200 C 1850 100, 1880 60, 1920 50" filter="url(#heroBloomAtmosphere)" />
-              <path class="wave-glow-path glow-radiance" d="M 1080 680 C 1240 560, 1380 460, 1530 395 C 1660 365, 1750 300, 1800 200 C 1850 100, 1880 60, 1920 50" stroke="url(#glowWaveGradRight)" filter="url(#heroBloomRadiance)" />
-            </svg>
-          </div>
+          <!-- Dark Cinematic Architectural Background with Atmosphere Shading -->
+          <img src="/assets/images/demaze-hero-dark-cinematic.jpg" alt="Demaze Architectural Chamber" class="hero-canvas-bg" fetchpriority="high">
+          <div class="hero-dark-overlay" aria-hidden="true"></div>
 
           <div class="hero-content-split">
             <!-- Left Column Content -->
@@ -302,13 +247,6 @@
                 <div class="badge-connector connector-ecommerce">
                   <span class="connector-dot"></span>
                 </div>
-              </div>
-
-              <!-- Downward Neural Roots Grounding Anchor -->
-              <div class="hero-roots-grounding" id="hero-roots-grounding" aria-hidden="true">
-                <div class="roots-grounding-ring"></div>
-                <div class="roots-floor-glow"></div>
-              </div>
             </div>
           </div>
 
@@ -318,6 +256,14 @@
             <div class="scroll-track">
               <div class="scroll-bar"></div>
             </div>
+          </div>
+
+          <!-- Floor Outer Concentric Glow Ring directly under the rock on the reflective floor -->
+          <div class="hero-floor-outer-ring" id="hero-floor-outer-ring" aria-hidden="true"></div>
+
+          <!-- Static Natural Rock Landing Nexus in the center of the rock -->
+          <div class="hero-static-rock-base" id="hero-rock-pedestal">
+            <div class="rock-neural-landing" id="rock-landing-target"></div>
           </div>
         </div>
       </div>
