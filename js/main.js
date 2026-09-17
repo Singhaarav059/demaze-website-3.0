@@ -1,3 +1,4 @@
+import { initIndustryHoverSlider } from './interactive-hover-slider.js';
 import * as THREE from 'three';
 
 /**
@@ -8,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeader();
   initHeroParticleSphere();
   initHeroInteractiveGlow();
+  initIndustryHoverSlider();
   initScrollTextReveal();
   initTestimonialsSlider();
   initFaqAccordion();
