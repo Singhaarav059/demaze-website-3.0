@@ -1,6 +1,6 @@
-# Agent Orchestration & Verification Invariants
+# Agent Orchestration, Skill Engineering & Verification Invariants
 
-Guidelines for building, verifying, and shipping with Google Antigravity.
+Guidelines for building, verifying, and shipping with Google Antigravity across this project.
 
 ---
 
@@ -11,13 +11,28 @@ Guidelines for building, verifying, and shipping with Google Antigravity.
   ```
   PLAN ──> BUILD ──> TEST ──> SHIP
   ```
-- Break complex work into clear, modular phases.
+- Break complex work into clear, modular tasks.
 - Avoid halting for routine trivial confirmations when intent and architectural standards are defined.
 - Run parallel checks and isolated tasks where applicable to maximize throughput.
 
 ---
 
-## 2. Context Engineering: Context, Not Chaos
+## 2. Skill Engineering: Don't Repeat Prompts. Build Skills.
+> *"Teach the agent how you work."*
+
+- **Turn Proven Instructions into Reusable Assets**:
+  - Whenever a pattern, workflow, or architectural procedure is established, encapsulate it as a reusable skill:
+    ```
+    .agents/
+      skills/
+        <your-skill>/
+          SKILL.md
+    ```
+- Codify domain knowledge, design standards, and testing procedures so the agent executes them consistently without needing repetitive prompt guidance.
+
+---
+
+## 3. Context Engineering: Context, Not Chaos
 > *"Make the right context available at the right time."*
 
 - **Structured Knowledge Flow**:
@@ -29,7 +44,7 @@ Guidelines for building, verifying, and shipping with Google Antigravity.
 
 ---
 
-## 3. Verification Loops: Don't Trust the Agent. Verify It.
+## 4. Verification Loops: Don't Trust the Agent. Verify It.
 > *"AI that can be trusted to ship."*
 
 - **Closed Feedback Loop**:

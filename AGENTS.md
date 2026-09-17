@@ -30,20 +30,24 @@ This repository follows strict UI, motion, and architectural rules across all pa
 
 ---
 
-## 3. Orchestration & Verification Invariants
-*"AI that can be trusted to ship."*
+## 3. The 4 Antigravity Engineering Pillars
+*"Master these -> become the developer who orchestrates AI."*
 
-### A. Agent Orchestration: Think in Systems, Not Prompts
+### 01 — Agent Orchestration: Think in Systems, Not Prompts
 - Pipeline: `PLAN` ──> `BUILD` ──> `TEST` ──> `SHIP`.
 - Break complex work into tasks; operate autonomously end-to-end.
 
-### B. Context Engineering: Context, Not Chaos
+### 02 — Skill Engineering: Don't Repeat Prompts. Build Skills.
+- Turn proven instructions, patterns, and tools into reusable agent capabilities under `.agents/skills/<skill>/SKILL.md`.
+- Teach the agent how you work.
+
+### 03 — Context Engineering: Context, Not Chaos
 - Hierarchy: `PROJECT` ──> `RULES` ──> `SKILLS` ──> `AGENT` ──> `OUTPUT`.
 - Make the right context available at the right time.
 
-### C. Verification Loops: Don't Trust the Agent. Verify It.
+### 04 — Verification Loops: Don't Trust the Agent. Verify It.
 - Closed Loop: `BUILD` ──> `VERIFY` ──> `FEEDBACK` ──> `ITERATE`.
-- Always inspect the actual runtime in the browser:
+- Inspect the actual runtime in the browser:
   - 0 console errors
   - 0 broken assets/links
   - 0 horizontal overflow across viewports (375px, 768px, 1440px)
