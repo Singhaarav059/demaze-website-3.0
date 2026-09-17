@@ -408,9 +408,9 @@ p {
 }
 
 .site-header .btn-olive {
-  background: #ffffff !important;
-  color: var(--color-bg-body) !important;
-  border: 1px solid #ffffff !important;
+  background: var(--color-primary) !important;
+  color: var(--color-text-white) !important;
+  border: 1px solid var(--color-primary) !important;
   font-weight: 600 !important;
   font-size: 0.88rem !important;
   padding: 8px 20px !important;
@@ -423,8 +423,8 @@ p {
 }
 
 .site-header .btn-olive:hover {
-  background: rgba(28, 24, 20, 0.86) !important;
-  color: var(--color-bg-body) !important;
+  background: var(--color-primary-hover) !important;
+  color: var(--color-text-white) !important;
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(28, 24, 20, 0.18) !important;
 }

@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { initIndustryHoverSlider } from './interactive-hover-slider.js';
 
 /**
@@ -31,8 +30,34 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ==========================================================================
    1. Header Sticky & Mobile Menu
    ========================================================================== */
+/**
+ * Builds the mobile menu by cloning the desktop nav.
+ *
+ * The two used to be duplicated in the markup of all seven pages — 11 links
+ * for 5 destinations in every header. Nothing rendered twice (the inactive set
+ * is display:none), but every nav change had to be made in both places and
+ * they had already drifted apart. One source now.
+ */
+function buildMobileMenu(header) {
+  if (!header || header.querySelector('.mobile-menu-overlay')) return;
+
+  const links = header.querySelector('.nav-links');
+  const cta = header.querySelector('.header-actions .btn');
+  if (!links) return;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'mobile-menu-overlay';
+  overlay.id = 'mobile-menu';
+
+  links.querySelectorAll('.nav-link').forEach(link => overlay.appendChild(link.cloneNode(true)));
+  if (cta) overlay.appendChild(cta.cloneNode(true));
+
+  header.appendChild(overlay);
+}
+
 function initHeader() {
   const header = document.querySelector('.site-header');
+  buildMobileMenu(header);
   const toggle = document.querySelector('.mobile-toggle');
   const overlay = document.querySelector('.mobile-menu-overlay');
 
@@ -47,24 +72,35 @@ function initHeader() {
   }
 
   if (toggle && overlay) {
+    // Keep aria-expanded in step with the visual state, otherwise a screen
+    // reader gets no indication the menu opened.
+    const setOpen = (open) => {
+      toggle.classList.toggle('open', open);
+      overlay.classList.toggle('show', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+    };
+
     toggle.addEventListener('click', (e) => {
       e.stopPropagation();
-      toggle.classList.toggle('open');
-      overlay.classList.toggle('show');
+      setOpen(!overlay.classList.contains('show'));
     });
 
     document.addEventListener('click', (e) => {
       if (overlay.classList.contains('show') && !overlay.contains(e.target) && !toggle.contains(e.target)) {
-        toggle.classList.remove('open');
-        overlay.classList.remove('show');
+        setOpen(false);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.classList.contains('show')) {
+        setOpen(false);
+        toggle.focus();
       }
     });
 
     overlay.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        toggle.classList.remove('open');
-        overlay.classList.remove('show');
-      });
+      link.addEventListener('click', () => setOpen(false));
     });
   }
 }
@@ -298,9 +334,15 @@ function initBackToTop() {
    - Traveling electrical signal sparks that journey through the threads and
      trigger synchronized micro-pulse reactions on the service cards.
    ========================================================================== */
-function initHeroParticleSphere() {
+async function initHeroParticleSphere() {
   const container = document.getElementById('hero-sphere-container');
   if (!container) return;
+
+  // Three.js is ~500KB of the bundle and powers only this decorative sphere,
+  // so it is code-split out of the initial load. Skipped entirely when the
+  // user prefers reduced motion — there is nothing to see in that case.
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const THREE = await import('three');
 
   // Configuration parameters
   const particlesCount = 3200;
@@ -970,6 +1012,12 @@ function initNeuralNervousSystem() {
     const cp2X = forkX + (cfg.dxStart * 0.16);
     const cp2Y = forkY - branchDy * 0.35;
 
+    // Measured from element rects, which can still be unresolved on the first
+    // frame. Emitting NaN into `d` makes the browser reject the whole path, so
+    // skip this frame instead and let the next one draw it.
+    const coords = [tX, tY, forkX, forkY, cp2X, cp2Y, cp1X, cp1Y, sX, sY];
+    if (!coords.every(Number.isFinite)) return '';
+
     return `M ${tX.toFixed(1)} ${tY.toFixed(1)} L ${forkX.toFixed(1)} ${forkY.toFixed(1)} C ${cp2X.toFixed(1)} ${cp2Y.toFixed(1)}, ${cp1X.toFixed(1)} ${cp1Y.toFixed(1)}, ${sX.toFixed(1)} ${sY.toFixed(1)}`;
   }
 
@@ -1376,14 +1424,34 @@ function initTechFilterTabs() {
   if (!tabsBar || !cards.length) return;
 
   const tabs = tabsBar.querySelectorAll('.tech-filter-tab');
+
+  // Roving tabindex + arrow keys: the tabs already carried role/aria-selected
+  // but were mouse-only.
+  tabs.forEach((t, i) => { t.tabIndex = i === 0 ? 0 : -1; });
+  tabsBar.addEventListener('keydown', (e) => {
+    const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+    const list = [...tabs];
+    const cur = list.findIndex(t => t.getAttribute('aria-selected') === 'true');
+    let next = null;
+    if (step) next = (cur + step + list.length) % list.length;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = list.length - 1;
+    if (next === null) return;
+    e.preventDefault();
+    list[next].click();
+    list[next].focus();
+  });
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       tabs.forEach(t => {
         t.classList.remove('active');
         t.setAttribute('aria-selected', 'false');
+        t.tabIndex = -1;
       });
       tab.classList.add('active');
       tab.setAttribute('aria-selected', 'true');
+      tab.tabIndex = 0;
 
       const selectedCategory = tab.getAttribute('data-category');
 
@@ -1625,10 +1693,15 @@ function initDroneCurtainTransition() {
 
     // Build 64-segment path for cloth top edge
     const points = [];
+    let finite = true;
     for (let i = 0; i <= 64; i++) {
       const px = (winWidth * i) / 64;
-      points.push(`${i === 0 ? 'M' : 'L'} ${px.toFixed(2)} ${W(px).toFixed(2)}`);
+      const py = W(px);
+      if (!Number.isFinite(px) || !Number.isFinite(py)) { finite = false; break; }
+      points.push(`${i === 0 ? 'M' : 'L'} ${px.toFixed(2)} ${py.toFixed(2)}`);
     }
+    // Dimensions can be unresolved on the first frame; skip rather than emit NaN.
+    if (!finite) { requestTick(); return; }
 
     const edgeD = points.join(' ');
     const clipPathD = `${edgeD} L ${winWidth} ${winHeight + 10} L 0 ${winHeight + 10} Z`;
