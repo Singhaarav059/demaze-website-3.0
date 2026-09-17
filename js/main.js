@@ -338,11 +338,14 @@ function initHeroParticleSphere() {
   scene.add(group);
 
   const sphereGeo = new THREE.SphereGeometry(particleSize * 0.15, 8, 8);
+  // Light theme: additive blending is invisible against a near-white page
+  // (adding light to white yields white), so the sphere renders as dark ink
+  // particles with normal blending instead of glowing ones.
   const sphereMat = new THREE.MeshBasicMaterial({
     color: 0xffffff,
-    blending: THREE.AdditiveBlending,
-    transparent: false,
-    opacity: 1
+    blending: THREE.NormalBlending,
+    transparent: true,
+    opacity: 0.92
   });
 
   const instancedMesh = new THREE.InstancedMesh(sphereGeo, sphereMat, particlesCount);
@@ -354,15 +357,20 @@ function initHeroParticleSphere() {
   }
   instancedMesh.instanceMatrix.needsUpdate = true;
 
-  // Particle color: warm luminous golden pearl
-  const particleColor = new THREE.Color(0.96, 0.94, 0.90);
+  // Particle color: warm dark ink, varied between deep espresso and brand
+  // orange so the sphere keeps its warmth while reading clearly on light.
+  const particleInk = new THREE.Color(0.20, 0.14, 0.10);
+  const particleWarm = new THREE.Color(0.78, 0.30, 0.08);
   const colorsArray = new Float32Array(particlesCount * 3);
+  const mixed = new THREE.Color();
   for (let i = 0; i < particlesCount; i++) {
     const idx = i * 3;
-    const brightness = 0.90 + Math.random() * 0.18;
-    colorsArray[idx] = Math.min(1, particleColor.r * brightness);
-    colorsArray[idx + 1] = Math.min(1, particleColor.g * brightness);
-    colorsArray[idx + 2] = Math.min(1, particleColor.b * brightness * 0.95);
+    // ~28% of particles lean warm, the rest stay near-neutral ink
+    mixed.copy(particleInk).lerp(particleWarm, Math.random() < 0.28 ? 0.55 + Math.random() * 0.45 : 0);
+    const shade = 0.86 + Math.random() * 0.28; // subtle depth variation
+    colorsArray[idx] = Math.min(1, mixed.r * shade);
+    colorsArray[idx + 1] = Math.min(1, mixed.g * shade);
+    colorsArray[idx + 2] = Math.min(1, mixed.b * shade);
   }
   instancedMesh.instanceColor = new THREE.InstancedBufferAttribute(colorsArray, 3);
   instancedMesh.instanceColor.needsUpdate = true;
@@ -403,10 +411,10 @@ function initHeroParticleSphere() {
   const synapseGeo = new THREE.BufferGeometry();
   synapseGeo.setAttribute('position', new THREE.Float32BufferAttribute(synapseLinePositions, 3));
   const synapseMat = new THREE.LineBasicMaterial({
-    color: 0xffaa44,
+    color: 0xc2410c,
     transparent: true,
-    opacity: 0.58,
-    blending: THREE.AdditiveBlending
+    opacity: 0.34,
+    blending: THREE.NormalBlending
   });
   const synapseMesh = new THREE.LineSegments(synapseGeo, synapseMat);
   group.add(synapseMesh);
@@ -414,10 +422,10 @@ function initHeroParticleSphere() {
   // Core Luminous Brain Glow & Glass Shell Boundary
   const coreGlowGeo = new THREE.SphereGeometry(sphereRadius * 0.35, 16, 16);
   const coreGlowMat = new THREE.MeshBasicMaterial({
-    color: 0xff7722,
+    color: 0xff8a4c,
     transparent: true,
-    opacity: 0.28,
-    blending: THREE.AdditiveBlending
+    opacity: 0.16,
+    blending: THREE.NormalBlending
   });
   const coreGlow = new THREE.Mesh(coreGlowGeo, coreGlowMat);
   group.add(coreGlow);
@@ -425,10 +433,10 @@ function initHeroParticleSphere() {
   // Ethereal Glass Shell Rim
   const glassRimGeo = new THREE.SphereGeometry(sphereRadius * 1.025, 32, 32);
   const glassRimMat = new THREE.MeshBasicMaterial({
-    color: 0xffeedd,
+    color: 0x8a7361,
     transparent: true,
-    opacity: 0.12,
-    blending: THREE.AdditiveBlending
+    opacity: 0.07,
+    blending: THREE.NormalBlending
   });
   const glassRim = new THREE.Mesh(glassRimGeo, glassRimMat);
   group.add(glassRim);
@@ -439,10 +447,10 @@ function initHeroParticleSphere() {
 
   const ringGeo1 = new THREE.TorusGeometry(sphereRadius * 1.08, 0.0028, 16, 120);
   const ringMat1 = new THREE.MeshBasicMaterial({
-    color: 0xffaa44,
-    blending: THREE.AdditiveBlending,
+    color: 0xe2541b,
+    blending: THREE.NormalBlending,
     transparent: true,
-    opacity: 0.8
+    opacity: 0.5
   });
   const ring1 = new THREE.Mesh(ringGeo1, ringMat1);
   ring1.rotation.x = Math.PI * 0.38;
@@ -451,10 +459,10 @@ function initHeroParticleSphere() {
 
   const ringGeo2 = new THREE.TorusGeometry(sphereRadius * 1.14, 0.0024, 16, 120);
   const ringMat2 = new THREE.MeshBasicMaterial({
-    color: 0xff7722,
-    blending: THREE.AdditiveBlending,
+    color: 0x9a3412,
+    blending: THREE.NormalBlending,
     transparent: true,
-    opacity: 0.65
+    opacity: 0.38
   });
   const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
   ring2.rotation.x = -Math.PI * 0.32;
@@ -466,7 +474,7 @@ function initHeroParticleSphere() {
     {
       mesh: new THREE.Mesh(
         new THREE.SphereGeometry(0.026, 24, 24),
-        new THREE.MeshBasicMaterial({ color: 0xffdd88 })
+        new THREE.MeshBasicMaterial({ color: 0xe2541b })
       ),
       radius: sphereRadius * 1.08,
       inclination: Math.PI * 0.38,
@@ -477,7 +485,7 @@ function initHeroParticleSphere() {
     {
       mesh: new THREE.Mesh(
         new THREE.SphereGeometry(0.020, 24, 24),
-        new THREE.MeshBasicMaterial({ color: 0xe0e6ed })
+        new THREE.MeshBasicMaterial({ color: 0x64748b })
       ),
       radius: sphereRadius * 1.08,
       inclination: Math.PI * 0.38,
@@ -488,7 +496,7 @@ function initHeroParticleSphere() {
     {
       mesh: new THREE.Mesh(
         new THREE.SphereGeometry(0.022, 24, 24),
-        new THREE.MeshBasicMaterial({ color: 0xffaa44 })
+        new THREE.MeshBasicMaterial({ color: 0xea7317 })
       ),
       radius: sphereRadius * 1.14,
       inclination: -Math.PI * 0.32,
@@ -499,7 +507,7 @@ function initHeroParticleSphere() {
     {
       mesh: new THREE.Mesh(
         new THREE.SphereGeometry(0.016, 24, 24),
-        new THREE.MeshBasicMaterial({ color: 0xffffff })
+        new THREE.MeshBasicMaterial({ color: 0x1e293b })
       ),
       radius: sphereRadius * 1.14,
       inclination: -Math.PI * 0.32,
@@ -1119,7 +1127,7 @@ function initNeuralNervousSystem() {
 
         const tail = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         tail.setAttribute('r', '2.2');
-        tail.setAttribute('fill', '#ff9944');
+        tail.setAttribute('fill', '#d2490f');
         tail.setAttribute('opacity', '0.6');
         signalsGroup.appendChild(tail);
         sig.tailEl = tail;
@@ -1140,7 +1148,7 @@ function initNeuralNervousSystem() {
 
           const tail = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
           tail.setAttribute('r', '2.2');
-          tail.setAttribute('fill', '#ffbe47');
+          tail.setAttribute('fill', '#e2541b');
           tail.setAttribute('opacity', '0.7');
           rootSignalsGroup.appendChild(tail);
           sig.tailEl = tail;
