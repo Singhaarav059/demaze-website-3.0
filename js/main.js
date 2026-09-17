@@ -7,6 +7,7 @@ import * as THREE from 'three';
 document.addEventListener('DOMContentLoaded', () => {
   initHeader();
   initHeroParticleSphere();
+  initHeroInteractiveGlow();
   initScrollTextReveal();
   initTestimonialsSlider();
   initFaqAccordion();
@@ -1925,3 +1926,44 @@ function initBentoTerminalSimulation() {
 
 
 
+
+/* ==========================================================================
+   Interactive Hero Cursor Ambient Glow
+   ========================================================================== */
+function initHeroInteractiveGlow() {
+  const heroCard = document.querySelector('.hero-canvas-card');
+  const glow = document.getElementById('hero-interactive-glow');
+  if (!heroCard || !glow) return;
+
+  let currentX = 0, currentY = 0;
+  let targetX = 0, targetY = 0;
+  let isHovered = false;
+  let rafId = null;
+
+  function update() {
+    if (!isHovered && glow.style.opacity === '0') return;
+    currentX += (targetX - currentX) * 0.12;
+    currentY += (targetY - currentY) * 0.12;
+    glow.style.transform = `translate3d(${currentX.toFixed(1)}px, ${currentY.toFixed(1)}px, 0)`;
+    rafId = requestAnimationFrame(update);
+  }
+
+  heroCard.addEventListener('mousemove', (e) => {
+    const rect = heroCard.getBoundingClientRect();
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
+    if (!isHovered) {
+      isHovered = true;
+      currentX = targetX;
+      currentY = targetY;
+      glow.style.opacity = '1';
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(update);
+    }
+  });
+
+  heroCard.addEventListener('mouseleave', () => {
+    isHovered = false;
+    glow.style.opacity = '0';
+  });
+}

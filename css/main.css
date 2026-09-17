@@ -585,6 +585,84 @@ p {
   z-index: 0;
 }
 
+/* 1. Broad Volumetric Ambient Atmosphere Bloom */
+.hero-soft-glow-ambient {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: 
+    radial-gradient(ellipse 42% 28% at 18% 50%, rgba(255, 130, 20, 0.38) 0%, rgba(255, 85, 10, 0.14) 45%, transparent 75%),
+    radial-gradient(ellipse 52% 38% at 86% 24%, rgba(255, 145, 30, 0.42) 0%, rgba(255, 95, 15, 0.16) 42%, transparent 75%);
+  filter: blur(34px);
+  animation: heroGlowBreathing 6s ease-in-out infinite alternate;
+}
+
+/* 2. Concentrated Ethereal Soft Glow Pockets directly on the wave crests */
+.hero-soft-glow-spot-left {
+  position: absolute;
+  left: 12%;
+  top: 42%;
+  width: clamp(260px, 26vw, 420px);
+  height: clamp(160px, 16vw, 260px);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255, 145, 30, 0.52) 0%, rgba(255, 95, 15, 0.22) 45%, transparent 80%);
+  filter: blur(38px);
+  mix-blend-mode: screen;
+  z-index: 3;
+  pointer-events: none;
+  animation: spotGlowPulse 5s ease-in-out infinite alternate;
+}
+
+.hero-soft-glow-spot-right {
+  position: absolute;
+  right: 1%;
+  top: 10%;
+  width: clamp(340px, 36vw, 560px);
+  height: clamp(240px, 24vw, 380px);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255, 155, 40, 0.55) 0%, rgba(255, 105, 20, 0.24) 42%, transparent 78%);
+  filter: blur(44px);
+  mix-blend-mode: screen;
+  z-index: 3;
+  pointer-events: none;
+  animation: spotGlowPulse 5.8s ease-in-out infinite alternate-reverse;
+}
+
+/* 3. Interactive Cursor Glow Spot */
+.hero-interactive-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 500px;
+  height: 500px;
+  margin-left: -250px;
+  margin-top: -250px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(255, 140, 30, 0.28) 0%, rgba(255, 80, 10, 0.12) 40%, transparent 70%);
+  filter: blur(32px);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+@keyframes heroGlowBreathing {
+  0% { opacity: 0.85; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.04); }
+}
+
+@keyframes spotGlowPulse {
+  0% { transform: scale(0.94) translate3d(0, 0, 0); opacity: 0.8; }
+  50% { transform: scale(1.06) translate3d(12px, -8px, 0); opacity: 1; }
+  100% { transform: scale(0.96) translate3d(-6px, 10px, 0); opacity: 0.85; }
+}
+
 .hero-content-split {
   display: flex;
   align-items: center;
