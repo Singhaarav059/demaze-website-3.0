@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initIndustryHoverSlider();
   initDroneCurtainTransition();
   initScrollRevealStorytelling();
+  initStickyBackdrop();
   initAnimatedCounters();
   initInteractiveContactForm();
   initCardTiltMicroInteractions();
@@ -191,40 +192,62 @@ function initFaqAccordion() {
 }
 
 function initCogniraUseCasesTabs() {
-  const tabs = document.querySelectorAll('.cognira-usecase-tab');
-  const cards = document.querySelectorAll('.cognira-project-card');
+  const tabs = [...document.querySelectorAll('.cognira-usecase-tab')];
+  const cards = [...document.querySelectorAll('.cognira-project-card')];
   if (!tabs.length || !cards.length) return;
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const targetId = tab.getAttribute('data-target');
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+  // Real tab panels rather than a scroll-to list: showing one project at a
+  // time keeps the section inside a single viewport instead of running 2.7
+  // screens long, and gives the existing tab rail an actual job.
+  const list = tabs[0].parentElement;
+  if (list) list.setAttribute('role', 'tablist');
 
-      const targetEl = document.getElementById(targetId);
-      if (targetEl) {
-        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+  const select = (idx, focus = false) => {
+    tabs.forEach((tab, i) => {
+      const on = i === idx;
+      tab.classList.toggle('active', on);
+      tab.setAttribute('aria-selected', String(on));
+      tab.tabIndex = on ? 0 : -1;
     });
+    cards.forEach((card, i) => {
+      const on = i === idx;
+      card.hidden = !on;
+      card.classList.toggle('is-active-panel', on);
+    });
+    if (focus) tabs[idx].focus();
+  };
+
+  tabs.forEach((tab, i) => {
+    const card = cards[i];
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-selected', String(i === 0));
+    tab.tabIndex = i === 0 ? 0 : -1;
+    if (card) {
+      if (!card.id) card.id = 'usecase-panel-' + i;
+      if (!tab.id) tab.id = 'usecase-tab-' + i;
+      tab.setAttribute('aria-controls', card.id);
+      card.setAttribute('role', 'tabpanel');
+      card.setAttribute('aria-labelledby', tab.id);
+    }
+    tab.addEventListener('click', () => select(i));
   });
 
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const id = entry.target.id;
-          tabs.forEach(tab => {
-            if (tab.getAttribute('data-target') === id) {
-              tabs.forEach(t => t.classList.remove('active'));
-              tab.classList.add('active');
-            }
-          });
-        }
-      });
-    }, { threshold: 0.45 });
-
-    cards.forEach(card => observer.observe(card));
+  if (list) {
+    list.addEventListener('keydown', (e) => {
+      const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      const current = tabs.findIndex(t => t.getAttribute('aria-selected') === 'true');
+      if (step) {
+        e.preventDefault();
+        select((current + step + tabs.length) % tabs.length, true);
+      } else if (e.key === 'Home') {
+        e.preventDefault(); select(0, true);
+      } else if (e.key === 'End') {
+        e.preventDefault(); select(tabs.length - 1, true);
+      }
+    });
   }
+
+  select(0);
 }
 
 /* ==========================================================================
@@ -1677,44 +1700,119 @@ function initDroneCurtainTransition() {
    Storytelling Scroll Reveal Engine
    ========================================================================== */
 function initScrollRevealStorytelling() {
+  // Note: the homepage uses the cognira-* card classes. They were missing from
+  // this list, so most of the page never revealed at all. Small repeated items
+  // (tech logos, industry rows) reveal via their container rather than
+  // individually, which would read as noise.
   const elements = document.querySelectorAll(`
-    .scroll-reveal, 
-    .scroll-reveal-left, 
-    .scroll-reveal-right, 
+    .scroll-reveal,
+    .scroll-reveal-left,
+    .scroll-reveal-right,
     .stagger-group,
     .section-header,
+    .cognira-header-split,
+    .industry-section-header,
     .featured-project-card,
     .project-showcase-card,
     .why-card,
+    .why-bento-card,
     .value-card,
+    .cognira-value-card,
+    .cognira-feature-card,
     .how-card,
+    .doodle-telemetry-card,
+    .cognira-faq-item,
     .stat-ribbon-card,
     .journey-item,
     .bento-value-card,
     .contact-info-card,
-    .contact-form-card
+    .contact-form-card,
+    .industry-hover-slider-stage,
+    .tech-logos-grid,
+    .founder-statement-card,
+    .cognira-cta-card
   `);
 
   if (!elements.length) return;
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-revealed');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.01,
-    rootMargin: '100px 0px 100px 0px'
-  });
+  // Tag every participant first — both code paths below target .scroll-reveal.
+  const isTagged = (el) =>
+    el.classList.contains('scroll-reveal') ||
+    el.classList.contains('scroll-reveal-left') ||
+    el.classList.contains('scroll-reveal-right') ||
+    el.classList.contains('stagger-group');
 
   elements.forEach(el => {
-    if (!el.classList.contains('scroll-reveal') && !el.classList.contains('scroll-reveal-left') && !el.classList.contains('scroll-reveal-right') && !el.classList.contains('stagger-group')) {
-      el.classList.add('scroll-reveal');
-    }
-    observer.observe(el);
+    if (!isTagged(el)) el.classList.add('scroll-reveal');
   });
+
+  // Only hide the start state once JS is definitely running, so a script
+  // failure leaves the page readable rather than blank.
+  document.documentElement.classList.add('js-reveals');
+
+  const items = [...elements];
+
+  // Reveal state is computed from each element's position relative to the
+  // viewport, so it is genuinely scroll-linked and reverses on the way back
+  // up. Read-only with respect to scrolling: a passive listener, no
+  // preventDefault and no scrollTo, so the user's scroll is never hijacked.
+  //
+  // Two earlier approaches were rejected:
+  //   - CSS `animation-timeline: view()` froze in Chrome once an element
+  //     passed its range (playState stuck "finished"), so reveals never
+  //     reversed.
+  //   - IntersectionObserver does not deliver callbacks while the page is
+  //     hidden or occluded, which risks leaving content stuck invisible.
+  // A rect check has neither failure mode and cannot strand content.
+  const MARGIN = 0.08; // reveal once 8% into the viewport
+  let ticking = false;
+
+  const apply = () => {
+    const vh = window.innerHeight;
+    const enter = vh * (1 - MARGIN);
+    for (const el of items) {
+      const r = el.getBoundingClientRect();
+      el.classList.toggle('is-revealed', r.top < enter && r.bottom > 0);
+    }
+    ticking = false;
+  };
+
+  const schedule = () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(apply); }
+  };
+
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule, { passive: true });
+  window.addEventListener('load', schedule);
+  document.addEventListener('visibilitychange', schedule);
+  apply();
+}
+
+/* ==========================================================================
+   Sticky Backdrop
+   Publishes scroll progress (0..1) as a CSS variable so the fixed background
+   layer can drift behind the content. Read-only with respect to scrolling:
+   it never calls preventDefault or scrollTo, so the user keeps full control.
+   ========================================================================== */
+function initStickyBackdrop() {
+  const backdrop = document.querySelector('.site-backdrop');
+  if (!backdrop) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let ticking = false;
+  const update = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    document.documentElement.style.setProperty('--scroll-progress', progress.toFixed(4));
+    ticking = false;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+
+  window.addEventListener('resize', update, { passive: true });
+  update();
 }
 
 /* ==========================================================================

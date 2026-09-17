@@ -1659,7 +1659,7 @@ p {
    About Us Section (Homepage) - Authentic Scroll Text-Reveal
    ========================================================================== */
 .about-home-section {
-  padding: 100px 0 80px;
+  padding: var(--section-padding-y) 0;
 }
 
 .about-home-grid {
@@ -1709,7 +1709,7 @@ p {
    How It Works (Our Approach)
    ========================================================================== */
 .how-it-works-section {
-  padding: 100px 0;
+  padding: var(--section-padding-y) 0;
 }
 
 .how-cards-row {
@@ -1889,7 +1889,7 @@ p {
    Testimonials Section
    ========================================================================== */
 .testimonials-section {
-  padding: 100px 0;
+  padding: var(--section-padding-y) 0;
   position: relative;
   overflow: hidden;
 }
@@ -2003,7 +2003,7 @@ p {
    Pricing Section
    ========================================================================== */
 .pricing-section {
-  padding: 100px 0;
+  padding: var(--section-padding-y) 0;
   background-color: #fbf7f2;
 }
 
@@ -3632,7 +3632,7 @@ p {
 
 /* 4. Why Demaze Differentiation */
 .why-demaze-section {
-  padding: 100px 0;
+  padding: var(--section-padding-y) 0;
   background-color: var(--color-bg-body);
   position: relative;
 }
@@ -3640,18 +3640,19 @@ p {
 .why-bento-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  gap: 18px;
   margin-top: 48px;
 }
 
 .why-bento-card {
   background-color: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: 24px;
-  padding: 36px 32px;
+  border-radius: 20px;
+  padding: 22px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 12px;
   box-shadow: 0 4px 20px rgba(28, 24, 20, 0.1);
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
   position: relative;
@@ -3698,9 +3699,9 @@ p {
 }
 
 .why-icon-wrap {
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   background-color: var(--color-primary-soft);
   color: var(--color-primary);
   display: flex;
@@ -3716,10 +3717,10 @@ p {
 
 .why-card-title {
   font-family: var(--font-heading);
-  font-size: 1.35rem;
+  font-size: 1.12rem;
   font-weight: 700;
   color: var(--color-text-primary);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   letter-spacing: -0.02em;
   line-height: 1.25;
 }
@@ -3729,8 +3730,8 @@ p {
 }
 
 .why-card-text {
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 0.86rem;
+  line-height: 1.5;
   color: var(--color-text-body);
 }
 
@@ -4378,7 +4379,7 @@ p {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 22px 18px;
+  padding: 14px 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -4386,7 +4387,7 @@ p {
   gap: 12px;
   text-align: center;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), opacity 0.3s ease;
-  min-height: 120px;
+  min-height: 96px;
 }
 
 .tech-logo-card:hover {
@@ -4773,38 +4774,102 @@ p {
    ========================================================================== */
 
 /* 1. Scroll Reveal Storytelling Engine */
-.scroll-reveal {
+html.js-reveals .scroll-reveal {
   opacity: 0;
   transform: translateY(22px);
   transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
-.scroll-reveal.is-revealed {
+html.js-reveals .scroll-reveal.is-revealed {
   opacity: 1;
   transform: translateY(0);
 }
 
-.scroll-reveal-left {
+/* Scroll-linked reveals.
+   Tied to scroll position rather than triggered once, so scrolling back up
+   reverses them. This drives the page from scroll offset only — it never
+   intercepts or re-times the user's scroll input. */
+
+
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes revealLeft {
+  from { opacity: 0; transform: translateX(-26px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes revealRight {
+  from { opacity: 0; transform: translateX(26px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Sticky background: one continuous surface behind every section, so the page
+   reads as a single unfolding sheet rather than stacked bands. */
+.site-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 52% 40% at 14% 14%, rgba(255, 228, 206, 0.5) 0%, transparent 62%),
+    radial-gradient(ellipse 48% 42% at 88% 34%, rgba(255, 234, 214, 0.55) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 44% at 50% 92%, rgba(255, 231, 212, 0.42) 0%, transparent 64%),
+    var(--color-bg-body);
+  /* Drifts slowly with scroll progress, set by initStickyBackdrop() */
+  transform: translate3d(0, calc(var(--scroll-progress, 0) * -3vh), 0) scale(1.04);
+  will-change: transform;
+}
+
+/* Sections ride on the shared backdrop instead of painting their own base */
+.industries-section,
+.why-demaze-section,
+.technologies-filter-section,
+.about-home-section,
+.cognira-values-section,
+.how-it-works-section,
+.cognira-faq-section,
+.cognira-features-section,
+.cognira-usecases-section,
+.founder-statement-section {
+  background-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-backdrop { transform: none; }
+  .scroll-reveal,
+  .scroll-reveal-left,
+  .scroll-reveal-right,
+  .stagger-group > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+html.js-reveals .scroll-reveal-left {
   opacity: 0;
   transform: translateX(-24px);
   transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
-.scroll-reveal-left.is-revealed {
+html.js-reveals .scroll-reveal-left.is-revealed {
   opacity: 1;
   transform: translateX(0);
 }
 
-.scroll-reveal-right {
+html.js-reveals .scroll-reveal-right {
   opacity: 0;
   transform: translateX(24px);
   transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
-.scroll-reveal-right.is-revealed {
+html.js-reveals .scroll-reveal-right.is-revealed {
   opacity: 1;
   transform: translateX(0);
 }
@@ -5546,7 +5611,7 @@ textarea.form-control {
 
 /* 3. Cognira Features Grid (Core Capabilities / What We Build) */
 .cognira-features-section {
-  padding: 80px 0;
+  padding: var(--section-padding-y) 0;
   background-color: var(--color-bg-body);
   position: relative;
 }
@@ -5674,7 +5739,7 @@ textarea.form-control {
 
 /* 4. Cognira Use Cases Pattern (Demaze Featured Projects) */
 .cognira-usecases-section {
-  padding: 80px 0;
+  padding: var(--section-padding-y) 0;
   background-color: var(--color-bg-body);
   position: relative;
 }
@@ -5902,7 +5967,7 @@ textarea.form-control {
 
 /* 5. Cognira Benefits Pattern (Demaze Core Values) */
 .cognira-values-section {
-  padding: 80px 0;
+  padding: var(--section-padding-y) 0;
   background-color: var(--color-bg-body);
   position: relative;
 }
@@ -5982,7 +6047,7 @@ textarea.form-control {
 
 /* 6. Cognira Minimal Centered FAQ */
 .cognira-faq-section {
-  padding: 80px 0;
+  padding: var(--section-padding-y) 0;
   background-color: var(--color-bg-body);
   position: relative;
 }
@@ -6066,7 +6131,7 @@ textarea.form-control {
 
 /* 7. Cognira Final CTA Banner */
 .cognira-cta-section {
-  padding: 80px 0 100px;
+  padding: var(--section-padding-y) 0;
   background-color: var(--color-bg-body);
   position: relative;
 }
@@ -6207,3 +6272,6 @@ textarea.form-control {
 .bento-value-num {
   color: rgba(28, 24, 20, 0.11) !important;
 }
+
+/* Use-case tab panels: only the selected project occupies the section */
+.cognira-project-card[hidden] { display: none; }
